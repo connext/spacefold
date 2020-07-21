@@ -1,45 +1,104 @@
 import React, { useState, useEffect } from 'react';
+import * as connext from "@connext/client"
+import { ConditionalTransferTypes } from "@connext/types"
+import { constants } from 'ethers';
 import Select from 'react-select'
 
 import './App.css';
+import { getWallet } from './wallet';
+
+
+const networks = {
+  1: { name: "Mainnet", chainId: 1 },
+  4: { name: "Rinkeby", chainId: 4 },
+  // 42: { name: "Kovan", chainId: 42 }
+}
+
+
 
 function App() {
+  const [clients, setClients] = useState({})
   const [mintTokens, setMintTokens] = useState([]);
   const [sendTokens, setSendTokens] = useState([]);
   const [activeMintToken, setActiveMintToken] = useState(0);
   const [activeSendToken, setActiveSendToken] = useState(0);
-  const mintOptions = mintTokens.map(t => ({ label: t.name, value: t.id }));
-  const sendOptions = sendTokens.map(t => ({ label: t.name, value: t.id }));
+
+  const mintOptions = mintTokens.map(t => ({ label: t.name, value: t.chainId }));
+  const sendOptions = sendTokens.map(t => ({ label: t.name, value: t.chainId }));
+
+  useEffect(() => {
+    async function initClients() {
+      const clientsArr = await Promise.all(Object.values(networks).map(async (network) => {
+        const client = await connext.connect(network.name.toLowerCase(), {
+          signer: getWallet(network.chainId).privateKey
+        })
+        return { chainId: network.chainId, client }
+      }))
+      const _clients = {}
+      clientsArr.forEach(t => {
+        _clients[t.chainId] = t.client
+      })
+      setClients(_clients)
+    }
+    initClients()
+  },[])
+
   useEffect(() => {
     // load data
     const mintTokens = [
-      { id: 1, name: 'Mainnet', tokenName: 'Tokens', balance: 0.1, },
-      { id: 2, name: 'Ethereum', tokenName: 'Tokens', balance: 0 },
+      { ...networks[1], tokenName: 'Tokens', tokenAddress: constants.AddressZero ,balance: 0.1, },
     ];
     const sendTokens = [
-      { id: 3, name: 'Rinkeby', tokenName: 'Tokens', balance: 0 },
-      { id: 4, name: 'Optimism', tokenName: 'Tokens', balance: 0 },
+      { ...networks[4], tokenName: 'Tokens', tokenAddress: constants.AddressZero ,balance: 0 },
+      // { ...networks[42], tokenName: 'Tokens', balance: 0 },
     ]
     setMintTokens(mintTokens);
     setSendTokens(sendTokens);
   }, []);
+
   const changeMintToken = (option) => {
-    const newTokenIndex = mintTokens.findIndex(t => t.id === option.value);
+    const newTokenIndex = mintTokens.findIndex(t => t.chainId === option.value);
     setActiveMintToken(newTokenIndex);
   };
   const changeSendToken = (option) => {
-    const newTokenIndex = sendTokens.findIndex(t => t.id === option.value);
+    const newTokenIndex = sendTokens.findIndex(t => t.chainId === option.value);
     setActiveSendToken(newTokenIndex);
   };
-  const transfer = () => {
-    //transfer tokens
+
+  const transfer = (amount) => {
+    const fromToken = mintTokens[activeMintToken]
+    const fromClient = clients[fromToken.chainId]
+
+    const toToken = sendTokens[activeSendToken]
+    const toClient = clients[toToken.chainId]
+
+    fromClient.conditionalTransfer({
+      conditionType: ConditionalTransferTypes.LinkedTransfer,
+      assetId: fromToken.tokenAddress,
+      amount: fromToken.balance,
+      recipient: toClient.publicIdentifier,
+      meta: {
+        receiverAssetId: toToken.tokenAddress,
+        receiverChainId: toToken.chainId
+      }
+    })
   }
+
   const mint = () => {
     // mint tokens
   }
-  const send = () => {
-    //send tokens
+
+  const send = (address) => {
+    const toToken = sendTokens[activeSendToken]
+    const toClient = clients[toToken.chainId]
+    
+    toClient.with({
+      amount: toToken.balance,
+      assetId: toToken.tokenAddress,
+      recipient: address,
+    })
   }
+  
   return (
     <div className="App">
       <div className="More-Buttons">
