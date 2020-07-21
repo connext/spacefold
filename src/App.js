@@ -92,7 +92,7 @@ function App() {
     const toToken = sendTokens[activeSendToken]
     const toClient = clients[toToken.chainId]
     
-    toClient.with({
+    toClient.withdraw({
       amount: toToken.balance,
       assetId: toToken.tokenAddress,
       recipient: address,
