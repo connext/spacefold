@@ -11,10 +11,15 @@ import { getWallet } from './wallet';
 const networks = {
   1: { name: "Mainnet", chainId: 1 },
   4: { name: "Rinkeby", chainId: 4 },
-  // 42: { name: "Kovan", chainId: 42 }
+  5: { name: "Goerli", chainId: 5 },
+  42: { name: "Kovan", chainId: 42 }
 }
 
-
+const tokens = {
+  eth:  {  tokenName: "ETH", tokenAddress: constants.AddressZero },
+  moon: {  tokenName: "MOON", tokenAddress: constants.AddressZero },
+  brick: {  tokenName: "BRICK", tokenAddress: constants.AddressZero }
+}
 
 function App() {
   const [clients, setClients] = useState({})
@@ -29,7 +34,8 @@ function App() {
   useEffect(() => {
     async function initClients() {
       const clientsArr = await Promise.all(Object.values(networks).map(async (network) => {
-        const client = await connext.connect(network.name.toLowerCase(), {
+        const client = await connext.connect({
+          ethProviderUrl: `https://${network.name.toLowerCase()}.infura.io/v3/${process.env.REACT_APP_INFURA_ID}`,
           signer: getWallet(network.chainId).privateKey
         })
         return { chainId: network.chainId, client }
@@ -44,17 +50,17 @@ function App() {
   },[])
 
   useEffect(() => {
-    // load data
+    // TODO:  get balances from respective clients
     const mintTokens = [
-      { ...networks[1], tokenName: 'Tokens', tokenAddress: constants.AddressZero ,balance: 0.1, },
+      { ...networks[1], ...tokens.eth, balance: 0.1 },
     ];
     const sendTokens = [
-      { ...networks[4], tokenName: 'Tokens', tokenAddress: constants.AddressZero ,balance: 0 },
-      // { ...networks[42], tokenName: 'Tokens', balance: 0 },
+      { ...networks[4], ...tokens.moon, balance: 0 },
+      { ...networks[5], ...tokens.brick, balance: 0 },
     ]
     setMintTokens(mintTokens);
     setSendTokens(sendTokens);
-  }, []);
+  }, [clients]);
 
   const changeMintToken = (option) => {
     const newTokenIndex = mintTokens.findIndex(t => t.chainId === option.value);
