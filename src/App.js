@@ -97,8 +97,9 @@ function App() {
     const assetId = mintToken.tokenAddress
     const recipient = clients[mintToken].publicIdentifier
     await fetch({
-      method: "GET",
-      url: `${process.env.REACT_APP_FAUCET_URL}/faucet/${assetId}/${recipient}`
+      method: "POST",
+      url: `${process.env.REACT_APP_FAUCET_URL}/faucet`,
+      body: JSON.stringify({ assetId, recipient })
     })
   }
 
