@@ -7,6 +7,7 @@ import Select from 'react-select'
 import './App.css';
 import { getWallet } from './wallet';
 
+const nodeUrl = "https://node.spacefold.io/"
 
 const networks = {
   1: { name: "Mainnet", chainId: 1 },
@@ -35,6 +36,7 @@ function App() {
     async function initClients() {
       const clientsArr = await Promise.all(Object.values(networks).map(async (network) => {
         const client = await connext.connect({
+          nodeUrl,
           ethProviderUrl: `https://${network.name.toLowerCase()}.infura.io/v3/${process.env.REACT_APP_INFURA_ID}`,
           signer: getWallet(network.chainId).privateKey
         })
