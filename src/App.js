@@ -71,14 +71,14 @@ function App() {
     setActiveSendToken(newTokenIndex);
   };
 
-  const transfer = (amount) => {
+  const transfer = async () => {
     const fromToken = mintTokens[activeMintToken]
     const fromClient = clients[fromToken.chainId]
 
     const toToken = sendTokens[activeSendToken]
     const toClient = clients[toToken.chainId]
 
-    fromClient.conditionalTransfer({
+    await fromClient.conditionalTransfer({
       conditionType: ConditionalTransferTypes.LinkedTransfer,
       assetId: fromToken.tokenAddress,
       amount: fromToken.balance,
@@ -90,17 +90,23 @@ function App() {
     })
   }
 
-  const mint = () => {
-    // mint tokens
+  const mint = async  () => {
+    const mintToken = mintTokens[activeMintToken]
+    const assetId = mintToken.tokenAddress
+    const recipient = clients[mintToken].publicIdentifier
+    await fetch({
+      method: "GET",
+      url: `${process.env.REACT_APP_FAUCET_URL}/faucet/${assetId}/${recipient}`
+    })
   }
 
-  const send = (address) => {
-    const toToken = sendTokens[activeSendToken]
-    const toClient = clients[toToken.chainId]
+  const send = async  (address) => {
+    const sendToken = sendTokens[activeSendToken]
+    const sendClient = clients[sendToken.chainId]
     
-    toClient.withdraw({
-      amount: toToken.balance,
-      assetId: toToken.tokenAddress,
+    await sendClient.withdraw({
+      amount: sendToken.balance,
+      assetId: sendToken.tokenAddress,
       recipient: address,
     })
   }
