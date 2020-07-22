@@ -95,7 +95,7 @@ function App() {
   const mint = async  () => {
     const mintToken = mintTokens[activeMintToken]
     const assetId = mintToken.tokenAddress
-    const recipient = clients[mintToken].publicIdentifier
+    const recipient = clients[mintToken.chainId].publicIdentifier
     await fetch({
       method: "POST",
       url: `${process.env.REACT_APP_FAUCET_URL}/faucet`,
