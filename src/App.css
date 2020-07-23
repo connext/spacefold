@@ -47,18 +47,51 @@
   background-color: #f7f7f7;
 }
 
+.Card-Header {
+  padding: 12px 56px;
+  border-bottom: 1px solid #788E99;
+}
+
+.Card-Body {
+  position: relative;
+  padding: 48px 56px;
+  display: flex;
+  flex-direction: column;
+}
+
+.Card-Background {
+  position: absolute;
+  top: 28px;
+  right: 56px;
+  width: 30%;
+  opacity: 0.5;
+}
+
 .Token-Select {
-  align-self: stretch;
+  font-size: 16px;
+  font-weight: 600;
 }
 
 .Token-Balance {
+  align-self: flex-start;
+  display: flex;
+  align-items: center;
   font-size: 32px;
   font-weight: 600;
-  margin-bottom: 16px;
+  margin-top: 0;
+  margin-bottom: 64px;
+}
+
+.Token-Balance img {
+  height: 24px;
+  width: 24px;
+  margin-right: 12px;
 }
 
 .Token-Name {
-  font-size: 20px;
+  margin-top: 12px;
+  margin-left: 8px;
+  font-size: 14px;
   font-weight: normal;
   text-transform: uppercase;
 }
@@ -66,23 +99,34 @@
 .Card {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
   width: calc(100% - 64px - 102px);
   max-width: 350px;
   background-color: #ffffff;
   margin: 56px 32px;
-  padding: 48px 56px;
   border-radius: 2px;
-  -webkit-box-shadow: 2px 10px 52px -6px rgba(0, 0, 0, 0.59);
-  -moz-box-shadow: 2px 10px 52px -6px rgba(0, 0, 0, 0.59);
-  box-shadow: 2px 10px 52px -6px rgba(0, 0, 0, 0.59);
+  -webkit-box-shadow: 0px 0px 30px rgba(95, 111, 119, 0.5);
+  -moz-box-shadow: 0px 0px 30px rgba(95, 111, 119, 0.5);
+  box-shadow: 0px 0px 30px rgba(95, 111, 119, 0.5);
+}
+
+.Token-Left .Card {
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  border-bottom-left-radius: 20px;
+}
+
+.Token-Right .Card {
+  border-bottom-right-radius: 20px;
+  border-top-right-radius: 20px;
+  border-bottom-left-radius: 20px;
 }
 
 .Mint-Button {
   background-color: #202541;
   color: white;
   font-size: 16px;
-  border-radius: 24px;
+  font-weight: 600;
+  border-radius: 16px;
   padding: 12px 32px;
 }
 
@@ -90,8 +134,8 @@
   background-color: #6a6a6a;
   color: #ffffff;
   font-size: 16px;
-  text-transform: uppercase;
-  border-radius: 20px;
+  font-weight: 600;
+  border-radius: 16px;
   padding: 12px 32px;
 }
 
@@ -102,15 +146,16 @@
   transform: translate(-50%, -50%);
   height: 96px;
   width: 96px;
+  border: 1px solid #ffffff;
   border-radius: 64px;
   padding: 8px;
   text-align: center;
   line-height: 20px;
   background-color: #202541;
   color: #ffffff;
-  -webkit-box-shadow: 2px 10px 52px -6px rgba(0, 0, 0, 0.59);
-  -moz-box-shadow: 2px 10px 52px -6px rgba(0, 0, 0, 0.59);
-  box-shadow: 2px 10px 52px -6px rgba(0, 0, 0, 0.59);
+  -webkit-box-shadow: 0px 0px 30px rgba(95, 111, 119, 0.5);
+  -moz-box-shadow: 0px 0px 30px rgba(95, 111, 119, 0.5);
+  box-shadow: 0px 0px 30px rgba(95, 111, 119, 0.5);
 }
 
 .Swap-Arrows {
@@ -123,16 +168,12 @@
 
 .Footer {
   position: absolute;
-  left: 50%;
   bottom: 0;
-  transform: translate(-50%, 0%);
-  background-color: white;
-  font-size: 8px;
-  padding: 8px 16px;
-  border-radius: 50px;
-  -webkit-box-shadow: 2px 10px 52px -6px rgba(0, 0, 0, 0.59);
-  -moz-box-shadow: 2px 10px 52px -6px rgba(0, 0, 0, 0.59);
-  box-shadow: 2px 10px 52px -6px rgba(0, 0, 0, 0.59);
+  width: 100%;
+  background-color: #F4F5F7;
+  font-size: 12px;
+  padding: 12px 0;
+  margin: 0;
 }
 
 .Heart-Icon {

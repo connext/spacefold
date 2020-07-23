@@ -1,26 +1,47 @@
 import React, { useState, useEffect } from 'react';
-import * as connext from "@connext/client"
-import { ConditionalTransferTypes } from "@connext/types"
+import * as connext from "@connext/client";
+import { ConditionalTransferTypes } from "@connext/types";
 import { constants } from 'ethers';
-import Select from 'react-select'
+import Select from 'react-select';
 
+import ethIcon from './images/eth.png';
+import brickIcon from './images/brick.png';
+import moonIcon from './images/moon.png';
+import ethBackground from './images/ethBackground.png';
+import brickBackground from './images/brickBackground.png';
+import moonBackground from './images/moonBackground.png';
 import './App.css';
 import { getWallet } from './wallet';
 
-const nodeUrl = "https://node.spacefold.io/"
+const nodeUrl = "https://node.spacefold.io/";
 
 const networks = {
   1: { name: "Mainnet", chainId: 1 },
   4: { name: "Rinkeby", chainId: 4 },
   5: { name: "Goerli", chainId: 5 },
-  42: { name: "Kovan", chainId: 42 }
-}
+  42: { name: "Kovan", chainId: 42 },
+};
 
 const tokens = {
-  eth:  {  tokenName: "ETH", tokenAddress: constants.AddressZero },
-  moon: {  tokenName: "MOON", tokenAddress: constants.AddressZero },
-  brick: {  tokenName: "BRICK", tokenAddress: constants.AddressZero }
-}
+  eth:  {
+    tokenName: "Eth",
+    tokenIcon: ethIcon,
+    tokenBackground: ethBackground,
+    tokenAddress: constants.AddressZero,
+  },
+  moon: {
+    tokenName: "Moon",
+    tokenIcon: moonIcon,
+    tokenBackground: moonBackground,
+    tokenAddress: constants.AddressZero,
+  },
+  brick: {
+    tokenName: "Brick",
+    tokenIcon: brickIcon,
+    tokenBackground: brickBackground,
+    tokenAddress: constants.AddressZero,
+  },
+};
 
 function App() {
   const [clients, setClients] = useState({})
@@ -132,30 +153,48 @@ function App() {
           <i className="fas fa-info-circle"></i>
         </button>
       </div>
-      <div className="Token Token-Left">
-        <div className="Card">
-          <Select
-            className="Token-Select"
-            value={mintOptions[activeMintToken]}
-            onChange={changeMintToken}
-            options={mintOptions}
-          />
-          <p className="Token-Balance">
-            { mintTokens.length > 0 && mintTokens[activeMintToken].balance }
-            { ' ' }
-            <span className="Token-Name">
-              { mintTokens.length > 0 && mintTokens[activeMintToken].tokenName }
-            </span>
-          </p>
-          <button
-            type="button"
-            className="Mint-Button"
-            onClick={mint}
-          >
-            MINT
-          </button>
+      { mintTokens.length > 0 && (
+        <div className="Token Token-Left">
+          <div className="Card">
+            <div className="Card-Header">
+              <Select
+                className="Token-Select"
+                value={mintOptions[activeMintToken]}
+                onChange={changeMintToken}
+                styles={{
+                  control: base => ({
+                    ...base,
+                    border: 'none',
+                    boxShadow: 'none',
+                  }),
+                  indicatorSeparator: base => ({
+                    width: 0,
+                  }),
+                }}
+                options={mintOptions}
+              />
+            </div>
+            <div className="Card-Body">
+              <img className="Card-Background" src={mintTokens[activeMintToken].tokenBackground} />
+              <p className="Token-Balance">
+                <img src={mintTokens[activeMintToken].tokenIcon} alt="icon" />  
+                { mintTokens[activeMintToken].balance }
+                { ' ' }
+                <span className="Token-Name">
+                  { mintTokens[activeMintToken].tokenName }
+                </span>
+              </p>
+              <button
+                type="button"
+                className="Mint-Button"
+                onClick={mint}
+              >
+                Mint
+              </button>
+            </div>
+          </div>
         </div>
-      </div>
+      )}
       <button
         type="button"
         className="Swap-Button"
@@ -170,30 +209,48 @@ function App() {
           <i className="fas fa-chevron-right"></i>
         </span>
       </button>
-      <div className="Token Token-Right">
-        <div className="Card">
-          <Select
-            className="Token-Select"
-            value={sendOptions[activeSendToken]}
-            onChange={changeSendToken}
-            options={sendOptions}
-          />
-          <p className="Token-Balance">
-            { sendTokens.length > 0 && sendTokens[activeSendToken].balance }
-            { ' ' }
-            <span className="Token-Name">
-              { sendTokens.length > 0 && sendTokens[activeSendToken].tokenName }
-            </span>
-          </p>          
-          <button
-            type="button"
-            className="Send-Button"
-            onClick={send}
-          >
-            SEND {sendTokens.length > 0 && sendTokens[activeSendToken].tokenName}
-          </button>
+      { sendTokens.length > 0 && (
+        <div className="Token Token-Right">
+          <div className="Card">
+            <div className="Card-Header">
+              <Select
+                className="Token-Select"
+                value={sendOptions[activeSendToken]}
+                onChange={changeSendToken}
+                styles={{
+                  control: base => ({
+                    ...base,
+                    border: 'none',
+                    boxShadow: 'none',
+                  }),
+                  indicatorSeparator: base => ({
+                    width: 0,
+                  }),
+                }}
+                options={sendOptions}
+              />
+            </div>
+            <div className="Card-Body">
+              <img className="Card-Background" src={sendTokens[activeSendToken].tokenBackground} />
+              <p className="Token-Balance">
+                <img src={sendTokens[activeSendToken].tokenIcon} alt="icon" />
+                { sendTokens[activeSendToken].balance }
+                { ' ' }
+                <span className="Token-Name">
+                  { sendTokens[activeSendToken].tokenName }
+                </span>
+              </p>          
+              <button
+                type="button"
+                className="Send-Button"
+                onClick={send}
+              >
+                Send {sendTokens[activeSendToken].tokenName}
+              </button>
+            </div>
+          </div>
         </div>
-      </div>
+      )}
       <p className="Footer">Made with <i className="fas fa-heart Heart-Icon"></i> by Connext</p>
     </div>
   );
