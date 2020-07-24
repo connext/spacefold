@@ -6,6 +6,8 @@ import Select from "react-select";
 
 import "./App.css";
 import { getWallet } from "./wallet";
+const dotenv = require("dotenv");
+dotenv.config();
 
 const nodeUrl = "https://node.spacefold.io/";
 
@@ -24,6 +26,7 @@ const tokens = {
 
 function App() {
   const [clients, setClients] = useState({});
+  const [tweets, setTweets] = useState({});
   const [mintTokens, setMintTokens] = useState([]);
   const [sendTokens, setSendTokens] = useState([]);
   const [activeMintToken, setActiveMintToken] = useState(0);
@@ -40,23 +43,31 @@ function App() {
 
   useEffect(() => {
     async function initClients() {
-      const clientsArr = await Promise.all(
-        Object.values(networks).map(async (network) => {
+      console.log("Trying to init clients in env", process.env);
+      const clientsArr = [];
+      for (const network of Object.values(networks)) {
+        try {
           const client = await connext.connect({
             nodeUrl,
             ethProviderUrl: `https://${network.name.toLowerCase()}.infura.io/v3/${
               process.env.REACT_APP_INFURA_ID
             }`,
             signer: getWallet(network.chainId).privateKey,
+            logLevel: 2,
           });
-          return { chainId: network.chainId, client };
-        })
-      );
+          clientsArr.push({ chainId: network.chainId, client });
+        } catch (e) {
+          console.warn(`Failed to create client on ${network.chainId}`);
+        }
+      }
+      const _tweets = {};
       const _clients = {};
       clientsArr.forEach((t) => {
         _clients[t.chainId] = t.client;
+        _tweets[t.publicIdentifier] = undefined;
       });
       setClients(_clients);
+      setTweets(_tweets);
     }
     initClients();
   }, []);
@@ -108,10 +119,11 @@ function App() {
     const mintToken = mintTokens[activeMintToken];
     const assetId = mintToken.tokenAddress;
     const recipient = clients[mintToken.chainId].publicIdentifier;
+    const tweet = tweets[mintToken.chainId].publicIdentifier;
     await fetch({
       method: "POST",
       url: `${process.env.REACT_APP_FAUCET_URL}/faucet`,
-      body: JSON.stringify({ assetId, recipient }),
+      body: JSON.stringify({ assetId, recipient, tweet }),
     });
   };
 
