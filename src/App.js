@@ -56,6 +56,12 @@ const tokens = {
   },
 };
 
+const getTweetURL = (publicIdentifier, chainName) =>
+  "https://twitter.com/intent/tweet?text=" +
+  encodeURIComponent(
+    `Minting SPACE tokens for channel ${publicIdentifier} https://spacefold.io on ${chainName}! By @ConnextNetwork`
+  );
+
 const MintStatus = {
   READY: 0,
   MINTING: 1,
@@ -330,6 +336,28 @@ function App() {
                         ?.publicIdentifier
                     }
                   </p>
+                  <a
+                    href={getTweetURL(
+                      clients[mintTokens[activeMintToken].chainId]
+                        ?.publicIdentifier,
+                      mintTokens[activeMintToken].name
+                    )}
+                    target="popup"
+                    onClick={() => {
+                      window.open(
+                        getTweetURL(
+                          clients[mintTokens[activeMintToken].chainId]
+                            ?.publicIdentifier,
+                          mintTokens[activeMintToken].name
+                        ),
+                        "popup",
+                        "width=600,height=600"
+                      );
+                      return false;
+                    }}
+                  >
+                    Tweet Now!
+                  </a>
                   <input
                     type="text"
                     name="tweet"
