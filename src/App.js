@@ -56,6 +56,12 @@ const tokens = {
   },
 };
 
+const MintStatus = {
+  READY: 0,
+  MINTING: 1,
+  ERROR: 2,
+};
+
 function App() {
   const [clients, setClients] = useState({});
   const [balances, setBalances] = useState({});
@@ -63,6 +69,9 @@ function App() {
   const [sendTokens, setSendTokens] = useState([]);
   const [activeMintToken, setActiveMintToken] = useState(0);
   const [activeSendToken, setActiveSendToken] = useState(0);
+  const [tweetUrl, setTweetUrl] = useState("");
+  const [showTweetInput, setShowTweetInput] = useState(false);
+  const [mintStatus, setMintStatus] = useState(MintStatus.READY);
 
   const mintOptions = mintTokens.map((t) => ({
     label: t.name,
@@ -209,17 +218,28 @@ function App() {
       console.error(`Failed to find client for ${mintToken.chainId}`, clients);
       return;
     }
+    setMintStatus(MintStatus.MINTING);
     const faucetUrl = `${process.env.REACT_APP_FAUCET_URL}/faucet`;
     const faucetData = {
       assetId,
       recipient: client.publicIdentifier,
-      tweet: "devmode",
+      tweet: tweetUrl,
     };
-    console.log(
-      `Making faucet request to ${faucetUrl}: ${JSON.stringify(faucetData)}`
-    );
-    const res = await axios.post(faucetUrl, faucetData);
-    console.log(`Faucet response: ${JSON.stringify(res)}`);
+    try {
+      console.log(
+        `Making faucet request to ${faucetUrl}: ${JSON.stringify(faucetData)}`
+      );
+      const res = await axios.post(faucetUrl, faucetData);
+      console.log(`Faucet response: ${JSON.stringify(res)}`);
+      setMintStatus(MintStatus.READY);
+    } catch (e) {
+      console.error(
+        `Error minting tokens: ${
+          e.response ? JSON.stringify(e.response.data || {}) : e.message
+        }`
+      );
+      setMintStatus(MintStatus.ERROR);
+    }
   };
 
   const send = async (address) => {
@@ -288,9 +308,47 @@ function App() {
                   {mintTokens[activeMintToken].tokenName}
                 </span>
               </p>
-              <button type="button" className="Mint-Button" onClick={mint}>
+              <button
+                type="button"
+                className="Mint-Button"
+                onClick={() => setShowTweetInput(!showTweetInput)}
+              >
                 Mint
               </button>
+              {showTweetInput && (
+                <>
+                  <p>
+                    Please paste a public tweet containing your public
+                    identifier to mint free tokens!{" "}
+                    {
+                      clients[mintTokens[activeMintToken].chainId]
+                        ?.publicIdentifier
+                    }
+                  </p>
+                  <input
+                    type="text"
+                    name="tweet"
+                    onChange={(event) => setTweetUrl(event.target.value)}
+                  />
+                  <div style={{ paddingBottom: "10px" }} />
+                  {mintStatus === MintStatus.ERROR && (
+                    <>
+                      <span style={{ color: "red" }}>
+                        Error minting tokens!
+                      </span>
+                      <div style={{ paddingBottom: "10px" }} />
+                    </>
+                  )}
+                  <button
+                    type="button"
+                    className={"Mint-Button"}
+                    onClick={mint}
+                    disabled={mintStatus === MintStatus.MINTING}
+                  >
+                    Confirm Mint
+                  </button>
+                </>
+              )}
             </div>
           </div>
         </div>
