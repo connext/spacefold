@@ -31,21 +31,6 @@ const networks = {
   // 1338: { name: "Buidler", chainId: 1338 },
 };
 
-const _tokens = {
-  1: { tokenName: "ETH", tokenAddress: constants.AddressZero },
-  4: {
-    tokenName: "MOON",
-    tokenAddress: "0x50C94BeCAd95bEe21aF226dc799365Ee6B134459", // rinkeby
-    name: "Rinkeby",
-    chainId: 4,
-  },
-  42: {
-    tokenName: "BRICK",
-    tokenAddress: "0x4d4deb65DBC13dE6811095baba7064B41A72D9Db", // kovan
-  },
-  5: { name: "Goerli", chainId: 5 },
-};
-
 const tokens = {
   1: {
     tokenName: "Eth",
