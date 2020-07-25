@@ -1,19 +1,26 @@
-import axios from "axios";
 import React, { useState, useEffect } from "react";
 import * as connext from "@connext/client";
-import { getLocalStore } from "@connext/store";
 import { ColorfulLogger } from "@connext/utils";
-import { constants } from "ethers";
+import { getLocalStore } from "@connext/store";
+import { constants, utils } from "ethers";
 import Select from "react-select";
+import axios from "axios";
 
+import ethIcon from "./images/eth.png";
+import brickIcon from "./images/brick.png";
+import moonIcon from "./images/moon.png";
+import ethBackground from "./images/ethBackground.png";
+import brickBackground from "./images/brickBackground.png";
+import moonBackground from "./images/moonBackground.png";
 import "./App.css";
 import { getWallet } from "./wallet";
-import { parseEther, formatEther } from "ethers/lib/utils";
+
+const { formatEther, parseEther } = utils;
+
 const dotenv = require("dotenv");
 dotenv.config();
 
 const nodeUrl = "https://node.spacefold.io/";
-// const nodeUrl = "http://localhost:8080";
 
 const networks = {
   // 1: { name: "Mainnet", chainId: 1 },
@@ -24,15 +31,43 @@ const networks = {
   // 1338: { name: "Buidler", chainId: 1338 },
 };
 
-const tokens = {
+const _tokens = {
   1: { tokenName: "ETH", tokenAddress: constants.AddressZero },
   4: {
     tokenName: "MOON",
     tokenAddress: "0x50C94BeCAd95bEe21aF226dc799365Ee6B134459", // rinkeby
+    name: "Rinkeby",
+    chainId: 4,
   },
   42: {
     tokenName: "BRICK",
     tokenAddress: "0x4d4deb65DBC13dE6811095baba7064B41A72D9Db", // kovan
+  },
+  5: { name: "Goerli", chainId: 5 },
+};
+
+const tokens = {
+  1: {
+    tokenName: "Eth",
+    tokenIcon: ethIcon,
+    tokenBackground: ethBackground,
+    tokenAddress: constants.AddressZero,
+  },
+  4: {
+    tokenName: "Moon",
+    tokenIcon: moonIcon,
+    tokenBackground: moonBackground,
+    tokenAddress: "0x50C94BeCAd95bEe21aF226dc799365Ee6B134459",
+    chainId: 4,
+    name: "Rinkeby",
+  },
+  42: {
+    tokenName: "Brick",
+    tokenIcon: brickIcon,
+    tokenBackground: brickBackground,
+    tokenAddress: "0x4d4deb65DBC13dE6811095baba7064B41A72D9Db",
+    chainId: 42,
+    name: "Kovan",
   },
 };
 
@@ -234,25 +269,47 @@ function App() {
           <i className="fas fa-info-circle"></i>
         </button>
       </div>
-      <div className="Token Token-Left">
-        <div className="Card">
-          <Select
-            className="Token-Select"
-            value={mintOptions[activeMintToken]}
-            onChange={changeMintToken}
-            options={mintOptions}
-          />
-          <p className="Token-Balance">
-            {mintTokens.length > 0 && mintTokens[activeMintToken].balance}{" "}
-            <span className="Token-Name">
-              {mintTokens.length > 0 && mintTokens[activeMintToken].tokenName}
-            </span>
-          </p>
-          <button type="button" className="Mint-Button" onClick={mint}>
-            MINT
-          </button>
+      {mintTokens.length > 0 && (
+        <div className="Token Token-Left">
+          <div className="Card">
+            <div className="Card-Header">
+              <Select
+                className="Token-Select"
+                value={mintOptions[activeMintToken]}
+                onChange={changeMintToken}
+                styles={{
+                  control: (base) => ({
+                    ...base,
+                    border: "none",
+                    boxShadow: "none",
+                  }),
+                  indicatorSeparator: (base) => ({
+                    width: 0,
+                  }),
+                }}
+                options={mintOptions}
+              />
+            </div>
+            <div className="Card-Body">
+              <img
+                className="Card-Background"
+                src={mintTokens[activeMintToken].tokenBackground}
+                alt=""
+              />
+              <p className="Token-Balance">
+                <img src={mintTokens[activeMintToken].tokenIcon} alt="icon" />
+                {mintTokens[activeMintToken].balance}{" "}
+                <span className="Token-Name">
+                  {mintTokens[activeMintToken].tokenName}
+                </span>
+              </p>
+              <button type="button" className="Mint-Button" onClick={mint}>
+                Mint
+              </button>
+            </div>
+          </div>
         </div>
-      </div>
+      )}
       <button type="button" className="Swap-Button" onClick={transfer}>
         TRANSFER
         <span className="Swap-Arrows">
@@ -263,26 +320,47 @@ function App() {
           <i className="fas fa-chevron-right"></i>
         </span>
       </button>
-      <div className="Token Token-Right">
-        <div className="Card">
-          <Select
-            className="Token-Select"
-            value={sendOptions[activeSendToken]}
-            onChange={changeSendToken}
-            options={sendOptions}
-          />
-          <p className="Token-Balance">
-            {sendTokens.length > 0 && sendTokens[activeSendToken].balance}{" "}
-            <span className="Token-Name">
-              {sendTokens.length > 0 && sendTokens[activeSendToken].tokenName}
-            </span>
-          </p>
-          <button type="button" className="Send-Button" onClick={send}>
-            SEND{" "}
-            {sendTokens.length > 0 && sendTokens[activeSendToken].tokenName}
-          </button>
+      {sendTokens.length > 0 && (
+        <div className="Token Token-Right">
+          <div className="Card">
+            <div className="Card-Header">
+              <Select
+                className="Token-Select"
+                value={sendOptions[activeSendToken]}
+                onChange={changeSendToken}
+                styles={{
+                  control: (base) => ({
+                    ...base,
+                    border: "none",
+                    boxShadow: "none",
+                  }),
+                  indicatorSeparator: (base) => ({
+                    width: 0,
+                  }),
+                }}
+                options={sendOptions}
+              />
+            </div>
+            <div className="Card-Body">
+              <img
+                className="Card-Background"
+                src={sendTokens[activeSendToken].tokenBackground}
+                alt=""
+              />
+              <p className="Token-Balance">
+                <img src={sendTokens[activeSendToken].tokenIcon} alt="icon" />
+                {sendTokens[activeSendToken].balance}{" "}
+                <span className="Token-Name">
+                  {sendTokens[activeSendToken].tokenName}
+                </span>
+              </p>
+              <button type="button" className="Send-Button" onClick={send}>
+                Send {sendTokens[activeSendToken].tokenName}
+              </button>
+            </div>
+          </div>
         </div>
-      </div>
+      )}
       <p className="Footer">
         Made with <i className="fas fa-heart Heart-Icon"></i> by Connext
       </p>
