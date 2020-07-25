@@ -153,6 +153,10 @@ function App() {
       });
       setClients(_clients);
       setBalances(_balances);
+
+      clientsArr.map((clientInfo) =>
+        clientInfo.client.requestCollateral(tokens[clientInfo.chainId])
+      );
     }
     initClients();
   }, []);
@@ -232,6 +236,7 @@ function App() {
       const res = await axios.post(faucetUrl, faucetData);
       console.log(`Faucet response: ${JSON.stringify(res)}`);
       setMintStatus(MintStatus.READY);
+      setShowTweetInput(false);
     } catch (e) {
       console.error(
         `Error minting tokens: ${
