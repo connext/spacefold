@@ -133,7 +133,22 @@ function App() {
           console.log(
             `Created client for network ${JSON.stringify(network)}: ${
               client.publicIdentifier
-            }`
+            } with balance: ${channel[client.signerAddress]}`
+          );
+          console.log(
+            `True balance for ${client.chainId}: ${formatEther(
+              channel[client.signerAddress]
+            )}`
+          );
+
+          setClients({ ...clients, [client.chainId]: client });
+          setBalances({
+            ...balances,
+            [client.chainId]: formatEther(channel[client.signerAddress]),
+          });
+
+          clientsArr.map((clientInfo) =>
+            clientInfo.client.requestCollateral(tokens[clientInfo.chainId])
           );
         } catch (e) {
           console.error(
