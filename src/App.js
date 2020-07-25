@@ -1,7 +1,9 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import * as connext from "@connext/client";
-import { constants, BigNumber } from "ethers";
+import { getLocalStore } from "@connext/store";
+import { ColorfulLogger } from "@connext/utils";
+import { constants } from "ethers";
 import Select from "react-select";
 
 import "./App.css";
@@ -57,13 +59,22 @@ function App() {
       const _balances = {};
       for (const network of Object.values(networks)) {
         try {
+          const pk = getWallet(network.chainId).privateKey;
           const client = await connext.connect({
             nodeUrl,
             ethProviderUrl: `https://${network.name.toLowerCase()}.infura.io/v3/${
               process.env.REACT_APP_INFURA_ID
             }`,
             signer: getWallet(network.chainId).privateKey,
-            logLevel: 3,
+            loggerService: new ColorfulLogger(
+              network.chainId.toString(),
+              4,
+              false,
+              network.chainId
+            ),
+            store: getLocalStore({
+              prefix: `INDRA_CLIENT_${pk.substring(0, 10).toUpperCase()}`,
+            }),
           });
           clientsArr.push({ chainId: network.chainId, client });
           const channel = await client.getFreeBalance(
@@ -73,7 +84,10 @@ function App() {
             channel[client.signerAddress]
           );
         } catch (e) {
-          console.warn(`Failed to create client on ${network.chainId}`);
+          console.warn(
+            `Failed to create client on ${network.chainId}. Error:`,
+            e.message
+          );
         }
       }
 
