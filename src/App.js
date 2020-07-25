@@ -63,10 +63,9 @@ function App() {
               process.env.REACT_APP_INFURA_ID
             }`,
             signer: getWallet(network.chainId).privateKey,
-            logLevel: 2,
+            logLevel: 3,
           });
           clientsArr.push({ chainId: network.chainId, client });
-          console.log("trying to set balance for ", tokens[network.chainId]);
           const channel = await client.getFreeBalance(
             tokens[network.chainId].tokenAddress
           );
@@ -78,19 +77,27 @@ function App() {
         }
       }
 
+      // Helper to refresh all client balances on transfer events
+      const refreshBalances = async () => {
+        const _balances = {};
+        for (const t of clientsArr) {
+          const token = tokens[t.chainId];
+          const channel = await t.client.getFreeBalance(token.tokenAddress);
+          _balances[t.chainId] = formatEther(channel[t.client.signerAddress]);
+        }
+        setBalances(_balances);
+        return _balances;
+      };
+
       const _clients = {};
       clientsArr.forEach((t) => {
         t.client.on("CONDITIONAL_TRANSFER_CREATED_EVENT", async (msg) => {
-          const channel = await t.client.getFreeBalance(msg.assetId);
-          balances[t.chainId] = formatEther(channel[t.client.signerAddress]);
-          setBalances(balances);
-          console.error("transfer created event, updated balances", balances);
+          const updated = await refreshBalances();
+          console.error("transfer created event, updated balances", updated);
         });
         t.client.on("CONDITIONAL_TRANSFER_UNLOCKED_EVENT", async (msg) => {
-          const channel = await t.client.getFreeBalance(msg.assetId);
-          balances[t.chainId] = formatEther(channel[t.client.signerAddress]);
-          setBalances(balances);
-          console.error("transfer unlocked event, updated balances", balances);
+          const updated = await refreshBalances();
+          console.error("transfer unlocked event, updated balances", updated);
         });
         _clients[t.chainId] = t.client;
       });
@@ -150,7 +157,7 @@ function App() {
         receiverChainId: toToken.chainId,
       },
     };
-    console.warn("*** calling transfer with params", params);
+    console.error("*** calling transfer with params", params);
     const res = await fromClient.transfer(params);
     console.error("transfer created res", res);
   };
@@ -163,12 +170,13 @@ function App() {
       console.error(`Failed to find client for ${mintToken.chainId}`, clients);
       return;
     }
+    console.error("making faucet request..");
     const res = await axios.post(`${process.env.REACT_APP_FAUCET_URL}/faucet`, {
       assetId,
       recipient: client.publicIdentifier,
       tweet: "devmode",
     });
-    console.log("faucet res", res);
+    console.error("faucet res", res);
   };
 
   const send = async (address) => {
