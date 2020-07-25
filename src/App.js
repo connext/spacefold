@@ -23,12 +23,12 @@ const networks = {
 };
 
 const tokens = {
-  eth: { tokenName: "ETH", tokenAddress: constants.AddressZero },
-  moon: {
+  1: { tokenName: "ETH", tokenAddress: constants.AddressZero },
+  4: {
     tokenName: "MOON",
     tokenAddress: "0x50C94BeCAd95bEe21aF226dc799365Ee6B134459", // rinkeby
   },
-  brick: {
+  42: {
     tokenName: "BRICK",
     tokenAddress: "0x4d4deb65DBC13dE6811095baba7064B41A72D9Db", // kovan
   },
@@ -36,7 +36,7 @@ const tokens = {
 
 function App() {
   const [clients, setClients] = useState({});
-  const [tweets, setTweets] = useState({});
+  const [balances, setBalances] = useState({});
   const [mintTokens, setMintTokens] = useState([]);
   const [sendTokens, setSendTokens] = useState([]);
   const [activeMintToken, setActiveMintToken] = useState(0);
@@ -54,6 +54,7 @@ function App() {
   useEffect(() => {
     async function initClients() {
       const clientsArr = [];
+      const _balances = {};
       for (const network of Object.values(networks)) {
         try {
           const client = await connext.connect({
@@ -65,49 +66,60 @@ function App() {
             logLevel: 2,
           });
           clientsArr.push({ chainId: network.chainId, client });
+          console.log("trying to set balance for ", tokens[network.chainId]);
+          const channel = await client.getFreeBalance(
+            tokens[network.chainId].tokenAddress
+          );
+          _balances[network.chainId] = formatEther(
+            channel[client.signerAddress]
+          );
         } catch (e) {
           console.warn(`Failed to create client on ${network.chainId}`);
         }
       }
-      const _tweets = {};
+
       const _clients = {};
       clientsArr.forEach((t) => {
+        t.client.on("CONDITIONAL_TRANSFER_CREATED_EVENT", async (msg) => {
+          const channel = await t.client.getFreeBalance(msg.assetId);
+          balances[t.chainId] = formatEther(channel[t.client.signerAddress]);
+          setBalances(balances);
+          console.error("transfer created event, updated balances", balances);
+        });
+        t.client.on("CONDITIONAL_TRANSFER_UNLOCKED_EVENT", async (msg) => {
+          const channel = await t.client.getFreeBalance(msg.assetId);
+          balances[t.chainId] = formatEther(channel[t.client.signerAddress]);
+          setBalances(balances);
+          console.error("transfer unlocked event, updated balances", balances);
+        });
         _clients[t.chainId] = t.client;
-        _tweets[t.publicIdentifier] = undefined;
       });
       setClients(_clients);
-      setTweets(_tweets);
-      console.error("set _clients", _clients);
+      setBalances(_balances);
+      console.error("set clients", _clients);
+      console.error("set balances", _balances);
     }
     initClients();
   }, []);
 
   useEffect(() => {
-    const updateTokenBalance = async () => {
-      const mintClient = clients[networks[4].chainId];
-      const mintBal = !!mintClient
-        ? (await mintClient.getFreeBalance(tokens.moon.tokenAddress))[
-            mintClient.signerAddress
-          ]
-        : BigNumber.from(0);
-      const mintTokens = [
-        { ...networks[4], ...tokens.moon, balance: formatEther(mintBal) },
-      ];
-
-      const sendClient = clients[networks[42].chainId];
-      const sendBal = !!sendClient
-        ? (await sendClient.getFreeBalance(tokens.brick.tokenAddress))[
-            sendClient.signerAddress
-          ]
-        : BigNumber.from(0);
-      const sendTokens = [
-        { ...networks[42], ...tokens.brick, balance: formatEther(sendBal) },
-      ];
-      setMintTokens(mintTokens);
-      setSendTokens(sendTokens);
-    };
-    updateTokenBalance();
-  }, [clients]);
+    const mintTokens = [
+      {
+        ...networks[4],
+        ...tokens[4],
+        balance: balances[networks[4].chainId],
+      },
+    ];
+    const sendTokens = [
+      {
+        ...networks[42],
+        ...tokens[42],
+        balance: balances[networks[42].chainId],
+      },
+    ];
+    setMintTokens(mintTokens);
+    setSendTokens(sendTokens);
+  }, [balances]);
 
   const changeMintToken = (option) => {
     const newTokenIndex = mintTokens.findIndex(
@@ -128,16 +140,10 @@ function App() {
 
     const toToken = sendTokens[activeSendToken];
     const toClient = clients[toToken.chainId];
-    console.error(
-      "recipient pre transfer balance",
-      (await toClient.getFreeBalance(toToken.tokenAddress))[
-        toClient.signerAddress
-      ].toString()
-    );
 
     const params = {
       assetId: fromToken.tokenAddress,
-      amount: parseEther(fromToken.balance.toString()),
+      amount: parseEther("0.001"),
       recipient: toClient.publicIdentifier,
       meta: {
         receiverAssetId: toToken.tokenAddress,
@@ -145,16 +151,8 @@ function App() {
       },
     };
     console.warn("*** calling transfer with params", params);
-    await fromClient.transfer(params);
-    toClient.once("CONDITIONAL_TRANSFER_UNLOCKED_EVENT", async (data) => {
-      console.error("got conditional transfer unlocked event", data);
-      console.error(
-        "recipient post transfer balance",
-        (await toClient.getFreeBalance(toToken.tokenAddress))[
-          toClient.signerAddress
-        ].toString()
-      );
-    });
+    const res = await fromClient.transfer(params);
+    console.error("transfer created res", res);
   };
 
   const mint = async () => {
@@ -165,24 +163,12 @@ function App() {
       console.error(`Failed to find client for ${mintToken.chainId}`, clients);
       return;
     }
-    console.error(
-      "pre faucet balance",
-      (await client.getFreeBalance(assetId))[client.signerAddress].toString()
-    );
-    console.log("faucet url", `${process.env.REACT_APP_FAUCET_URL}/faucet`);
     const res = await axios.post(`${process.env.REACT_APP_FAUCET_URL}/faucet`, {
       assetId,
       recipient: client.publicIdentifier,
       tweet: "devmode",
     });
-    console.log("res", res);
-    client.once("CONDITIONAL_TRANSFER_UNLOCKED_EVENT", async (data) => {
-      console.error("got conditional transfer unlocked event", data);
-      console.error(
-        "post faucet balance",
-        (await client.getFreeBalance(assetId))[client.signerAddress].toString()
-      );
-    });
+    console.log("faucet res", res);
   };
 
   const send = async (address) => {
