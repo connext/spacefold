@@ -25,7 +25,7 @@ const nodeUrl = "https://node.spacefold.io/";
 const networks = {
   // 1: { name: "Mainnet", chainId: 1 },
   4: { name: "Rinkeby", chainId: 4 },
-  // 5: { name: "Goerli", chainId: 5 },
+  5: { name: "Goerli", chainId: 5 },
   42: { name: "Kovan", chainId: 42 },
   // 1337: { name: "Ganache", chainId: 1337 },
   // 1338: { name: "Buidler", chainId: 1338 },
@@ -46,6 +46,14 @@ const tokens = {
     chainId: 4,
     name: "Rinkeby",
   },
+  5: {
+    tokenName: "Eth",
+    tokenIcon: ethIcon,
+    tokenBackground: ethBackground,
+    tokenAddress: constants.AddressZero,
+    chainId: 5,
+    name: "Goerli",
+  },
   42: {
     tokenName: "Brick",
     tokenIcon: brickIcon,
@@ -55,6 +63,8 @@ const tokens = {
     name: "Kovan",
   },
 };
+
+const MINT_CHAIN_ID = 4;
 
 const getTweetURL = (publicIdentifier, chainName) =>
   "https://twitter.com/intent/tweet?text=" +
@@ -170,18 +180,20 @@ function App() {
   useEffect(() => {
     const mintTokens = [
       {
-        ...networks[4],
-        ...tokens[4],
-        balance: balances[networks[4].chainId],
+        ...networks[MINT_CHAIN_ID],
+        ...tokens[MINT_CHAIN_ID],
+        balance: balances[MINT_CHAIN_ID],
       },
     ];
-    const sendTokens = [
-      {
-        ...networks[42],
-        ...tokens[42],
-        balance: balances[networks[42].chainId],
-      },
-    ];
+    const sendTokens = Object.values(networks)
+      .map((network) => {
+        return {
+          ...network,
+          ...tokens[network.chainId],
+          balance: balances[network.chainId],
+        };
+      })
+      .filter((sendToken) => sendToken.chainId !== MINT_CHAIN_ID);
     setMintTokens(mintTokens);
     setSendTokens(sendTokens);
   }, [balances]);
@@ -208,7 +220,7 @@ function App() {
 
     const params = {
       assetId: fromToken.tokenAddress,
-      amount: parseEther("0.001"),
+      amount: parseEther(balances[fromToken.chainId]),
       recipient: toClient.publicIdentifier,
       meta: {
         receiverAssetId: toToken.tokenAddress,
