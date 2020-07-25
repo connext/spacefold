@@ -59,6 +59,7 @@ function App() {
       const _balances = {};
       for (const network of Object.values(networks)) {
         try {
+          console.log(`Creating client for network ${JSON.stringify(network)}`);
           const pk = getWallet(network.chainId).privateKey;
           const client = await connext.connect({
             nodeUrl,
@@ -75,6 +76,7 @@ function App() {
             store: getLocalStore({
               prefix: `INDRA_CLIENT_${pk.substring(0, 10).toUpperCase()}`,
             }),
+            logLevel: 4,
           });
           clientsArr.push({ chainId: network.chainId, client });
           const channel = await client.getFreeBalance(
@@ -83,8 +85,13 @@ function App() {
           _balances[network.chainId] = formatEther(
             channel[client.signerAddress]
           );
+          console.log(
+            `Created client for network ${JSON.stringify(network)}: ${
+              client.publicIdentifier
+            }`
+          );
         } catch (e) {
-          console.warn(
+          console.error(
             `Failed to create client on ${network.chainId}. Error:`,
             e.message
           );
@@ -107,18 +114,16 @@ function App() {
       clientsArr.forEach((t) => {
         t.client.on("CONDITIONAL_TRANSFER_CREATED_EVENT", async (msg) => {
           const updated = await refreshBalances();
-          console.error("transfer created event, updated balances", updated);
+          console.log("Transfer created, updated balances", updated);
         });
         t.client.on("CONDITIONAL_TRANSFER_UNLOCKED_EVENT", async (msg) => {
           const updated = await refreshBalances();
-          console.error("transfer unlocked event, updated balances", updated);
+          console.log("Transfer unlocked unlocked, updated balances", updated);
         });
         _clients[t.chainId] = t.client;
       });
       setClients(_clients);
       setBalances(_balances);
-      console.error("set clients", _clients);
-      console.error("set balances", _balances);
     }
     initClients();
   }, []);
@@ -171,9 +176,9 @@ function App() {
         receiverChainId: toToken.chainId,
       },
     };
-    console.error("*** calling transfer with params", params);
+    console.log(`Transferring with params ${JSON.stringify(params)}`);
     const res = await fromClient.transfer(params);
-    console.error("transfer created res", res);
+    console.log(`Transfer complete: ${JSON.stringify(res)}`);
   };
 
   const mint = async () => {
@@ -184,13 +189,17 @@ function App() {
       console.error(`Failed to find client for ${mintToken.chainId}`, clients);
       return;
     }
-    console.error("making faucet request..");
-    const res = await axios.post(`${process.env.REACT_APP_FAUCET_URL}/faucet`, {
+    const faucetUrl = `${process.env.REACT_APP_FAUCET_URL}/faucet`;
+    const faucetData = {
       assetId,
       recipient: client.publicIdentifier,
       tweet: "devmode",
-    });
-    console.error("faucet res", res);
+    };
+    console.log(
+      `Making faucet request to ${faucetUrl}: ${JSON.stringify(faucetData)}`
+    );
+    const res = await axios.post(faucetUrl, faucetData);
+    console.log(`Faucet response: ${JSON.stringify(res)}`);
   };
 
   const send = async (address) => {
