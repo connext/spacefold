@@ -328,6 +328,7 @@ function App() {
       color: '#505D68',
       padding: '19px 56px',
       textAlign: 'left',
+      cursor: 'pointer',
     }),
     indicatorSeparator: (base) => ({
       width: 0,
@@ -490,7 +491,7 @@ function App() {
         disabled={transferDisabled}
       >
         TRANSFER
-        <img src={transferDisabled ? transferDisabledImage : transferGif} />
+        <img src={transferDisabled ? transferDisabledImage : transferGif} alt="transfer" />
       </button>
       {sendTokens.length > 0 && (
         <div
