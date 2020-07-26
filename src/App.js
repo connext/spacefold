@@ -24,9 +24,9 @@ const nodeUrl = "https://node.spacefold.io/";
 
 const networks = {
   // 1: { name: "Mainnet", chainId: 1 },
-  4: { name: "Rinkeby", chainId: 4 },
-  5: { name: "Goerli", chainId: 5 },
-  42: { name: "Kovan", chainId: 42 },
+  4: { name: "Rinkeby", chainId: 4, color: '#EFC45C' },
+  5: { name: "Goerli", chainId: 5, color: '#0091F2' },
+  42: { name: "Kovan", chainId: 42, color: '#01C853' },
   // 1337: { name: "Ganache", chainId: 1337 },
   // 1338: { name: "Buidler", chainId: 1338 },
 };
@@ -291,6 +291,40 @@ function App() {
     });
   };
 
+  const controlStyles = {
+    padding: "0 56px",
+    background: "#DEEBFF",
+    border: "none",
+    boxShadow: "none",
+  };
+  const menuStyles = {
+    margin: 0,
+  };
+  const selectStyles = {
+    control: (base) => ({
+      ...base,
+      ...controlStyles,
+    }),
+    valueContainer: (base) => ({
+      ...base,
+      paddingLeft: 0,
+    }),
+    menu: (base) => ({
+      ...base,
+      ...menuStyles,
+    }),
+    option: (base) => ({
+      ...base,
+      backgroundColor: '#FFFFFF',
+      color: '#505D68',
+      padding: '19px 56px',
+      textAlign: 'left',
+    }),
+    indicatorSeparator: (base) => ({
+      width: 0,
+    }),
+  };
+
   return (
     <div className="App">
       <div className="More-Buttons">
@@ -313,107 +347,118 @@ function App() {
         </button>
       </div>
       {mintTokens.length > 0 && (
-        <div className="Token Token-Left">
+        <div
+          className="Token Token-Left"
+          style={{
+            backgroundColor: mintTokens[activeMintToken].balance > 0
+              ? mintTokens[activeMintToken].color
+              : '#F4F5F7',
+          }}
+        >
           <div className="Card">
             <div className="Card-Header">
               <Select
                 className="Token-Select"
                 value={mintOptions[activeMintToken]}
                 onChange={changeMintToken}
-                styles={{
-                  control: (base) => ({
-                    ...base,
-                    border: "none",
-                    boxShadow: "none",
-                  }),
-                  indicatorSeparator: (base) => ({
-                    width: 0,
-                  }),
-                }}
+                styles={selectStyles}
                 options={mintOptions}
+                isSearchable={false}
               />
             </div>
             <div className="Card-Body">
-              <img
-                className="Card-Background"
-                src={mintTokens[activeMintToken].tokenBackground}
-                alt=""
-              />
-              <p className="Token-Balance">
-                <img src={mintTokens[activeMintToken].tokenIcon} alt="icon" />
-                {mintTokens[activeMintToken].balance}{" "}
-                <span className="Token-Name">
-                  {mintTokens[activeMintToken].tokenName}
-                </span>
-              </p>
-              <button
-                type="button"
-                className="Mint-Button"
-                onClick={() => setShowTweetInput(!showTweetInput)}
-              >
-                Mint
-              </button>
-              {showTweetInput && (
-                <>
-                  <p>
-                    Please paste a public tweet containing your public
-                    identifier to mint free tokens!{" "}
-                    {
-                      clients[mintTokens[activeMintToken].chainId]
-                        ?.publicIdentifier
-                    }
-                  </p>
-                  <a
-                    href={getTweetURL(
-                      clients[mintTokens[activeMintToken].chainId]
-                        ?.publicIdentifier,
-                      mintTokens[activeMintToken].name
+              {showTweetInput
+                ? (
+                  <>
+                    <p>
+                      Please paste a public tweet containing your public
+                      identifier to mint free tokens!{" "}
+                      {
+                        clients[mintTokens[activeMintToken].chainId]
+                          ?.publicIdentifier
+                      }
+                    </p>
+                    <a
+                      href={getTweetURL(
+                        clients[mintTokens[activeMintToken].chainId]
+                          ?.publicIdentifier,
+                        mintTokens[activeMintToken].name
+                      )}
+                      target="popup"
+                      onClick={() => {
+                        window.open(
+                          getTweetURL(
+                            clients[mintTokens[activeMintToken].chainId]
+                              ?.publicIdentifier,
+                            mintTokens[activeMintToken].name
+                          ),
+                          "popup",
+                          "width=600,height=600"
+                        );
+                        return false;
+                      }}
+                    >
+                      Tweet Now!
+                    </a>
+                    <input
+                      type="text"
+                      name="tweet"
+                      onChange={(event) => setTweetUrl(event.target.value)}
+                    />
+                    <div style={{ paddingBottom: "10px" }} />
+                    {mintStatus === MintStatus.ERROR && (
+                      <>
+                        <span style={{ color: "red" }}>
+                          Error minting tokens!
+                        </span>
+                        <div style={{ paddingBottom: "10px" }} />
+                      </>
                     )}
-                    target="popup"
-                    onClick={() => {
-                      window.open(
-                        getTweetURL(
-                          clients[mintTokens[activeMintToken].chainId]
-                            ?.publicIdentifier,
-                          mintTokens[activeMintToken].name
-                        ),
-                        "popup",
-                        "width=600,height=600"
-                      );
-                      return false;
-                    }}
-                  >
-                    Tweet Now!
-                  </a>
-                  <input
-                    type="text"
-                    name="tweet"
-                    onChange={(event) => setTweetUrl(event.target.value)}
-                  />
-                  <div style={{ paddingBottom: "10px" }} />
-                  {mintStatus === MintStatus.ERROR && (
-                    <>
-                      <span style={{ color: "red" }}>
-                        Error minting tokens!
-                      </span>
-                      <div style={{ paddingBottom: "10px" }} />
-                    </>
-                  )}
-                  <button
-                    type="button"
-                    className={"Mint-Button"}
-                    onClick={mint}
-                    disabled={mintStatus === MintStatus.MINTING}
-                  >
-                    Confirm Mint
-                  </button>
-                </>
-              )}
+                    <button
+                      type="button"
+                      className={"Mint-Button"}
+                      onClick={mint}
+                      disabled={mintStatus === MintStatus.MINTING}
+                    >
+                      Confirm Mint
+                    </button>
+                  </>
+                )
+                : (
+                  <>
+                    <div className="Card-Token-Content">
+                      <p className="Token-Balance">
+                        <img src={mintTokens[activeMintToken].tokenIcon} alt="icon" />
+                        {mintTokens[activeMintToken].balance}{" "}
+                        <span className="Token-Name">
+                          {mintTokens[activeMintToken].tokenName}
+                        </span>
+                      </p>
+                      <img
+                        className="Card-Image"
+                        src={mintTokens[activeMintToken].tokenBackground}
+                        alt=""
+                      />
+                    </div>
+                    <button
+                      type="button"
+                      className="Mint-Button"
+                      onClick={() => setShowTweetInput(!showTweetInput)}
+                    >
+                      Mint
+                    </button>
+                  </>
+                )}
             </div>
           </div>
         </div>
       )}
-      <button type="button" className="Swap-Button" onClick={transfer}>
+      <button
+        type="button"
+        className="Swap-Button"
+        onClick={transfer}
+        disabled={!mintTokens || !mintTokens[activeMintToken] || !mintTokens[activeMintToken].balance}
+      >
         TRANSFER
         <span className="Swap-Arrows">
           <i className="fas fa-chevron-right"></i>
@@ -424,39 +469,40 @@ function App() {
         </span>
       </button>
       {sendTokens.length > 0 && (
-        <div className="Token Token-Right">
+        <div
+          className="Token Token-Right"
+          style={{
+            backgroundColor: sendTokens[activeSendToken].balance > 0
+              ? sendTokens[activeSendToken].color
+              : '#F4F5F7',
+          }}
+        >
           <div className="Card">
             <div className="Card-Header">
               <Select
                 className="Token-Select"
                 value={sendOptions[activeSendToken]}
                 onChange={changeSendToken}
-                styles={{
-                  control: (base) => ({
-                    ...base,
-                    border: "none",
-                    boxShadow: "none",
-                  }),
-                  indicatorSeparator: (base) => ({
-                    width: 0,
-                  }),
-                }}
+                styles={selectStyles}
                 options={sendOptions}
+                isSearchable={false}
               />
             </div>
             <div className="Card-Body">
-              <img
-                className="Card-Background"
-                src={sendTokens[activeSendToken].tokenBackground}
-                alt=""
-              />
-              <p className="Token-Balance">
-                <img src={sendTokens[activeSendToken].tokenIcon} alt="icon" />
-                {sendTokens[activeSendToken].balance}{" "}
-                <span className="Token-Name">
-                  {sendTokens[activeSendToken].tokenName}
-                </span>
-              </p>
+              <div className="Card-Token-Content">
+                <p className="Token-Balance">
+                  <img src={sendTokens[activeSendToken].tokenIcon} alt="icon" />
+                  {sendTokens[activeSendToken].balance}{" "}
+                  <span className="Token-Name">
+                    {sendTokens[activeSendToken].tokenName}
+                  </span>
+                </p>
+                <img
+                  className="Card-Image"
+                  src={sendTokens[activeSendToken].tokenBackground}
+                  alt=""
+                />
+              </div>
               <button type="button" className="Send-Button" onClick={send}>
                 Send {sendTokens[activeSendToken].tokenName}
               </button>
