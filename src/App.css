@@ -6,6 +6,30 @@
   height: 100vh;
 }
 
+.Loading {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.Loading-Circle {
+  height: 96px;
+  width: 96px;
+  border-radius: 64px;
+  background-color: #FCD116;
+  overflow: hidden;
+}
+
+.Loading-Circle img {
+  width: 100%;
+  height: 100%;
+}
+
 .More-Buttons {
   position: absolute;
   top: 12px;
@@ -120,8 +144,47 @@
   border-bottom-left-radius: 20px;
 }
 
+.Tweet-Body {
+  padding: 24px 56px;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.Tweet-Instructions {
+  font-size: 14px;
+  margin: 0 0 12px 0;
+}
+
+.Tweet-Identifier {
+  font-size: 12px;
+  color: #788E99;
+  margin: 0 0 12px 0;
+}
+
+.Tweet-Action {
+  color: #7D17EA;
+  font-size: 18px;
+  margin-bottom: 12px;
+}
+
+.Tweet-URL-Input {
+  padding: 8px;
+  margin-bottom: 12px;
+  border: none;
+  background: #F4F5F7;
+  border-bottom: 1px solid #202E66;
+}
+
+.Cancel-Tweet {
+  word-break: break-word;
+  cursor: pointer;
+  margin: 12px 0 0 0;
+  text-align: center;
+}
+
 .Mint-Button {
-  background-color: #202541;
+  background-color: #7D17EA;
   color: white;
   font-size: 16px;
   font-weight: 600;
