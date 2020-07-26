@@ -189,9 +189,9 @@ function App() {
       clientsArr.map((clientInfo) =>
         clientInfo.client.requestCollateral(tokens[clientInfo.chainId])
       );
+      setInitializing(false);
     }
     initClients();
-    setInitializing(false);
   }, []);
 
   useEffect(() => {
