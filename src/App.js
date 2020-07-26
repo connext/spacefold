@@ -205,7 +205,7 @@ function App() {
       {
         ...networks[MINT_CHAIN_ID],
         ...tokens[MINT_CHAIN_ID],
-        balance: balances[MINT_CHAIN_ID] || 0.1,
+        balance: balances[MINT_CHAIN_ID] || 0,
       },
     ];
     const sendTokens = Object.values(networks)
