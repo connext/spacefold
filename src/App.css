@@ -15,6 +15,23 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  background-color: #F4F5F7;
+  z-index: 4;
+}
+
+.Loading-fadeout {
+  -moz-animation-name: fadeOut;
+  -webkit-animation-name: fadeOut;
+  -ms-animation-name: fadeOut;
+  animation-name: fadeOut;
+  -moz-animation-duration: .5s;
+  -webkit-animation-duration: .5s;
+  -ms-animation-duration: .5s;
+  animation-duration: .5s;
+  -moz-animation-fill-mode: forwards;
+  -webkit-animation-fill-mode: forwards;
+  -ms-animation-fill-mode: forwards;
+  animation-fill-mode: forwards;  
 }
 
 .Loading-Circle {
@@ -91,6 +108,14 @@
   padding: 12px 0px;
   font-size: 16px;
   font-weight: 600;
+}
+
+.Dropdown-Indicator {
+  width: 18px;
+}
+
+.Dropdown-Indicator-Open {
+  transform: rotate(180deg);
 }
 
 .Token-Balance {
@@ -192,6 +217,29 @@
   padding: 12px 32px;
 }
 
+.Minting-Button {
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 16px;
+  padding: 12px 32px;
+  background-color: #FCA311;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.Minting-Button img {
+  height: 18px;
+  margin: 0 4px;
+}
+
+.Minting-Button .Ellipsis-Gif {
+  height: 12px;
+  margin-left: 2px;
+  align-self: flex-end;
+}
+
 .Send-Button {
   background-color: #6a6a6a;
   color: #ffffff;
@@ -201,11 +249,20 @@
   padding: 12px 32px;
 }
 
+.Mint-Button:disabled, .Send-Button:disabled {
+  background: #B8C4D5;
+  cursor: not-allowed;
+}
+
 .Swap-Button {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   height: 96px;
   width: 96px;
   border-radius: 64px;
@@ -224,12 +281,8 @@
   background-color: #B8C4D5;
 }
 
-.Swap-Arrows {
-  font-size: 16px;
-}
-
-.Swap-Arrows i {
-  margin-right: 2px;
+.Swap-Button img {
+  height: 30px;
 }
 
 .Footer {
@@ -255,3 +308,8 @@
 button {
   outline: none;
 }
+
+@keyframes fadeOut { 0% { opacity: 1; visibility: visible; }  100% { opacity: 0; visibility: hidden; }} 
+@-moz-keyframes fadeOut { 0% { opacity: 1; visibility: visible; }  100% { opacity: 0; visibility: hidden; }} 
+@-webkit-keyframes fadeOut { 0% { opacity: 1; visibility: visible; }  100% { opacity: 0; visibility: hidden; }} 
+@-ms-keyframes fadeOut { 0% { opacity: 1; visibility: visible; } 100% { opacity: 0; visibility: hidden; }} 

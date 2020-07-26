@@ -6,7 +6,12 @@ import { constants, utils } from "ethers";
 import Select from "react-select";
 import axios from "axios";
 
+import transferDisabledImage from './images/transferDisabled.png';
+import transferGif from './images/transfer.gif';
 import loadingGif from './images/loading.gif';
+import dropdownGif from './images/dropdown.gif';
+import mintingGif from './images/minting.gif';
+import ellipsisGif from './images/ellipsis.gif';
 import ethIcon from "./images/eth.png";
 import moonIcon from "./images/moon.png";
 import ethBackground from "./images/ethBackground.png";
@@ -14,6 +19,7 @@ import kovanBackground from "./images/kovanBackground.png";
 import rinkebyBackground from "./images/rinkebyBackground.png";
 import "./App.css";
 import { getWallet } from "./wallet";
+import { select } from "async";
 
 const { formatEther, parseEther } = utils;
 
@@ -199,7 +205,7 @@ function App() {
       {
         ...networks[MINT_CHAIN_ID],
         ...tokens[MINT_CHAIN_ID],
-        balance: balances[MINT_CHAIN_ID],
+        balance: balances[MINT_CHAIN_ID] || 0.1,
       },
     ];
     const sendTokens = Object.values(networks)
@@ -207,7 +213,7 @@ function App() {
         return {
           ...network,
           ...tokens[network.chainId],
-          balance: balances[network.chainId],
+          balance: balances[network.chainId] || 0,
         };
       })
       .filter((sendToken) => sendToken.chainId !== MINT_CHAIN_ID);
@@ -298,6 +304,7 @@ function App() {
     background: "#DEEBFF",
     border: "none",
     boxShadow: "none",
+    cursor: 'pointer',
   };
   const menuStyles = {
     margin: 0,
@@ -326,16 +333,15 @@ function App() {
       width: 0,
     }),
   };
+  const transferDisabled = mintTokens.length === 0 || !mintTokens[activeMintToken] || Math.abs(mintTokens[activeMintToken].balance) <= 0.001;
 
-  if (initializing) {
-    return <div className="Loading">
-      <div className="Loading-Circle">
-        <img src={loadingGif} />
-      </div>
-    </div>;
-  }
   return (
     <div className="App">
+      <div className={initializing ? "Loading" : "Loading Loading-fadeout"}>
+        <div className="Loading-Circle">
+          <img src={loadingGif} alt="loading" />
+        </div>
+      </div>
       <div className="More-Buttons">
         <button
           type="button"
@@ -373,6 +379,7 @@ function App() {
                 styles={selectStyles}
                 options={mintOptions}
                 isSearchable={false}
+                components={{ DropdownIndicator }}
               />
             </div>
             {showTweetInput
@@ -429,11 +436,21 @@ function App() {
                   )}
                   <button
                     type="button"
-                    className={"Mint-Button"}
+                    className={mintStatus === MintStatus.MINTING ? "Minting-Button" : "Mint-Button"}
                     onClick={mint}
                     disabled={mintStatus === MintStatus.MINTING}
                   >
-                    Confirm Mint
+                    {
+                      mintStatus === MintStatus.MINTING
+                        ? (
+                          <>
+                            <img src={mintingGif} alt="gear" />
+                            Minting
+                            <img className="Ellipsis-Gif" src={ellipsisGif} alt="ellipsis" />
+                          </>
+                        )
+                        : "Confirm Mint"
+                    }
                   </button>
                   <p className="Cancel-Tweet" onClick={() => setShowTweetInput(false)}>Cancel</p>
                 </div>
@@ -470,16 +487,10 @@ function App() {
         type="button"
         className="Swap-Button"
         onClick={transfer}
-        disabled={mintTokens.length === 0 || !mintTokens[activeMintToken] || Math.abs(mintTokens[activeMintToken].balance) <= 0.001}
+        disabled={transferDisabled}
       >
         TRANSFER
-        <span className="Swap-Arrows">
-          <i className="fas fa-chevron-right"></i>
-          <i className="fas fa-chevron-right"></i>
-          <i className="fas fa-chevron-right"></i>
-          <i className="fas fa-chevron-right"></i>
-          <i className="fas fa-chevron-right"></i>
-        </span>
+        <img src={transferDisabled ? transferDisabledImage : transferGif} />
       </button>
       {sendTokens.length > 0 && (
         <div
@@ -499,6 +510,7 @@ function App() {
                 styles={selectStyles}
                 options={sendOptions}
                 isSearchable={false}
+                components={{  DropdownIndicator }}
               />
             </div>
             <div className="Card-Body">
@@ -516,7 +528,12 @@ function App() {
                   alt=""
                 />
               </div>
-              <button type="button" className="Send-Button" onClick={send}>
+              <button
+                type="button"
+                className="Send-Button"
+                onClick={send}
+                disabled={sendTokens[activeSendToken].balance <= 0.001}
+              >
                 Send {sendTokens[activeSendToken].tokenName}
               </button>
             </div>
@@ -527,6 +544,20 @@ function App() {
         Made with <i className="fas fa-heart Heart-Icon"></i> by Connext
       </p>
     </div>
+  );
+}
+
+const DropdownIndicator = ({ selectProps }) => {
+  return (
+    <img
+      className={
+        selectProps && selectProps.menuIsOpen
+          ? "Dropdown-Indicator Dropdown-Indicator-Open"
+          : "Dropdown-Indicator"
+      }
+      src={dropdownGif}
+      alt="dropdownIndicator"
+    />
   );
 }
 
