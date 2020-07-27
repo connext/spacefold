@@ -28,9 +28,24 @@ dotenv.config();
 const nodeUrl = "https://node.spacefold.io/";
 
 const networks = {
-  4: { name: "Rinkeby", chainId: 4, color: "#EFC45C", ethProviderUrl: `https://rinkeby.infura.io/v3/${process.env.REACT_APP_INFURA_ID}` },
-  5: { name: "Goerli", chainId: 5, color: "#0091F2", ethProviderUrl: `https://goerli.infura.io/v3/${process.env.REACT_APP_INFURA_ID}` },
-  42: { name: "Kovan", chainId: 42, color: "#01C853", ethProviderUrl: `https://kovan.infura.io/v3/${process.env.REACT_APP_INFURA_ID}`  },
+  4: {
+    name: "Rinkeby",
+    chainId: 4,
+    color: "#EFC45C",
+    ethProviderUrl: `https://rinkeby.infura.io/v3/${process.env.REACT_APP_INFURA_ID}`,
+  },
+  5: {
+    name: "Goerli",
+    chainId: 5,
+    color: "#0091F2",
+    ethProviderUrl: `https://goerli.infura.io/v3/${process.env.REACT_APP_INFURA_ID}`,
+  },
+  42: {
+    name: "Kovan",
+    chainId: 42,
+    color: "#01C853",
+    ethProviderUrl: `https://kovan.infura.io/v3/${process.env.REACT_APP_INFURA_ID}`,
+  },
   // 1337: { name: "Ganache", chainId: 1337 },
   // 1338: { name: "Buidler", chainId: 1338 },
 };
@@ -196,7 +211,9 @@ function App() {
       setInitializing(false);
     }
     initClients();
-  }, [balances, clients]);
+    // no exhaustive deps, we only want this to run on start
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     const mintTokens = Object.values(networks).map((network) => {
