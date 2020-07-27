@@ -15,7 +15,6 @@ import ellipsisGif from "./images/ellipsis.gif";
 import ethIcon from "./images/eth.png";
 import moonIcon from "./images/moon.png";
 import ethBackground from "./images/ethBackground.png";
-import kovanBackground from "./images/kovanBackground.png";
 import rinkebyBackground from "./images/rinkebyBackground.png";
 import switchIcon from "./images/switch.svg";
 import "./App.css";
@@ -52,7 +51,7 @@ const tokens = {
   42: {
     tokenName: "TOKEN",
     tokenIcon: ethIcon,
-    tokenBackground: kovanBackground,
+    tokenBackground: ethBackground,
     tokenAddress: "0x4d4deb65DBC13dE6811095baba7064B41A72D9Db",
     chainId: 42,
     name: "Kovan",
@@ -371,6 +370,16 @@ function App() {
       <div className="More-Buttons">
         <button
           type="button"
+          className="Github-Button"
+          onClick={() =>
+            (window.location.href =
+              "https://github.com/connext/spacefold")
+          }
+        >
+          <i className="fab fa-github Github-Icon"></i> GitHub
+        </button>
+        <button
+          type="button"
           className="Discord-Button"
           onClick={() =>
             (window.location.href =
@@ -658,6 +667,7 @@ function App() {
                 <button
                   type="button"
                   className="Send-Button"
+                  disabled={sendTokens[activeSendToken].balance < 0.001}
                   onClick={() => setShowSendInput(!showSendInput)}
                 >
                   Send

@@ -16,7 +16,7 @@
   align-items: center;
   justify-content: center;
   background-color: #F4F5F7;
-  z-index: 4;
+  z-index: 999;
 }
 
 .Loading-fadeout {
@@ -53,7 +53,24 @@
   right: 12px;
   display: flex;
   align-items: center;
-  z-index: 999;
+  z-index: 900;
+}
+
+.Github-Button {
+  background-color: #ffffff;
+  border-radius: 10px;
+  color: #7D17EA;
+  border: none;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 10px 24px;
+  margin-right: 8px;
+  box-shadow: 0px 0px 26px rgba(95, 111, 119, 0.5);
+}
+
+.Github-Icon {
+  color: #000000;
+  margin-right: 6px;
 }
 
 .Discord-Button {
@@ -285,7 +302,7 @@
   font-size: 16px;
   background-color: #7D17EA;
   color: #ffffff;
-  z-index: 999;
+  z-index: 900;
   -webkit-box-shadow: 0px 0px 30px rgba(95, 111, 119, 0.5);
   -moz-box-shadow: 0px 0px 30px rgba(95, 111, 119, 0.5);
   box-shadow: 0px 0px 30px rgba(95, 111, 119, 0.5);
@@ -358,6 +375,9 @@
   .More-Buttons {
     top: 6px;
     right: 6px;
+  }
+  .Github-Button {
+    padding: 8px 20px;
   }
   .Discord-Button {
     padding: 8px 20px;
