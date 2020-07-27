@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import * as connext from "@connext/client";
-import { ColorfulLogger } from "@connext/utils";
+import { ColorfulLogger, stringify } from "@connext/utils";
 import { getLocalStore } from "@connext/store";
 import { constants, utils } from "ethers";
 import Select from "react-select";
@@ -183,7 +183,11 @@ function App() {
         });
         t.client.on("CONDITIONAL_TRANSFER_UNLOCKED_EVENT", async (msg) => {
           const updated = await refreshBalances();
-          console.log("Transfer unlocked unlocked, updated balances", updated);
+          console.log("Transfer unlocked, updated balances", updated);
+        });
+        t.client.on("WITHDRAWAL_CONFIRMED_EVENT", async (msg) => {
+          const updated = await refreshBalances();
+          console.log("Withdrawal completed, updated balances", updated);
         });
         _clients[t.chainId] = t.client;
       });
@@ -250,9 +254,9 @@ function App() {
         receiverChainId: toToken.chainId,
       },
     };
-    console.log(`Transferring with params ${JSON.stringify(params)}`);
+    console.log(`Transferring with params ${stringify(params, true, 0)}`);
     const res = await fromClient.transfer(params);
-    console.log(`Transfer complete: ${JSON.stringify(res)}`);
+    console.log(`Transfer complete: ${stringify(res, true, 0)}`);
   };
 
   const mint = async () => {
@@ -273,7 +277,11 @@ function App() {
     };
     try {
       console.log(
-        `Making faucet request to ${faucetUrl}: ${JSON.stringify(faucetData)}`
+        `Making faucet request to ${faucetUrl}: ${stringify(
+          faucetData,
+          true,
+          0
+        )}`
       );
       const res = await axios.post(faucetUrl, faucetData);
       console.log(`Faucet response: ${JSON.stringify(res)}`);
