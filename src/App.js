@@ -236,7 +236,7 @@ function App() {
     );
     setTransferStatus(Status.READY);
     setActiveMintToken(newTokenIndex);
-    setUpstream(mintTokens[activeMintToken].balance > 0)
+    setUpstream(mintTokens[newTokenIndex].balance > 0)
   };
   const changeSendToken = (option) => {
     const newTokenIndex = sendTokens.findIndex(
