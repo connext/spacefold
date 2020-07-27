@@ -6,12 +6,12 @@ import { constants, utils } from "ethers";
 import Select from "react-select";
 import axios from "axios";
 
-import transferDisabledImage from './images/transferDisabled.png';
-import transferGif from './images/transfer.gif';
-import loadingGif from './images/loading.gif';
-import dropdownGif from './images/dropdown.gif';
-import mintingGif from './images/minting.gif';
-import ellipsisGif from './images/ellipsis.gif';
+import transferDisabledImage from "./images/transferDisabled.png";
+import transferGif from "./images/transfer.gif";
+import loadingGif from "./images/loading.gif";
+import dropdownGif from "./images/dropdown.gif";
+import mintingGif from "./images/minting.gif";
+import ellipsisGif from "./images/ellipsis.gif";
 import ethIcon from "./images/eth.png";
 import moonIcon from "./images/moon.png";
 import ethBackground from "./images/ethBackground.png";
@@ -19,7 +19,6 @@ import kovanBackground from "./images/kovanBackground.png";
 import rinkebyBackground from "./images/rinkebyBackground.png";
 import "./App.css";
 import { getWallet } from "./wallet";
-import { select } from "async";
 
 const { formatEther, parseEther } = utils;
 
@@ -30,9 +29,9 @@ const nodeUrl = "https://node.spacefold.io/";
 
 const networks = {
   // 1: { name: "Mainnet", chainId: 1 },
-  4: { name: "Rinkeby", chainId: 4, color: '#EFC45C' },
-  5: { name: "Goerli", chainId: 5, color: '#0091F2' },
-  42: { name: "Kovan", chainId: 42, color: '#01C853' },
+  4: { name: "Rinkeby", chainId: 4, color: "#EFC45C" },
+  5: { name: "Goerli", chainId: 5, color: "#0091F2" },
+  42: { name: "Kovan", chainId: 42, color: "#01C853" },
   // 1337: { name: "Ganache", chainId: 1337 },
   // 1338: { name: "Buidler", chainId: 1338 },
 };
@@ -304,7 +303,7 @@ function App() {
     background: "#DEEBFF",
     border: "none",
     boxShadow: "none",
-    cursor: 'pointer',
+    cursor: "pointer",
   };
   const menuStyles = {
     margin: 0,
@@ -324,17 +323,20 @@ function App() {
     }),
     option: (base) => ({
       ...base,
-      backgroundColor: '#FFFFFF',
-      color: '#505D68',
-      padding: '19px 56px',
-      textAlign: 'left',
-      cursor: 'pointer',
+      backgroundColor: "#FFFFFF",
+      color: "#505D68",
+      padding: "19px 56px",
+      textAlign: "left",
+      cursor: "pointer",
     }),
     indicatorSeparator: (base) => ({
       width: 0,
     }),
   };
-  const transferDisabled = mintTokens.length === 0 || !mintTokens[activeMintToken] || Math.abs(mintTokens[activeMintToken].balance) <= 0.001;
+  const transferDisabled =
+    mintTokens.length === 0 ||
+    !mintTokens[activeMintToken] ||
+    Math.abs(mintTokens[activeMintToken].balance) <= 0.001;
 
   return (
     <div className="App">
@@ -366,9 +368,10 @@ function App() {
         <div
           className="Token Token-Left"
           style={{
-            backgroundColor: mintTokens[activeMintToken].balance > 0
-              ? mintTokens[activeMintToken].color
-              : '#F4F5F7',
+            backgroundColor:
+              mintTokens[activeMintToken].balance > 0
+                ? mintTokens[activeMintToken].color
+                : "#F4F5F7",
           }}
         >
           <div className="Card">
@@ -383,104 +386,114 @@ function App() {
                 components={{ DropdownIndicator }}
               />
             </div>
-            {showTweetInput
-              ? (
-                <div className="Tweet-Body">
-                  <p className="Tweet-Instructions">
-                    Please paste a public tweet containing your public
-                    identifier to mint free tokens!{" "}
-                  </p>
-                  <p className="Tweet-Identifier">
-                    {
-                      clients[mintTokens[activeMintToken].chainId]
-                        ?.publicIdentifier
-                    }
-                  </p>
-                  <a
-                    className="Tweet-Action"
-                    href={getTweetURL(
-                      clients[mintTokens[activeMintToken].chainId]
-                        ?.publicIdentifier,
-                      mintTokens[activeMintToken].name
-                    )}
-                    target="popup"
-                    onClick={() => {
-                      window.open(
-                        getTweetURL(
-                          clients[mintTokens[activeMintToken].chainId]
-                            ?.publicIdentifier,
-                          mintTokens[activeMintToken].name
-                        ),
-                        "popup",
-                        "width=600,height=600"
-                      );
-                      return false;
-                    }}
-                  >
-                    Tweet Now!
-                  </a>
-                  <input
-                    className="Tweet-URL-Input"
-                    placeholder="Enter Tweet URL"
-                    type="text"
-                    name="tweet"
-                    onChange={(event) => setTweetUrl(event.target.value)}
-                  />
-                  <div style={{ paddingBottom: "10px" }} />
-                  {mintStatus === MintStatus.ERROR && (
-                    <>
-                      <span style={{ color: "red" }}>
-                        Error minting tokens!
-                      </span>
-                      <div style={{ paddingBottom: "10px" }} />
-                    </>
+            {showTweetInput ? (
+              <div className="Tweet-Body">
+                <p className="Tweet-Instructions">
+                  Please paste a public tweet containing your public identifier
+                  to mint free tokens!{" "}
+                </p>
+                <p className="Tweet-Identifier">
+                  {
+                    clients[mintTokens[activeMintToken].chainId]
+                      ?.publicIdentifier
+                  }
+                </p>
+                <a
+                  className="Tweet-Action"
+                  href={getTweetURL(
+                    clients[mintTokens[activeMintToken].chainId]
+                      ?.publicIdentifier,
+                    mintTokens[activeMintToken].name
                   )}
-                  <button
-                    type="button"
-                    className={mintStatus === MintStatus.MINTING ? "Minting-Button" : "Mint-Button"}
-                    onClick={mint}
-                    disabled={mintStatus === MintStatus.MINTING}
-                  >
-                    {
-                      mintStatus === MintStatus.MINTING
-                        ? (
-                          <>
-                            <img src={mintingGif} alt="gear" />
-                            Minting
-                            <img className="Ellipsis-Gif" src={ellipsisGif} alt="ellipsis" />
-                          </>
-                        )
-                        : "Confirm Mint"
-                    }
-                  </button>
-                  <p className="Cancel-Tweet" onClick={() => setShowTweetInput(false)}>Cancel</p>
-                </div>
-              )
-              : (
-                <div className="Card-Body">
-                  <div className="Card-Token-Content">
-                    <p className="Token-Balance">
-                      <img src={mintTokens[activeMintToken].tokenIcon} alt="icon" />
-                      {mintTokens[activeMintToken].balance}{" "}
-                      <span className="Token-Name">
-                        {mintTokens[activeMintToken].tokenName}
-                      </span>
-                    </p>
+                  target="popup"
+                  onClick={() => {
+                    window.open(
+                      getTweetURL(
+                        clients[mintTokens[activeMintToken].chainId]
+                          ?.publicIdentifier,
+                        mintTokens[activeMintToken].name
+                      ),
+                      "popup",
+                      "width=600,height=600"
+                    );
+                    return false;
+                  }}
+                >
+                  Tweet Now!
+                </a>
+                <input
+                  className="Tweet-URL-Input"
+                  placeholder="Enter Tweet URL"
+                  type="text"
+                  name="tweet"
+                  onChange={(event) => setTweetUrl(event.target.value)}
+                />
+                <div style={{ paddingBottom: "10px" }} />
+                {mintStatus === MintStatus.ERROR && (
+                  <>
+                    <span style={{ color: "red" }}>Error minting tokens!</span>
+                    <div style={{ paddingBottom: "10px" }} />
+                  </>
+                )}
+                <button
+                  type="button"
+                  className={
+                    mintStatus === MintStatus.MINTING
+                      ? "Minting-Button"
+                      : "Mint-Button"
+                  }
+                  onClick={mint}
+                  disabled={mintStatus === MintStatus.MINTING}
+                >
+                  {mintStatus === MintStatus.MINTING ? (
+                    <>
+                      <img src={mintingGif} alt="gear" />
+                      Minting
+                      <img
+                        className="Ellipsis-Gif"
+                        src={ellipsisGif}
+                        alt="ellipsis"
+                      />
+                    </>
+                  ) : (
+                    "Confirm Mint"
+                  )}
+                </button>
+                <p
+                  className="Cancel-Tweet"
+                  onClick={() => setShowTweetInput(false)}
+                >
+                  Cancel
+                </p>
+              </div>
+            ) : (
+              <div className="Card-Body">
+                <div className="Card-Token-Content">
+                  <p className="Token-Balance">
                     <img
-                      className="Card-Image"
-                      src={mintTokens[activeMintToken].tokenBackground}
-                      alt=""
+                      src={mintTokens[activeMintToken].tokenIcon}
+                      alt="icon"
                     />
-                  </div>
-                  <button
-                    type="button"
-                    className="Mint-Button"
-                    onClick={() => setShowTweetInput(!showTweetInput)}
-                  >
-                    Mint
-                  </button>
+                    {mintTokens[activeMintToken].balance}{" "}
+                    <span className="Token-Name">
+                      {mintTokens[activeMintToken].tokenName}
+                    </span>
+                  </p>
+                  <img
+                    className="Card-Image"
+                    src={mintTokens[activeMintToken].tokenBackground}
+                    alt=""
+                  />
                 </div>
-              )}
+                <button
+                  type="button"
+                  className="Mint-Button"
+                  onClick={() => setShowTweetInput(!showTweetInput)}
+                >
+                  Mint
+                </button>
+              </div>
+            )}
           </div>
         </div>
       )}
@@ -491,15 +504,19 @@ function App() {
         disabled={transferDisabled}
       >
         TRANSFER
-        <img src={transferDisabled ? transferDisabledImage : transferGif} alt="transfer" />
+        <img
+          src={transferDisabled ? transferDisabledImage : transferGif}
+          alt="transfer"
+        />
       </button>
       {sendTokens.length > 0 && (
         <div
           className="Token Token-Right"
           style={{
-            backgroundColor: sendTokens[activeSendToken].balance > 0
-              ? sendTokens[activeSendToken].color
-              : '#F4F5F7',
+            backgroundColor:
+              sendTokens[activeSendToken].balance > 0
+                ? sendTokens[activeSendToken].color
+                : "#F4F5F7",
           }}
         >
           <div className="Card">
@@ -511,7 +528,7 @@ function App() {
                 styles={selectStyles}
                 options={sendOptions}
                 isSearchable={false}
-                components={{  DropdownIndicator }}
+                components={{ DropdownIndicator }}
               />
             </div>
             <div className="Card-Body">
@@ -560,6 +577,6 @@ const DropdownIndicator = ({ selectProps }) => {
       alt="dropdownIndicator"
     />
   );
-}
+};
 
 export default App;
