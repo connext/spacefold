@@ -495,6 +495,10 @@ function App() {
                   type="button"
                   className="Mint-Button"
                   onClick={() => setShowTweetInput(!showTweetInput)}
+                  disabled={
+                    mintStatus === Status.IN_PROGRESS ||
+                    mintTokens[activeMintToken].balance > 0
+                  }
                 >
                   Mint
                 </button>
