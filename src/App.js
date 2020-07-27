@@ -515,7 +515,8 @@ function App() {
                   onClick={() => setShowTweetInput(!showTweetInput)}
                   disabled={
                     mintStatus === Status.IN_PROGRESS ||
-                    mintTokens[activeMintToken].balance > 0
+                    mintTokens[activeMintToken].balance > 0 ||
+                    sendTokens[activeSendToken].balance > 0
                   }
                 >
                   Mint
