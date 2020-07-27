@@ -387,7 +387,9 @@ function App() {
                 value={mintOptions[activeMintToken]}
                 onChange={changeMintToken}
                 styles={selectStyles}
-                options={mintOptions}
+                options={mintOptions.filter(
+                  (opt) => opt.value !== mintTokens[activeMintToken].chainId
+                )}
                 isSearchable={false}
                 components={{ DropdownIndicator }}
               />
@@ -536,7 +538,9 @@ function App() {
                 value={sendOptions[activeSendToken]}
                 onChange={changeSendToken}
                 styles={selectStyles}
-                options={sendOptions}
+                options={sendOptions.filter(
+                  (opt) => opt.value !== sendTokens[activeSendToken].chainId
+                )}
                 isSearchable={false}
                 components={{ DropdownIndicator }}
               />
