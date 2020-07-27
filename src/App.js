@@ -30,7 +30,7 @@ const nodeUrl = "https://node.spacefold.io/";
 
 const tokens = {
   4: {
-    tokenName: "Moon",
+    tokenName: "MOON",
     tokenIcon: moonIcon,
     tokenBackground: rinkebyBackground,
     tokenAddress: "0x50C94BeCAd95bEe21aF226dc799365Ee6B134459",
@@ -40,7 +40,7 @@ const tokens = {
     ethProviderUrl: `https://rinkeby.infura.io/v3/${process.env.REACT_APP_INFURA_ID}`,
   },
   5: {
-    tokenName: "Eth",
+    tokenName: "ETH",
     tokenIcon: ethIcon,
     tokenBackground: ethBackground,
     tokenAddress: constants.AddressZero,
@@ -50,7 +50,7 @@ const tokens = {
     ethProviderUrl: `https://goerli.infura.io/v3/${process.env.REACT_APP_INFURA_ID}`,
   },
   42: {
-    tokenName: "Token",
+    tokenName: "TOKEN",
     tokenIcon: ethIcon,
     tokenBackground: kovanBackground,
     tokenAddress: "0x4d4deb65DBC13dE6811095baba7064B41A72D9Db",
@@ -61,10 +61,10 @@ const tokens = {
   },
 };
 
-const getTweetURL = (publicIdentifier, chainName) =>
+const getTweetURL = (publicIdentifier, chainName, tokenName) =>
   "https://twitter.com/intent/tweet?text=" +
   encodeURIComponent(
-    `Minting SPACE tokens for channel ${publicIdentifier} https://spacefold.io on ${chainName}! By @ConnextNetwork`
+    `Minting ${tokenName} tokens for channel ${publicIdentifier} https://spacefold.io on ${chainName}! By @ConnextNetwork`
   );
 
 const Status = {
@@ -417,7 +417,8 @@ function App() {
                   href={getTweetURL(
                     clients[mintTokens[activeMintToken].chainId]
                       ?.publicIdentifier,
-                    mintTokens[activeMintToken].name
+                    mintTokens[activeMintToken].name,
+                    mintTokens[activeMintToken].tokenName
                   )}
                   target="popup"
                   onClick={() => {
@@ -425,7 +426,8 @@ function App() {
                       getTweetURL(
                         clients[mintTokens[activeMintToken].chainId]
                           ?.publicIdentifier,
-                        mintTokens[activeMintToken].name
+                        mintTokens[activeMintToken].name,
+                        mintTokens[activeMintToken].tokenName
                       ),
                       "popup",
                       "width=600,height=600"
