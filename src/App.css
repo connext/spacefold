@@ -406,6 +406,10 @@
     height: 96px;
     font-size: 14px;
   }
+  .Transferring-Circle {
+    width: 96px;
+    height: 96px;
+  }
   .Switch-Button {
     top: 50%;
     left: 69vw;
