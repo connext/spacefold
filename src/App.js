@@ -77,9 +77,9 @@ const getTweetURL = (publicIdentifier, chainName) =>
     `Minting SPACE tokens for channel ${publicIdentifier} https://spacefold.io on ${chainName}! By @ConnextNetwork`
   );
 
-const MintStatus = {
+const Status = {
   READY: 0,
-  MINTING: 1,
+  IN_PROGRESS: 1,
   ERROR: 2,
 };
 
@@ -92,7 +92,10 @@ function App() {
   const [activeSendToken, setActiveSendToken] = useState(0);
   const [tweetUrl, setTweetUrl] = useState("");
   const [showTweetInput, setShowTweetInput] = useState(false);
-  const [mintStatus, setMintStatus] = useState(MintStatus.READY);
+  const [mintStatus, setMintStatus] = useState(Status.READY);
+  const [sendAddress, setSendAddress] = useState("");
+  const [showSendInput, setShowSendInput] = useState(false);
+  const [sendStatus, setSendStatus] = useState(Status.READY);
   const [initializing, setInitializing] = useState(true);
 
   const mintOptions = mintTokens.map((t) => ({
@@ -262,7 +265,7 @@ function App() {
       console.error(`Failed to find client for ${mintToken.chainId}`, clients);
       return;
     }
-    setMintStatus(MintStatus.MINTING);
+    setMintStatus(Status.IN_PROGRESS);
     const faucetUrl = `${process.env.REACT_APP_FAUCET_URL}/faucet`;
     const faucetData = {
       assetId,
@@ -275,7 +278,7 @@ function App() {
       );
       const res = await axios.post(faucetUrl, faucetData);
       console.log(`Faucet response: ${JSON.stringify(res)}`);
-      setMintStatus(MintStatus.READY);
+      setMintStatus(Status.READY);
       setShowTweetInput(false);
     } catch (e) {
       console.error(
@@ -283,19 +286,29 @@ function App() {
           e.response ? JSON.stringify(e.response.data || {}) : e.message
         }`
       );
-      setMintStatus(MintStatus.ERROR);
+      setMintStatus(Status.ERROR);
     }
   };
 
-  const send = async (address) => {
+  const send = async () => {
     const sendToken = sendTokens[activeSendToken];
     const sendClient = clients[sendToken.chainId];
 
-    await sendClient.withdraw({
-      amount: sendToken.balance,
-      assetId: sendToken.tokenAddress,
-      recipient: address,
-    });
+    try {
+      const withdrawParams = {
+        amount: parseEther(sendToken.balance),
+        assetId: sendToken.tokenAddress,
+        recipient: sendAddress,
+      };
+      console.log(`Sending tokens: ${JSON.stringify(withdrawParams)}`);
+      const res = await sendClient.withdraw(withdrawParams);
+      console.log(`Withdraw response: ${JSON.stringify(res)}`);
+      setSendStatus(Status.READY);
+      setShowSendInput(false);
+    } catch (e) {
+      console.error(`Error sending tokens: ${e.stack}`);
+      setSendStatus(Status.ERROR);
+    }
   };
 
   const controlStyles = {
@@ -429,7 +442,7 @@ function App() {
                   onChange={(event) => setTweetUrl(event.target.value)}
                 />
                 <div style={{ paddingBottom: "10px" }} />
-                {mintStatus === MintStatus.ERROR && (
+                {mintStatus === Status.ERROR && (
                   <>
                     <span style={{ color: "red" }}>Error minting tokens!</span>
                     <div style={{ paddingBottom: "10px" }} />
@@ -438,14 +451,14 @@ function App() {
                 <button
                   type="button"
                   className={
-                    mintStatus === MintStatus.MINTING
+                    mintStatus === Status.IN_PROGRESS
                       ? "Minting-Button"
                       : "Mint-Button"
                   }
                   onClick={mint}
-                  disabled={mintStatus === MintStatus.MINTING}
+                  disabled={mintStatus === Status.IN_PROGRESS}
                 >
-                  {mintStatus === MintStatus.MINTING ? (
+                  {mintStatus === Status.IN_PROGRESS ? (
                     <>
                       <img src={mintingGif} alt="gear" />
                       Minting
@@ -546,14 +559,69 @@ function App() {
                   alt=""
                 />
               </div>
-              <button
-                type="button"
-                className="Send-Button"
-                onClick={send}
-                disabled={sendTokens[activeSendToken].balance <= 0.001}
-              >
-                Send {sendTokens[activeSendToken].tokenName}
-              </button>
+              {showSendInput ? (
+                <>
+                  <p className="Tweet-Instructions">
+                    Enter address to send funds to (double check which chain you
+                    are sending from!){" "}
+                  </p>
+                  <input
+                    className="Tweet-URL-Input"
+                    placeholder="Enter Address"
+                    type="text"
+                    name="send-address"
+                    onChange={(event) => setSendAddress(event.target.value)}
+                  />
+                  <div style={{ paddingBottom: "10px" }} />
+                  {sendStatus === Status.ERROR && (
+                    <>
+                      <span style={{ color: "red" }}>Error sending :(</span>
+                      <div style={{ paddingBottom: "10px" }} />
+                    </>
+                  )}
+                  <button
+                    type="button"
+                    className={
+                      mintStatus === Status.IN_PROGRESS
+                        ? "Sending-Button"
+                        : "Send-Button"
+                    }
+                    onClick={send}
+                    disabled={
+                      sendStatus === Status.IN_PROGRESS ||
+                      sendTokens[activeSendToken].balance < 0.001
+                    }
+                  >
+                    {mintStatus === Status.IN_PROGRESS ? (
+                      <>
+                        <img src={mintingGif} alt="gear" />
+                        Sending
+                        <img
+                          className="Ellipsis-Gif"
+                          src={ellipsisGif}
+                          alt="ellipsis"
+                        />
+                      </>
+                    ) : (
+                      "Confirm Send"
+                    )}
+                  </button>
+                  <p
+                    className="Cancel-Tweet"
+                    onClick={() => setShowSendInput(false)}
+                  >
+                    Cancel
+                  </p>
+                </>
+              ) : (
+                <button
+                  type="button"
+                  className="Send-Button"
+                  onClick={() => setShowSendInput(!showSendInput)}
+                >
+                  Send
+                </button>
+              )}
             </div>
           </div>
         </div>
