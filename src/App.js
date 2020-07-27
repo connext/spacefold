@@ -94,6 +94,7 @@ function App() {
   const [sendAddress, setSendAddress] = useState("");
   const [showSendInput, setShowSendInput] = useState(false);
   const [sendStatus, setSendStatus] = useState(Status.READY);
+  const [transferStatus, setTransferStatus] = useState(Status.READY);
   const [initializing, setInitializing] = useState(true);
 
   const mintOptions = mintTokens.map((t) => ({
@@ -239,6 +240,7 @@ function App() {
   }
 
   const transfer = async () => {
+    setTransferStatus(Status.IN_PROGRESS);
     const fromToken = upstream ? mintTokens[activeMintToken] : sendTokens[activeSendToken];
     const fromClient = clients[fromToken.chainId];
 
@@ -257,6 +259,7 @@ function App() {
     console.log(`Transferring with params ${stringify(params, true, 0)}`);
     const res = await fromClient.transfer(params);
     console.log(`Transfer complete: ${stringify(res, true, 0)}`);
+    setTransferStatus(Status.READY);
   };
 
   const mint = async () => {
@@ -526,18 +529,28 @@ function App() {
           </div>
         </div>
       )}
-      <button
-        type="button"
-        className={`Swap-Button${upstream ? "" : " Flip-Image"}`}
-        onClick={transfer}
-        disabled={transferDisabled}
-      >
-        FOLD
-        <img
-          src={transferDisabled ? transferDisabledImage : transferGif}
-          alt="fold"
-        />
-      </button>
+      {
+        transferStatus === Status.IN_PROGRESS
+          ? (
+            <div className="Transferring-Circle">
+              <img src={loadingGif} alt="transferring" />
+            </div>
+          )
+          : (
+            <button
+              type="button"
+              className={`Swap-Button${upstream ? "" : " Flip-Image"}`}
+              onClick={transfer}
+              disabled={transferDisabled}
+            >
+              FOLD
+              <img
+                src={transferDisabled ? transferDisabledImage : transferGif}
+                alt="fold"
+              />
+            </button>
+          )
+        }
       <button
         type="button"
         className="Switch-Button"
