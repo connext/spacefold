@@ -70,6 +70,7 @@ const Status = {
   READY: 0,
   IN_PROGRESS: 1,
   ERROR: 2,
+  SUCCESS: 3,
 };
 
 const getRandom = (max) => Math.floor(Math.random() * max);
@@ -226,12 +227,14 @@ function App() {
       (t) => t.chainId === option.value
     );
     setActiveMintToken(newTokenIndex);
+    setUpstream(mintTokens[activeMintToken].balance > 0)
   };
   const changeSendToken = (option) => {
     const newTokenIndex = sendTokens.findIndex(
       (t) => t.chainId === option.value
     );
     setActiveSendToken(newTokenIndex);
+    setUpstream(mintTokens[activeMintToken].balance > 0)
   };
 
   const switchDirection = () => {
@@ -358,7 +361,10 @@ function App() {
   const transferDisabled =
     mintTokens.length === 0 ||
     !mintTokens[activeMintToken] ||
-    Math.abs(mintTokens[activeMintToken].balance) <= 0.001;
+    sendTokens.length === 0 ||
+    !sendTokens[activeSendToken] ||
+    (mintTokens[activeMintToken].balance <= 0.001 && sendTokens[activeSendToken].balance <= 0.001);
+  const totalBalance = mintTokens.reduce((bal, t) => bal + t.balance, 0) + sendTokens.reduce((bal, t) => bal + t.balance, 0);
 
   return (
     <div className="App">
@@ -527,8 +533,7 @@ function App() {
                   onClick={() => setShowTweetInput(!showTweetInput)}
                   disabled={
                     mintStatus === Status.IN_PROGRESS ||
-                    mintTokens[activeMintToken].balance > 0 ||
-                    sendTokens[activeSendToken].balance > 0
+                    totalBalance > 0
                   }
                 >
                   Mint
@@ -559,17 +564,7 @@ function App() {
               />
             </button>
           )
-        }
-      <button
-        type="button"
-        className="Switch-Button"
-        onClick={switchDirection}
-      >
-        <img
-          src={switchIcon}
-          alt="switch"
-        />
-      </button>
+      }
       {sendTokens.length > 0 && (
         <div
           className="Token Token-Right"

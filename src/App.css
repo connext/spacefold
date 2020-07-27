@@ -333,21 +333,6 @@
   height: 100%;
 }
 
-
-.Switch-Button {
-  background: none;
-  padding: 0;
-  position: absolute;
-  top: 60vh;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-
-.Switch-Button img {
-  width: 20px;
-  height: 20px;
-}
-
 .Flip-Image img {
   transform: scaleX(-1);
 }
@@ -409,10 +394,6 @@
   .Transferring-Circle {
     width: 96px;
     height: 96px;
-  }
-  .Switch-Button {
-    top: 50%;
-    left: 69vw;
   }
   .Footer {
     font-size: 12px;
