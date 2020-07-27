@@ -69,8 +69,6 @@ const tokens = {
   },
 };
 
-const MINT_CHAIN_ID = 4;
-
 const getTweetURL = (publicIdentifier, chainName) =>
   "https://twitter.com/intent/tweet?text=" +
   encodeURIComponent(
@@ -83,13 +81,20 @@ const Status = {
   ERROR: 2,
 };
 
+const getRandom = (max) => Math.floor(Math.random() * max);
+const randomSendTokenIndex = getRandom(Object.keys(networks).length);
+let randomMintTokenIndex = 0;
+while (randomMintTokenIndex === randomSendTokenIndex) {
+  randomMintTokenIndex = getRandom(Object.keys(networks).length);
+}
+
 function App() {
   const [clients, setClients] = useState({});
   const [balances, setBalances] = useState({});
   const [mintTokens, setMintTokens] = useState([]);
   const [sendTokens, setSendTokens] = useState([]);
-  const [activeMintToken, setActiveMintToken] = useState(0);
-  const [activeSendToken, setActiveSendToken] = useState(0);
+  const [activeMintToken, setActiveMintToken] = useState(randomSendTokenIndex);
+  const [activeSendToken, setActiveSendToken] = useState(randomMintTokenIndex);
   const [tweetUrl, setTweetUrl] = useState("");
   const [showTweetInput, setShowTweetInput] = useState(false);
   const [mintStatus, setMintStatus] = useState(Status.READY);
@@ -203,22 +208,20 @@ function App() {
   }, []);
 
   useEffect(() => {
-    const mintTokens = [
-      {
-        ...networks[MINT_CHAIN_ID],
-        ...tokens[MINT_CHAIN_ID],
-        balance: balances[MINT_CHAIN_ID] || 0,
-      },
-    ];
-    const sendTokens = Object.values(networks)
-      .map((network) => {
-        return {
-          ...network,
-          ...tokens[network.chainId],
-          balance: balances[network.chainId] || 0,
-        };
-      })
-      .filter((sendToken) => sendToken.chainId !== MINT_CHAIN_ID);
+    const mintTokens = Object.values(networks).map((network) => {
+      return {
+        ...network,
+        ...tokens[network.chainId],
+        balance: balances[network.chainId] || 0,
+      };
+    });
+    const sendTokens = Object.values(networks).map((network) => {
+      return {
+        ...network,
+        ...tokens[network.chainId],
+        balance: balances[network.chainId] || 0,
+      };
+    });
     setMintTokens(mintTokens);
     setSendTokens(sendTokens);
   }, [balances]);
@@ -271,6 +274,7 @@ function App() {
       assetId,
       recipient: client.publicIdentifier,
       tweet: tweetUrl,
+      chainId: mintToken.chainId,
     };
     try {
       console.log(
