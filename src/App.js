@@ -16,7 +16,6 @@ import ethIcon from "./images/eth.png";
 import moonIcon from "./images/moon.png";
 import ethBackground from "./images/ethBackground.png";
 import rinkebyBackground from "./images/rinkebyBackground.png";
-import switchIcon from "./images/switch.svg";
 import "./App.css";
 import { getWallet } from "./wallet";
 
@@ -180,14 +179,19 @@ function App() {
       clientsArr.forEach((t) => {
         t.client.on("CONDITIONAL_TRANSFER_CREATED_EVENT", async (msg) => {
           const updated = await refreshBalances();
+          setMintStatus(Status.SUCCESS);
+          setShowTweetInput(false);
           console.log("Transfer created, updated balances", updated);
         });
         t.client.on("CONDITIONAL_TRANSFER_UNLOCKED_EVENT", async (msg) => {
           const updated = await refreshBalances();
+          setTransferStatus(Status.SUCCESS);
           console.log("Transfer unlocked, updated balances", updated);
         });
         t.client.on("WITHDRAWAL_CONFIRMED_EVENT", async (msg) => {
           const updated = await refreshBalances();
+          setSendStatus(Status.SUCCESS);
+          setShowSendInput(false);
           console.log("Withdrawal completed, updated balances", updated);
         });
         _clients[t.chainId] = t.client;
@@ -206,26 +210,31 @@ function App() {
   }, []);
 
   useEffect(() => {
-    const mintTokens = Object.values(tokens).map((network) => {
+    setMintTokens(prevTokens => Object.values(tokens).map((network) => {
+      const oldToken = prevTokens.find(t => t.chainId === network.chainId);
+      const newBalance = balances[network.chainId] || 0;
       return {
         ...network,
-        balance: balances[network.chainId] || 0,
+        balance: newBalance,
+        changeInBalance: oldToken ? newBalance - oldToken.balance : 0,
       };
-    });
-    const sendTokens = Object.values(tokens).map((network) => {
+    }));
+    setSendTokens(prevTokens => Object.values(tokens).map((network) => {
+      const oldToken = prevTokens.find(t => t.chainId === network.chainId);
+      const newBalance = balances[network.chainId] || 0;
       return {
         ...network,
-        balance: balances[network.chainId] || 0,
+        balance: newBalance,
+        changeInBalance: oldToken ? newBalance - oldToken.balance : 0,
       };
-    });
-    setMintTokens(mintTokens);
-    setSendTokens(sendTokens);
+    }));
   }, [balances]);
 
   const changeMintToken = (option) => {
     const newTokenIndex = mintTokens.findIndex(
       (t) => t.chainId === option.value
     );
+    setTransferStatus(Status.READY);
     setActiveMintToken(newTokenIndex);
     setUpstream(mintTokens[activeMintToken].balance > 0)
   };
@@ -233,13 +242,10 @@ function App() {
     const newTokenIndex = sendTokens.findIndex(
       (t) => t.chainId === option.value
     );
+    setTransferStatus(Status.READY);
     setActiveSendToken(newTokenIndex);
     setUpstream(mintTokens[activeMintToken].balance > 0)
   };
-
-  const switchDirection = () => {
-    setUpstream(!upstream)
-  }
 
   const transfer = async () => {
     setTransferStatus(Status.IN_PROGRESS);
@@ -261,7 +267,6 @@ function App() {
     console.log(`Transferring with params ${stringify(params, true, 0)}`);
     const res = await fromClient.transfer(params);
     console.log(`Transfer complete: ${stringify(res, true, 0)}`);
-    setTransferStatus(Status.READY);
   };
 
   const mint = async () => {
@@ -290,8 +295,6 @@ function App() {
       );
       const res = await axios.post(faucetUrl, faucetData);
       console.log(`Faucet response: ${JSON.stringify(res)}`);
-      setMintStatus(Status.READY);
-      setShowTweetInput(false);
     } catch (e) {
       console.error(
         `Error minting tokens: ${
@@ -315,8 +318,6 @@ function App() {
       console.log(`Sending tokens: ${JSON.stringify(withdrawParams)}`);
       const res = await sendClient.withdraw(withdrawParams);
       console.log(`Withdraw response: ${JSON.stringify(res)}`);
-      setSendStatus(Status.READY);
-      setShowSendInput(false);
     } catch (e) {
       console.error(`Error sending tokens: ${e.stack}`);
       setSendStatus(Status.ERROR);
@@ -363,6 +364,8 @@ function App() {
     !mintTokens[activeMintToken] ||
     sendTokens.length === 0 ||
     !sendTokens[activeSendToken] ||
+    transferStatus === Status.IN_PROGRESS ||
+    transferStatus === Status.SUCCESS ||
     (mintTokens[activeMintToken].balance <= 0.001 && sendTokens[activeSendToken].balance <= 0.001);
   const totalBalance = mintTokens.reduce((bal, t) => bal + t.balance, 0) + sendTokens.reduce((bal, t) => bal + t.balance, 0);
 
@@ -423,6 +426,7 @@ function App() {
                   (opt) => opt.value !== mintTokens[activeMintToken].chainId  && opt.value !== sendTokens[activeSendToken].chainId
                 )}
                 isSearchable={false}
+                isDisabled={transferStatus === Status.IN_PROGRESS || mintStatus === Status.IN_PROGRESS}
                 components={{ DropdownIndicator }}
               />
             </div>
@@ -511,16 +515,30 @@ function App() {
             ) : (
               <div className="Card-Body">
                 <div className="Card-Token-Content">
-                  <p className="Token-Balance">
+                  <div className="Token-Balance">
                     <img
                       src={mintTokens[activeMintToken].tokenIcon}
                       alt="icon"
                     />
-                    {mintTokens[activeMintToken].balance}{" "}
-                    <span className="Token-Name">
-                      {mintTokens[activeMintToken].tokenName}
-                    </span>
-                  </p>
+                    <div className="Toke-Balance-Numbers">
+                      <p className="Token-Balance-Current">
+                        {mintTokens[activeMintToken].balance}{" "}
+                        <span className="Token-Name">
+                          {mintTokens[activeMintToken].tokenName}
+                        </span>
+                      </p>
+                      {
+                        mintStatus === Status.SUCCESS && mintTokens[activeMintToken].changeInBalance > 0 && (
+                          <p className="Token-Balance-Change">
+                            { mintTokens[activeMintToken].changeInBalance > 0 ? '+' : '-'}
+                            { mintTokens[activeMintToken].changeInBalance}
+                            { ' ' }
+                            minted
+                          </p>
+                        )
+                      }
+                    </div>
+                  </div>
                   <img
                     className="Card-Image"
                     src={mintTokens[activeMintToken].tokenBackground}
@@ -529,14 +547,24 @@ function App() {
                 </div>
                 <button
                   type="button"
-                  className="Mint-Button"
+                  className={`Mint-Button ${mintStatus === Status? "Mint-Success" : ""}`}
                   onClick={() => setShowTweetInput(!showTweetInput)}
                   disabled={
                     mintStatus === Status.IN_PROGRESS ||
+                    mintStatus === Status.SUCCESS ||
                     totalBalance > 0
                   }
                 >
-                  Mint
+                  {
+                    mintStatus === Status.SUCCESS
+                      ? (
+                        <>
+                          <i className="fas fa-check" />
+                          Minted!
+                        </>
+                      )
+                      : "Mint"
+                  } 
                 </button>
               </div>
             )}
@@ -553,15 +581,18 @@ function App() {
           : (
             <button
               type="button"
-              className={`Swap-Button${upstream ? "" : " Flip-Image"}`}
+              className={`Swap-Button${upstream ? "" : " Flip-Image"}${transferStatus === Status.SUCCESS ? " Transfer-Success" : ""}`}
               onClick={transfer}
               disabled={transferDisabled}
             >
-              FOLD
-              <img
-                src={transferDisabled ? transferDisabledImage : transferGif}
-                alt="fold"
-              />
+              { transferStatus === Status.SUCCESS ? "SUCCESS!" : "FOLD" }
+              { transferStatus === Status.SUCCESS
+                  ? <i className="fas fa-check" />
+                  : <img
+                    src={transferDisabled ? transferDisabledImage : transferGif}
+                    alt="fold"
+                  />
+              }
             </button>
           )
       }
@@ -586,18 +617,33 @@ function App() {
                   (opt) => opt.value !== sendTokens[activeSendToken].chainId && opt.value !== mintTokens[activeMintToken].chainId
                 )}
                 isSearchable={false}
+                isDisabled={transferStatus === Status.IN_PROGRESS || sendStatus === Status.IN_PROGRESS}
                 components={{ DropdownIndicator }}
               />
             </div>
             <div className="Card-Body">
               <div className="Card-Token-Content">
-                <p className="Token-Balance">
+                <div className="Token-Balance">
                   <img src={sendTokens[activeSendToken].tokenIcon} alt="icon" />
-                  {sendTokens[activeSendToken].balance}{" "}
-                  <span className="Token-Name">
-                    {sendTokens[activeSendToken].tokenName}
-                  </span>
-                </p>
+                  <div className="Toke-Balance-Numbers">
+                    <p className="Token-Balance-Current">
+                      {sendTokens[activeSendToken].balance}{" "}
+                      <span className="Token-Name">
+                        {sendTokens[activeSendToken].tokenName}
+                      </span>
+                    </p>
+                    {
+                      sendStatus === Status.SUCCESS && sendTokens[activeSendToken].changeInBalance > 0 && (
+                        <p className="Token-Balance-Change">
+                          { sendTokens[activeSendToken].changeInBalance > 0 ? '+' : '-'}
+                          { sendTokens[activeSendToken].changeInBalance}
+                          { ' ' }
+                          sent
+                        </p>
+                      )
+                    }
+                  </div>
+                </div>
                 <img
                   className="Card-Image"
                   src={sendTokens[activeSendToken].tokenBackground}
@@ -627,7 +673,7 @@ function App() {
                   <button
                     type="button"
                     className={
-                      mintStatus === Status.IN_PROGRESS
+                      sendStatus === Status.IN_PROGRESS
                         ? "Sending-Button"
                         : "Send-Button"
                     }
@@ -637,7 +683,7 @@ function App() {
                       sendTokens[activeSendToken].balance < 0.001
                     }
                   >
-                    {mintStatus === Status.IN_PROGRESS ? (
+                    {sendStatus === Status.IN_PROGRESS ? (
                       <>
                         <img src={mintingGif} alt="gear" />
                         Sending
@@ -661,11 +707,23 @@ function App() {
               ) : (
                 <button
                   type="button"
-                  className="Send-Button"
-                  disabled={sendTokens[activeSendToken].balance < 0.001}
+                  className={`Send-Button ${sendStatus === Status.SUCCESS ? "Send-Success" : ""}`}
+                  disabled={
+                    sendStatus === Status.SUCCESS ||
+                    sendTokens[activeSendToken].balance < 0.001
+                  }
                   onClick={() => setShowSendInput(!showSendInput)}
                 >
-                  Send
+                  {
+                    sendStatus === Status.SUCCESS
+                      ? (
+                        <>
+                          <i className="fas fa-check" />
+                          Sent!
+                        </>
+                      )
+                      : "Send"
+                  }
                 </button>
               )}
             </div>

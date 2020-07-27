@@ -2,7 +2,6 @@
   position: relative;
   display: flex;
   align-items: stretch;
-  text-align: center;
   height: 100vh;
 }
 
@@ -149,23 +148,37 @@
 .Token-Balance {
   flex: 1;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   font-size: 32px;
   font-weight: 600;
   margin-right: 24px;
   margin-top: 0;
   margin-bottom: 24px;
 }
+.Token-Balance-Numbers {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.Token-Balance-Current {
+  white-space: nowrap;
+  margin: 0;
+}
+.Token-Balance-Change {
+  font-size: 12px;
+  color: #7D17EA;
+  margin: 0;
+}
 
 .Token-Balance img {
   height: 24px;
   width: 24px;
+  margin-top: 6px;
   margin-right: 12px;
 }
 
 .Token-Name {
   margin-top: 12px;
-  margin-left: 8px;
   font-size: 14px;
   font-weight: normal;
   text-transform: uppercase;
@@ -246,7 +259,15 @@
   padding: 12px 32px;
 }
 
-.Minting-Button {
+.Mint-Button:disabled, .Send-Button:disabled {
+  background: #B8C4D5;
+  cursor: not-allowed;
+}
+.Minting-Button:disabled, .Sending-Button:disabled {
+  cursor: not-allowed;
+}
+
+.Minting-Button, .Sending-Button {
   color: white;
   font-size: 16px;
   font-weight: 600;
@@ -258,15 +279,27 @@
   justify-content: center;
 }
 
-.Minting-Button img {
+.Minting-Button img, .Sending-Button img {
   height: 18px;
   margin: 0 4px;
 }
 
-.Minting-Button .Ellipsis-Gif {
+.Ellipsis-Gif {
   height: 12px;
   margin-left: 2px;
   align-self: flex-end;
+}
+
+.Mint-Success {
+  background-color: #FCA311;
+}
+.Mint-Success:disabled {
+  background-color: #FCA311;
+}
+
+.Mint-Success i {
+  margin-right: 8px;
+  font-size: 14px;
 }
 
 .Send-Button {
@@ -278,9 +311,16 @@
   padding: 12px 32px;
 }
 
-.Mint-Button:disabled, .Send-Button:disabled {
-  background: #B8C4D5;
-  cursor: not-allowed;
+.Send-Success {
+  background-color: #FCA311;
+}
+.Send-Success:disabled {
+  background-color: #FCA311;
+}
+
+.Send-Success i {
+  margin-right: 8px;
+  font-size: 14px;
 }
 
 .Swap-Button {
@@ -337,6 +377,14 @@
   transform: scaleX(-1);
 }
 
+.Transfer-Success {
+  background-color: #FCD116;
+  color: #2602AB;
+}
+.Transfer-Success:disabled {
+  background-color: #FCD116;
+}
+
 .Footer {
   position: fixed;
   bottom: 0;
@@ -346,6 +394,7 @@
   padding: 12px 0;
   margin: 0;
   cursor: pointer;
+  text-align: center;
 }
 
 .Heart-Icon {
