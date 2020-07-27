@@ -377,14 +377,14 @@ function App() {
               "https://discord.com/channels/454734546869551114")
           }
         >
-          <i className="fab fa-discord"></i>
+          <i className="fab fa-discord Discord-Icon"></i> Chat
         </button>
         <button
           type="button"
           className="About-Button"
           onClick={() => (window.location.href = "https://connext.network/")}
         >
-          <i className="fas fa-info-circle"></i>
+          About
         </button>
       </div>
       {mintTokens.length > 0 && (
@@ -667,7 +667,7 @@ function App() {
           </div>
         </div>
       )}
-      <p className="Footer">
+      <p className="Footer" onClick={() => window.location.href = "https://connext.network/"}>
         Made with <i className="fas fa-heart Heart-Icon"></i> by Connext
       </p>
     </div>

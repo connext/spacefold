@@ -53,23 +53,35 @@
   right: 12px;
   display: flex;
   align-items: center;
+  z-index: 999;
 }
 
 .Discord-Button {
-  background-color: transparent;
-  color: #7289da;
+  background-color: #ffffff;
+  border-radius: 10px;
+  color: #7D17EA;
   border: none;
-  font-size: 24px;
-  padding: 4px;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 10px 24px;
+  margin-right: 8px;
+  box-shadow: 0px 0px 26px rgba(95, 111, 119, 0.5);
+}
+
+.Discord-Icon {
+  color: #7289da;
   margin-right: 8px;
 }
 
 .About-Button {
-  background-color: transparent;
-  color: #2c2f33;
+  background-color: #ffffff;
+  border-radius: 10px;
+  color: #7D17EA;
   border: none;
-  font-size: 24px;
-  padding: 4px;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 10px 24px;
+  box-shadow: 0px 0px 26px rgba(95, 111, 119, 0.5);
 }
 
 .Token {
@@ -264,14 +276,16 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 96px;
-  width: 96px;
+  height: 112px;
+  width: 112px;
   border-radius: 64px;
   padding: 8px;
   text-align: center;
   line-height: 20px;
+  font-size: 16px;
   background-color: #7D17EA;
   color: #ffffff;
+  z-index: 999;
   -webkit-box-shadow: 0px 0px 30px rgba(95, 111, 119, 0.5);
   -moz-box-shadow: 0px 0px 30px rgba(95, 111, 119, 0.5);
   box-shadow: 0px 0px 30px rgba(95, 111, 119, 0.5);
@@ -291,8 +305,8 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  height: 96px;
-  width: 96px;
+  height: 112px;
+  width: 112px;
   border-radius: 64px;
   background-color: #FCD116;
   overflow: hidden;
@@ -307,16 +321,10 @@
 .Switch-Button {
   background: none;
   padding: 0;
-  position: fixed;
-  top: 56vh;
-  left: 49.3vw;
-}
-
-@media screen and (max-width: 768px) {
-  .Switch-Button {
-    top: 49.3vh;
-    left: 69vw;
-  }
+  position: absolute;
+  top: 60vh;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .Switch-Button img {
@@ -329,13 +337,14 @@
 }
 
 .Footer {
-  position: absolute;
+  position: fixed;
   bottom: 0;
   width: 100%;
   background-color: #DEEBFF;
-  font-size: 12px;
+  font-size: 16px;
   padding: 12px 0;
   margin: 0;
+  cursor: pointer;
 }
 
 .Heart-Icon {
@@ -345,6 +354,46 @@
 @media screen and (max-width: 768px) {
   .App {
     flex-direction: column;
+  }
+  .More-Buttons {
+    top: 6px;
+    right: 6px;
+  }
+  .Discord-Button {
+    padding: 8px 20px;
+  }
+  .About-Button {
+    padding: 8px 20px;
+  }
+  .Card {
+    width: calc(100% - 48px - 102px);
+    min-width: 200px;
+    margin: 24px;
+  }
+  .Card-Image {
+    display: none;
+  }
+  .Card-Body {
+    padding: 24px 28px;
+  }
+  .Card-Token-Content {
+    margin-bottom: 24px;
+  }
+  .Token-Balance {
+    margin: 0;
+  }
+  .Swap-Button {
+    width: 96px;
+    height: 96px;
+    font-size: 14px;
+  }
+  .Switch-Button {
+    top: 49.3vh;
+    left: 69vw;
+  }
+  .Footer {
+    font-size: 12px;
+    padding: 8px;
   }
 }
 
