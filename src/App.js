@@ -28,21 +28,14 @@ dotenv.config();
 const nodeUrl = "https://node.spacefold.io/";
 
 const networks = {
-  // 1: { name: "Mainnet", chainId: 1 },
-  4: { name: "Rinkeby", chainId: 4, color: "#EFC45C" },
-  5: { name: "Goerli", chainId: 5, color: "#0091F2" },
-  42: { name: "Kovan", chainId: 42, color: "#01C853" },
+  4: { name: "Rinkeby", chainId: 4, color: "#EFC45C", ethProviderUrl: `https://rinkeby.infura.io/v3/${process.env.REACT_APP_INFURA_ID}` },
+  5: { name: "Goerli", chainId: 5, color: "#0091F2", ethProviderUrl: `https://goerli.infura.io/v3/${process.env.REACT_APP_INFURA_ID}` },
+  42: { name: "Kovan", chainId: 42, color: "#01C853", ethProviderUrl: `https://kovan.infura.io/v3/${process.env.REACT_APP_INFURA_ID}`  },
   // 1337: { name: "Ganache", chainId: 1337 },
   // 1338: { name: "Buidler", chainId: 1338 },
 };
 
 const tokens = {
-  1: {
-    tokenName: "Eth",
-    tokenIcon: ethIcon,
-    tokenBackground: ethBackground,
-    tokenAddress: constants.AddressZero,
-  },
   4: {
     tokenName: "Moon",
     tokenIcon: moonIcon,
@@ -122,9 +115,7 @@ function App() {
           const pk = getWallet(network.chainId).privateKey;
           const client = await connext.connect({
             nodeUrl,
-            ethProviderUrl: `https://${network.name.toLowerCase()}.infura.io/v3/${
-              process.env.REACT_APP_INFURA_ID
-            }`,
+            ethProviderUrl: network.ethProviderUrl,
             signer: getWallet(network.chainId).privateKey,
             loggerService: new ColorfulLogger(
               network.chainId.toString(),
@@ -205,7 +196,7 @@ function App() {
       setInitializing(false);
     }
     initClients();
-  }, []);
+  }, [balances, clients]);
 
   useEffect(() => {
     const mintTokens = Object.values(networks).map((network) => {
