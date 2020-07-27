@@ -286,6 +286,30 @@
   height: 30px;
 }
 
+.Switch-Button {
+  background: none;
+  padding: 0;
+  position: fixed;
+  top: 56vh;
+  left: 49.3vw;
+}
+
+@media screen and (max-width: 768px) {
+  .Switch-Button {
+    top: 49.3vh;
+    left: 69vw;
+  }
+}
+
+.Switch-Button img {
+  width: 20px;
+  height: 20px;
+}
+
+.Flip-Image img {
+  transform: scaleX(-1);
+}
+
 .Footer {
   position: absolute;
   bottom: 0;

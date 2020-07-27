@@ -17,6 +17,7 @@ import moonIcon from "./images/moon.png";
 import ethBackground from "./images/ethBackground.png";
 import kovanBackground from "./images/kovanBackground.png";
 import rinkebyBackground from "./images/rinkebyBackground.png";
+import switchIcon from "./images/switch.svg";
 import "./App.css";
 import { getWallet } from "./wallet";
 
@@ -80,6 +81,7 @@ while (randomMintTokenIndex === randomSendTokenIndex) {
 }
 
 function App() {
+  const [upstream, setUpstream] = useState(true);
   const [clients, setClients] = useState({});
   const [balances, setBalances] = useState({});
   const [mintTokens, setMintTokens] = useState([]);
@@ -228,11 +230,15 @@ function App() {
     setActiveSendToken(newTokenIndex);
   };
 
+  const switchDirection = () => {
+    setUpstream(!upstream)
+  }
+
   const transfer = async () => {
-    const fromToken = mintTokens[activeMintToken];
+    const fromToken = upstream ? mintTokens[activeMintToken] : sendTokens[activeSendToken];
     const fromClient = clients[fromToken.chainId];
 
-    const toToken = sendTokens[activeSendToken];
+    const toToken = upstream ? sendTokens[activeSendToken] : mintTokens[activeMintToken];
     const toClient = clients[toToken.chainId];
 
     const params = {
@@ -388,7 +394,7 @@ function App() {
                 onChange={changeMintToken}
                 styles={selectStyles}
                 options={mintOptions.filter(
-                  (opt) => opt.value !== mintTokens[activeMintToken].chainId
+                  (opt) => opt.value !== mintTokens[activeMintToken].chainId  && opt.value !== sendTokens[activeSendToken].chainId
                 )}
                 isSearchable={false}
                 components={{ DropdownIndicator }}
@@ -511,14 +517,24 @@ function App() {
       )}
       <button
         type="button"
-        className="Swap-Button"
+        className={`Swap-Button${upstream ? "" : " Flip-Image"}`}
         onClick={transfer}
         disabled={transferDisabled}
       >
-        TRANSFER
+        FOLD
         <img
           src={transferDisabled ? transferDisabledImage : transferGif}
-          alt="transfer"
+          alt="fold"
+        />
+      </button>
+      <button
+        type="button"
+        className="Switch-Button"
+        onClick={switchDirection}
+      >
+        <img
+          src={switchIcon}
+          alt="switch"
         />
       </button>
       {sendTokens.length > 0 && (
@@ -539,7 +555,7 @@ function App() {
                 onChange={changeSendToken}
                 styles={selectStyles}
                 options={sendOptions.filter(
-                  (opt) => opt.value !== sendTokens[activeSendToken].chainId
+                  (opt) => opt.value !== sendTokens[activeSendToken].chainId && opt.value !== mintTokens[activeMintToken].chainId
                 )}
                 isSearchable={false}
                 components={{ DropdownIndicator }}
