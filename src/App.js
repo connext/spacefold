@@ -27,29 +27,6 @@ dotenv.config();
 
 const nodeUrl = "https://node.spacefold.io/";
 
-const networks = {
-  4: {
-    name: "Rinkeby",
-    chainId: 4,
-    color: "#EFC45C",
-    ethProviderUrl: `https://rinkeby.infura.io/v3/${process.env.REACT_APP_INFURA_ID}`,
-  },
-  5: {
-    name: "Goerli",
-    chainId: 5,
-    color: "#0091F2",
-    ethProviderUrl: `https://goerli.infura.io/v3/${process.env.REACT_APP_INFURA_ID}`,
-  },
-  42: {
-    name: "Kovan",
-    chainId: 42,
-    color: "#01C853",
-    ethProviderUrl: `https://kovan.infura.io/v3/${process.env.REACT_APP_INFURA_ID}`,
-  },
-  // 1337: { name: "Ganache", chainId: 1337 },
-  // 1338: { name: "Buidler", chainId: 1338 },
-};
-
 const tokens = {
   4: {
     tokenName: "Moon",
@@ -58,6 +35,8 @@ const tokens = {
     tokenAddress: "0x50C94BeCAd95bEe21aF226dc799365Ee6B134459",
     chainId: 4,
     name: "Rinkeby",
+    color: "#EFC45C",
+    ethProviderUrl: `https://rinkeby.infura.io/v3/${process.env.REACT_APP_INFURA_ID}`,
   },
   5: {
     tokenName: "Eth",
@@ -66,6 +45,8 @@ const tokens = {
     tokenAddress: constants.AddressZero,
     chainId: 5,
     name: "Goerli",
+    color: "#0091F2",
+    ethProviderUrl: `https://goerli.infura.io/v3/${process.env.REACT_APP_INFURA_ID}`,
   },
   42: {
     tokenName: "Token",
@@ -74,6 +55,8 @@ const tokens = {
     tokenAddress: "0x4d4deb65DBC13dE6811095baba7064B41A72D9Db",
     chainId: 42,
     name: "Kovan",
+    color: "#01C853",
+    ethProviderUrl: `https://kovan.infura.io/v3/${process.env.REACT_APP_INFURA_ID}`,
   },
 };
 
@@ -90,10 +73,10 @@ const Status = {
 };
 
 const getRandom = (max) => Math.floor(Math.random() * max);
-const randomSendTokenIndex = getRandom(Object.keys(networks).length);
+const randomSendTokenIndex = getRandom(Object.keys(tokens).length);
 let randomMintTokenIndex = 0;
 while (randomMintTokenIndex === randomSendTokenIndex) {
-  randomMintTokenIndex = getRandom(Object.keys(networks).length);
+  randomMintTokenIndex = getRandom(Object.keys(tokens).length);
 }
 
 function App() {
@@ -124,7 +107,7 @@ function App() {
     async function initClients() {
       const clientsArr = [];
       const _balances = {};
-      for (const network of Object.values(networks)) {
+      for (const network of Object.values(tokens)) {
         try {
           console.log(`Creating client for network ${JSON.stringify(network)}`);
           const pk = getWallet(network.chainId).privateKey;
@@ -216,17 +199,15 @@ function App() {
   }, []);
 
   useEffect(() => {
-    const mintTokens = Object.values(networks).map((network) => {
+    const mintTokens = Object.values(tokens).map((network) => {
       return {
         ...network,
-        ...tokens[network.chainId],
         balance: balances[network.chainId] || 0,
       };
     });
-    const sendTokens = Object.values(networks).map((network) => {
+    const sendTokens = Object.values(tokens).map((network) => {
       return {
         ...network,
-        ...tokens[network.chainId],
         balance: balances[network.chainId] || 0,
       };
     });
