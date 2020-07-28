@@ -186,6 +186,7 @@ function App() {
         t.client.on("CONDITIONAL_TRANSFER_UNLOCKED_EVENT", async (msg) => {
           const updated = await refreshBalances();
           setTransferStatus(Status.SUCCESS);
+          setTimeout(() => setTransferStatus(Status.READY), 1000);
           console.log("Transfer unlocked, updated balances", updated);
         });
         t.client.on("WITHDRAWAL_CONFIRMED_EVENT", async (msg) => {
@@ -216,7 +217,11 @@ function App() {
       return {
         ...network,
         balance: newBalance,
-        changeInBalance: oldToken ? newBalance - oldToken.balance : 0,
+        oldBalance: oldToken
+          ? (Math.abs(newBalance - oldToken.balance) < 0.001
+              ? oldToken.oldBalance
+              : oldToken.balance)
+          : newBalance,
       };
     }));
     setSendTokens(prevTokens => Object.values(tokens).map((network) => {
@@ -225,7 +230,11 @@ function App() {
       return {
         ...network,
         balance: newBalance,
-        changeInBalance: oldToken ? newBalance - oldToken.balance : 0,
+        oldBalance: oldToken
+          ? (Math.abs(newBalance - oldToken.balance) < 0.001
+            ? oldToken.oldBalance
+            : oldToken.balance)
+          : newBalance,
       };
     }));
   }, [balances]);
@@ -234,17 +243,17 @@ function App() {
     const newTokenIndex = mintTokens.findIndex(
       (t) => t.chainId === option.value
     );
-    setTransferStatus(Status.READY);
     setActiveMintToken(newTokenIndex);
     setUpstream(mintTokens[newTokenIndex].balance > 0)
+    setMintStatus(Status.READY);
   };
   const changeSendToken = (option) => {
     const newTokenIndex = sendTokens.findIndex(
       (t) => t.chainId === option.value
     );
-    setTransferStatus(Status.READY);
     setActiveSendToken(newTokenIndex);
     setUpstream(mintTokens[activeMintToken].balance > 0)
+    setSendStatus(Status.READY);
   };
 
   const transfer = async () => {
@@ -528,10 +537,10 @@ function App() {
                         </span>
                       </p>
                       {
-                        mintStatus === Status.SUCCESS && mintTokens[activeMintToken].changeInBalance > 0 && (
+                        mintStatus === Status.SUCCESS && Math.abs(mintTokens[activeMintToken].balance - mintTokens[activeMintToken].oldBalance) > 0 && (
                           <p className="Token-Balance-Change">
-                            { mintTokens[activeMintToken].changeInBalance > 0 ? '+' : '-'}
-                            { mintTokens[activeMintToken].changeInBalance}
+                            { mintTokens[activeMintToken].balance > mintTokens[activeMintToken].oldBalance ? '+' : '-'}
+                            { Math.abs(mintTokens[activeMintToken].balance - mintTokens[activeMintToken].oldBalance) }
                             { ' ' }
                             minted
                           </p>
@@ -547,7 +556,7 @@ function App() {
                 </div>
                 <button
                   type="button"
-                  className={`Mint-Button ${mintStatus === Status? "Mint-Success" : ""}`}
+                  className={`Mint-Button ${mintStatus === Status.SUCCESS? "Mint-Success" : ""}`}
                   onClick={() => setShowTweetInput(!showTweetInput)}
                   disabled={
                     mintStatus === Status.IN_PROGRESS ||
@@ -633,10 +642,10 @@ function App() {
                       </span>
                     </p>
                     {
-                      sendStatus === Status.SUCCESS && sendTokens[activeSendToken].changeInBalance > 0 && (
+                      sendStatus === Status.SUCCESS && Math.abs(sendTokens[activeSendToken].balance - sendTokens[activeSendToken].oldBalance) > 0 && (
                         <p className="Token-Balance-Change">
-                          { sendTokens[activeSendToken].changeInBalance > 0 ? '+' : '-'}
-                          { sendTokens[activeSendToken].changeInBalance}
+                          { sendTokens[activeSendToken].balance > sendTokens[activeSendToken].oldBalance ? '+' : '-'}
+                          { Math.abs(sendTokens[activeSendToken].balance - sendTokens[activeSendToken].oldBalance) }
                           { ' ' }
                           sent
                         </p>
