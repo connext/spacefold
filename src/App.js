@@ -77,6 +77,26 @@ const tokens = {
     color: "#01C853",
     ethProviderUrl: `https://xdai.poanetwork.dev`,
   },
+  80001: {
+    tokenName: "TOKEN",
+    tokenIcon: ethIcon,
+    tokenBackground: ethBackground,
+    tokenAddress: "0xf502A7897a49A9daFa5542203746Bad6C6E86c11",
+    chainId: 80001,
+    name: "Matic",
+    color: "#01C853",
+    ethProviderUrl: `https://rpc-mumbai.matic.today`,
+  },
+  346750: {
+    tokenName: "TOKEN",
+    tokenIcon: ethIcon,
+    tokenBackground: ethBackground,
+    tokenAddress: "0xf502A7897a49A9daFa5542203746Bad6C6E86c11",
+    chainId: 346750,
+    name: "SKALE",
+    color: "#01C853",
+    ethProviderUrl: `https://dev-testnet-v1-1.skalelabs.com`,
+  },
 };
 
 const getTweetURL = (publicIdentifier, chainName, tokenName) =>
