@@ -95,7 +95,7 @@ const tokens = {
   346750: {
     tokenName: "sTOKEN",
     tokenIcon: ethIcon,
-    tokenBackground: skaleBackground.png,
+    tokenBackground: skaleBackground,
     tokenAddress: "0xf502A7897a49A9daFa5542203746Bad6C6E86c11",
     chainId: 346750,
     name: "SKALE",
@@ -203,21 +203,22 @@ function App() {
             client.on("CONDITIONAL_TRANSFER_CREATED_EVENT", async (msg) => {
               const updated = await refreshBalances(client);
               setMintStatus(Status.SUCCESS);
-              setUpstream(mintTokens[activeMintToken].balance > 0);
+              setUpstream(sendTokens[activeSendToken].balance < 0.001);
+              setTimeout(() => setMintStatus(Status.READY), 1000);
               setShowTweetInput(false);
               console.log("Transfer created, updated balances", updated);
             });
             client.on("CONDITIONAL_TRANSFER_UNLOCKED_EVENT", async (msg) => {
               const updated = await refreshBalances(client);
               setTransferStatus(Status.SUCCESS);
-              setUpstream(mintTokens[activeMintToken].balance > 0);
+              setUpstream(sendTokens[activeSendToken].balance < 0.001);
               setTimeout(() => setTransferStatus(Status.READY), 1000);
               console.log("Transfer unlocked, updated balances", updated);
             });
             client.on("WITHDRAWAL_CONFIRMED_EVENT", async (msg) => {
               const updated = await refreshBalances(client);
               setSendStatus(Status.SUCCESS);
-              setUpstream(mintTokens[activeMintToken].balance > 0);
+              setUpstream(sendTokens[activeSendToken].balance < 0.001);
               setShowSendInput(false);
               console.log("Withdrawal completed, updated balances", updated);
             });
@@ -308,7 +309,7 @@ function App() {
       (t) => t.chainId === option.value
     );
     setActiveMintToken(newTokenIndex);
-    setUpstream(mintTokens[newTokenIndex].balance > 0);
+    setUpstream(sendTokens[activeSendToken].balance < 0.001);
     setMintStatus(Status.READY);
   };
   const changeSendToken = (option) => {
@@ -316,7 +317,7 @@ function App() {
       (t) => t.chainId === option.value
     );
     setActiveSendToken(newTokenIndex);
-    setUpstream(mintTokens[activeMintToken].balance > 0);
+    setUpstream(sendTokens[newTokenIndex].balance < 0.001);
     setSendStatus(Status.READY);
   };
 
@@ -510,7 +511,8 @@ function App() {
                 isSearchable={false}
                 isDisabled={
                   transferStatus === Status.IN_PROGRESS ||
-                  mintStatus === Status.IN_PROGRESS
+                  mintStatus === Status.IN_PROGRESS ||
+                  mintTokens[activeMintToken].balance > 0
                 }
                 components={{ DropdownIndicator }}
                 maxMenuHeight={leftSelectHeight}
@@ -627,7 +629,10 @@ function App() {
                               mintTokens[activeMintToken].balance -
                                 mintTokens[activeMintToken].oldBalance
                             )}{" "}
-                            minted
+                            { mintTokens[activeMintToken].balance >
+                            mintTokens[activeMintToken].oldBalance
+                              ? "minted"
+                              : "folded"}
                           </p>
                         )}
                     </div>
