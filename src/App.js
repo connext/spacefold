@@ -211,32 +211,36 @@ function App() {
   }, []);
 
   useEffect(() => {
-    setMintTokens(prevTokens => Object.values(tokens).map((network) => {
-      const oldToken = prevTokens.find(t => t.chainId === network.chainId);
-      const newBalance = balances[network.chainId] || 0;
-      return {
-        ...network,
-        balance: newBalance,
-        oldBalance: oldToken
-          ? (Math.abs(newBalance - oldToken.balance) < 0.001
+    setMintTokens((prevTokens) =>
+      Object.values(tokens).map((network) => {
+        const oldToken = prevTokens.find((t) => t.chainId === network.chainId);
+        const newBalance = balances[network.chainId] || 0;
+        return {
+          ...network,
+          balance: newBalance,
+          oldBalance: oldToken
+            ? Math.abs(newBalance - oldToken.balance) < 0.001
               ? oldToken.oldBalance
-              : oldToken.balance)
-          : newBalance,
-      };
-    }));
-    setSendTokens(prevTokens => Object.values(tokens).map((network) => {
-      const oldToken = prevTokens.find(t => t.chainId === network.chainId);
-      const newBalance = balances[network.chainId] || 0;
-      return {
-        ...network,
-        balance: newBalance,
-        oldBalance: oldToken
-          ? (Math.abs(newBalance - oldToken.balance) < 0.001
-            ? oldToken.oldBalance
-            : oldToken.balance)
-          : newBalance,
-      };
-    }));
+              : oldToken.balance
+            : newBalance,
+        };
+      })
+    );
+    setSendTokens((prevTokens) =>
+      Object.values(tokens).map((network) => {
+        const oldToken = prevTokens.find((t) => t.chainId === network.chainId);
+        const newBalance = balances[network.chainId] || 0;
+        return {
+          ...network,
+          balance: newBalance,
+          oldBalance: oldToken
+            ? Math.abs(newBalance - oldToken.balance) < 0.001
+              ? oldToken.oldBalance
+              : oldToken.balance
+            : newBalance,
+        };
+      })
+    );
   }, [balances]);
 
   const changeMintToken = (option) => {
@@ -244,7 +248,7 @@ function App() {
       (t) => t.chainId === option.value
     );
     setActiveMintToken(newTokenIndex);
-    setUpstream(mintTokens[newTokenIndex].balance > 0)
+    setUpstream(mintTokens[newTokenIndex].balance > 0);
     setMintStatus(Status.READY);
   };
   const changeSendToken = (option) => {
@@ -252,16 +256,20 @@ function App() {
       (t) => t.chainId === option.value
     );
     setActiveSendToken(newTokenIndex);
-    setUpstream(mintTokens[activeMintToken].balance > 0)
+    setUpstream(mintTokens[activeMintToken].balance > 0);
     setSendStatus(Status.READY);
   };
 
   const transfer = async () => {
     setTransferStatus(Status.IN_PROGRESS);
-    const fromToken = upstream ? mintTokens[activeMintToken] : sendTokens[activeSendToken];
+    const fromToken = upstream
+      ? mintTokens[activeMintToken]
+      : sendTokens[activeSendToken];
     const fromClient = clients[fromToken.chainId];
 
-    const toToken = upstream ? sendTokens[activeSendToken] : mintTokens[activeMintToken];
+    const toToken = upstream
+      ? sendTokens[activeSendToken]
+      : mintTokens[activeMintToken];
     const toClient = clients[toToken.chainId];
 
     const params = {
@@ -375,8 +383,11 @@ function App() {
     !sendTokens[activeSendToken] ||
     transferStatus === Status.IN_PROGRESS ||
     transferStatus === Status.SUCCESS ||
-    (mintTokens[activeMintToken].balance <= 0.001 && sendTokens[activeSendToken].balance <= 0.001);
-  const totalBalance = mintTokens.reduce((bal, t) => bal + t.balance, 0) + sendTokens.reduce((bal, t) => bal + t.balance, 0);
+    (mintTokens[activeMintToken].balance <= 0.001 &&
+      sendTokens[activeSendToken].balance <= 0.001);
+  const totalBalance =
+    mintTokens.reduce((bal, t) => bal + t.balance, 0) +
+    sendTokens.reduce((bal, t) => bal + t.balance, 0);
 
   return (
     <div className="App">
@@ -390,8 +401,7 @@ function App() {
           type="button"
           className="Github-Button"
           onClick={() =>
-            (window.location.href =
-              "https://github.com/connext/spacefold")
+            (window.location.href = "https://github.com/connext/spacefold")
           }
         >
           <i className="fab fa-github Github-Icon"></i> GitHub
@@ -432,10 +442,15 @@ function App() {
                 onChange={changeMintToken}
                 styles={selectStyles}
                 options={mintOptions.filter(
-                  (opt) => opt.value !== mintTokens[activeMintToken].chainId  && opt.value !== sendTokens[activeSendToken].chainId
+                  (opt) =>
+                    opt.value !== mintTokens[activeMintToken].chainId &&
+                    opt.value !== sendTokens[activeSendToken].chainId
                 )}
                 isSearchable={false}
-                isDisabled={transferStatus === Status.IN_PROGRESS || mintStatus === Status.IN_PROGRESS}
+                isDisabled={
+                  transferStatus === Status.IN_PROGRESS ||
+                  mintStatus === Status.IN_PROGRESS
+                }
                 components={{ DropdownIndicator }}
               />
             </div>
@@ -536,16 +551,23 @@ function App() {
                           {mintTokens[activeMintToken].tokenName}
                         </span>
                       </p>
-                      {
-                        mintStatus === Status.SUCCESS && Math.abs(mintTokens[activeMintToken].balance - mintTokens[activeMintToken].oldBalance) > 0 && (
+                      {mintStatus === Status.SUCCESS &&
+                        Math.abs(
+                          mintTokens[activeMintToken].balance -
+                            mintTokens[activeMintToken].oldBalance
+                        ) > 0 && (
                           <p className="Token-Balance-Change">
-                            { mintTokens[activeMintToken].balance > mintTokens[activeMintToken].oldBalance ? '+' : '-'}
-                            { Math.abs(mintTokens[activeMintToken].balance - mintTokens[activeMintToken].oldBalance) }
-                            { ' ' }
+                            {mintTokens[activeMintToken].balance >
+                            mintTokens[activeMintToken].oldBalance
+                              ? "+"
+                              : "-"}
+                            {Math.abs(
+                              mintTokens[activeMintToken].balance -
+                                mintTokens[activeMintToken].oldBalance
+                            )}{" "}
                             minted
                           </p>
-                        )
-                      }
+                        )}
                     </div>
                   </div>
                   <img
@@ -556,7 +578,9 @@ function App() {
                 </div>
                 <button
                   type="button"
-                  className={`Mint-Button ${mintStatus === Status.SUCCESS? "Mint-Success" : ""}`}
+                  className={`Mint-Button ${
+                    mintStatus === Status.SUCCESS ? "Mint-Success" : ""
+                  }`}
                   onClick={() => setShowTweetInput(!showTweetInput)}
                   disabled={
                     mintStatus === Status.IN_PROGRESS ||
@@ -564,47 +588,44 @@ function App() {
                     totalBalance > 0
                   }
                 >
-                  {
-                    mintStatus === Status.SUCCESS
-                      ? (
-                        <>
-                          <i className="fas fa-check" />
-                          Minted!
-                        </>
-                      )
-                      : "Mint"
-                  } 
+                  {mintStatus === Status.SUCCESS ? (
+                    <>
+                      <i className="fas fa-check" />
+                      Minted!
+                    </>
+                  ) : (
+                    "Mint"
+                  )}
                 </button>
               </div>
             )}
           </div>
         </div>
       )}
-      {
-        transferStatus === Status.IN_PROGRESS
-          ? (
-            <div className="Transferring-Circle">
-              <img src={loadingGif} alt="transferring" />
-            </div>
-          )
-          : (
-            <button
-              type="button"
-              className={`Swap-Button${upstream ? "" : " Flip-Image"}${transferStatus === Status.SUCCESS ? " Transfer-Success" : ""}`}
-              onClick={transfer}
-              disabled={transferDisabled}
-            >
-              { transferStatus === Status.SUCCESS ? "SUCCESS!" : "FOLD" }
-              { transferStatus === Status.SUCCESS
-                  ? <i className="fas fa-check" />
-                  : <img
-                    src={transferDisabled ? transferDisabledImage : transferGif}
-                    alt="fold"
-                  />
-              }
-            </button>
-          )
-      }
+      {transferStatus === Status.IN_PROGRESS ? (
+        <div className="Transferring-Circle">
+          <img src={loadingGif} alt="transferring" />
+        </div>
+      ) : (
+        <button
+          type="button"
+          className={`Swap-Button${upstream ? "" : " Flip-Image"}${
+            transferStatus === Status.SUCCESS ? " Transfer-Success" : ""
+          }`}
+          onClick={transfer}
+          disabled={transferDisabled}
+        >
+          {transferStatus === Status.SUCCESS ? "SUCCESS!" : "FOLD"}
+          {transferStatus === Status.SUCCESS ? (
+            <i className="fas fa-check" />
+          ) : (
+            <img
+              src={transferDisabled ? transferDisabledImage : transferGif}
+              alt="fold"
+            />
+          )}
+        </button>
+      )}
       {sendTokens.length > 0 && (
         <div
           className="Token Token-Right"
@@ -623,10 +644,15 @@ function App() {
                 onChange={changeSendToken}
                 styles={selectStyles}
                 options={sendOptions.filter(
-                  (opt) => opt.value !== sendTokens[activeSendToken].chainId && opt.value !== mintTokens[activeMintToken].chainId
+                  (opt) =>
+                    opt.value !== sendTokens[activeSendToken].chainId &&
+                    opt.value !== mintTokens[activeMintToken].chainId
                 )}
                 isSearchable={false}
-                isDisabled={transferStatus === Status.IN_PROGRESS || sendStatus === Status.IN_PROGRESS}
+                isDisabled={
+                  transferStatus === Status.IN_PROGRESS ||
+                  sendStatus === Status.IN_PROGRESS
+                }
                 components={{ DropdownIndicator }}
               />
             </div>
@@ -641,16 +667,23 @@ function App() {
                         {sendTokens[activeSendToken].tokenName}
                       </span>
                     </p>
-                    {
-                      sendStatus === Status.SUCCESS && Math.abs(sendTokens[activeSendToken].balance - sendTokens[activeSendToken].oldBalance) > 0 && (
+                    {sendStatus === Status.SUCCESS &&
+                      Math.abs(
+                        sendTokens[activeSendToken].balance -
+                          sendTokens[activeSendToken].oldBalance
+                      ) > 0 && (
                         <p className="Token-Balance-Change">
-                          { sendTokens[activeSendToken].balance > sendTokens[activeSendToken].oldBalance ? '+' : '-'}
-                          { Math.abs(sendTokens[activeSendToken].balance - sendTokens[activeSendToken].oldBalance) }
-                          { ' ' }
+                          {sendTokens[activeSendToken].balance >
+                          sendTokens[activeSendToken].oldBalance
+                            ? "+"
+                            : "-"}
+                          {Math.abs(
+                            sendTokens[activeSendToken].balance -
+                              sendTokens[activeSendToken].oldBalance
+                          )}{" "}
                           sent
                         </p>
-                      )
-                    }
+                      )}
                   </div>
                 </div>
                 <img
@@ -716,30 +749,33 @@ function App() {
               ) : (
                 <button
                   type="button"
-                  className={`Send-Button ${sendStatus === Status.SUCCESS ? "Send-Success" : ""}`}
+                  className={`Send-Button ${
+                    sendStatus === Status.SUCCESS ? "Send-Success" : ""
+                  }`}
                   disabled={
                     sendStatus === Status.SUCCESS ||
                     sendTokens[activeSendToken].balance < 0.001
                   }
                   onClick={() => setShowSendInput(!showSendInput)}
                 >
-                  {
-                    sendStatus === Status.SUCCESS
-                      ? (
-                        <>
-                          <i className="fas fa-check" />
-                          Sent!
-                        </>
-                      )
-                      : "Send"
-                  }
+                  {sendStatus === Status.SUCCESS ? (
+                    <>
+                      <i className="fas fa-check" />
+                      Sent!
+                    </>
+                  ) : (
+                    "Send"
+                  )}
                 </button>
               )}
             </div>
           </div>
         </div>
       )}
-      <p className="Footer" onClick={() => window.location.href = "https://connext.network/"}>
+      <p
+        className="Footer"
+        onClick={() => (window.location.href = "https://connext.network/")}
+      >
         Made with <i className="fas fa-heart Heart-Icon"></i> by Connext
       </p>
     </div>
