@@ -107,102 +107,95 @@ function App() {
 
   useEffect(() => {
     async function initClients() {
-      const clientsArr = [];
-      const _balances = {};
-      for (const network of Object.values(tokens)) {
-        try {
-          console.log(`Creating client for network ${JSON.stringify(network)}`);
-          const pk = getWallet(network.chainId).privateKey;
-          const client = await connext.connect({
-            nodeUrl,
-            ethProviderUrl: network.ethProviderUrl,
-            signer: getWallet(network.chainId).privateKey,
-            loggerService: new ColorfulLogger(
-              network.chainId.toString(),
-              4,
-              false,
-              network.chainId
-            ),
-            store: getLocalStore({
-              prefix: `INDRA_CLIENT_${pk.substring(0, 10).toUpperCase()}`,
-            }),
-            logLevel: 4,
-          });
-          clientsArr.push({ chainId: network.chainId, client });
-          const channel = await client.getFreeBalance(
-            tokens[network.chainId].tokenAddress
-          );
-          _balances[network.chainId] = formatEther(
-            channel[client.signerAddress]
-          );
-          console.log(
-            `Created client for network ${JSON.stringify(network)}: ${
-              client.publicIdentifier
-            } with balance: ${channel[client.signerAddress]}`
-          );
-          console.log(
-            `True balance for ${client.chainId}: ${formatEther(
-              channel[client.signerAddress]
-            )}`
-          );
+      const clientsAndBalances = await Promise.all(
+        Object.values(tokens).map(async (network) => {
+          try {
+            console.log(
+              `Creating client for network ${JSON.stringify(network)}`
+            );
+            const pk = getWallet(network.chainId).privateKey;
+            const client = await connext.connect({
+              nodeUrl,
+              ethProviderUrl: network.ethProviderUrl,
+              signer: getWallet(network.chainId).privateKey,
+              loggerService: new ColorfulLogger(
+                network.chainId.toString(),
+                3,
+                false,
+                network.chainId
+              ),
+              store: getLocalStore({
+                prefix: `INDRA_CLIENT_${pk.substring(0, 10).toUpperCase()}`,
+              }),
+              logLevel: 3,
+            });
+            const freeBalance = await client.getFreeBalance(
+              tokens[network.chainId].tokenAddress
+            );
+            console.log(
+              `Created client for network ${JSON.stringify(network)}: ${
+                client.publicIdentifier
+              } with balance: ${freeBalance[client.signerAddress]}`
+            );
 
-          setClients({ ...clients, [client.chainId]: client });
-          setBalances({
-            ...balances,
-            [client.chainId]: formatEther(channel[client.signerAddress]),
-          });
+            client.requestCollateral(tokens[client.chainId]);
 
-          clientsArr.map((clientInfo) =>
-            clientInfo.client.requestCollateral(tokens[clientInfo.chainId])
-          );
-        } catch (e) {
-          console.error(
-            `Failed to create client on ${network.chainId}. Error:`,
-            e.message
-          );
-        }
-      }
+            const refreshBalances = async (client) => {
+              const token = tokens[client.chainId];
+              const channel = await client.getFreeBalance(token.tokenAddress);
+              setBalances({
+                ...balances,
+                [client.chainId]: formatEther(channel[client.signerAddress]),
+              });
+            };
 
-      // Helper to refresh all client balances on transfer events
-      const refreshBalances = async () => {
-        const _balances = {};
-        for (const t of clientsArr) {
-          const token = tokens[t.chainId];
-          const channel = await t.client.getFreeBalance(token.tokenAddress);
-          _balances[t.chainId] = formatEther(channel[t.client.signerAddress]);
-        }
-        setBalances(_balances);
-        return _balances;
-      };
+            client.on("CONDITIONAL_TRANSFER_CREATED_EVENT", async (msg) => {
+              const updated = await refreshBalances(client);
+              setMintStatus(Status.SUCCESS);
+              setShowTweetInput(false);
+              console.log("Transfer created, updated balances", updated);
+            });
+            client.on("CONDITIONAL_TRANSFER_UNLOCKED_EVENT", async (msg) => {
+              const updated = await refreshBalances(client);
+              setTransferStatus(Status.SUCCESS);
+              setTimeout(() => setTransferStatus(Status.READY), 1000);
+              console.log("Transfer unlocked, updated balances", updated);
+            });
+            client.on("WITHDRAWAL_CONFIRMED_EVENT", async (msg) => {
+              const updated = await refreshBalances(client);
+              setSendStatus(Status.SUCCESS);
+              setShowSendInput(false);
+              console.log("Withdrawal completed, updated balances", updated);
+            });
 
-      const _clients = {};
-      clientsArr.forEach((t) => {
-        t.client.on("CONDITIONAL_TRANSFER_CREATED_EVENT", async (msg) => {
-          const updated = await refreshBalances();
-          setMintStatus(Status.SUCCESS);
-          setShowTweetInput(false);
-          console.log("Transfer created, updated balances", updated);
-        });
-        t.client.on("CONDITIONAL_TRANSFER_UNLOCKED_EVENT", async (msg) => {
-          const updated = await refreshBalances();
-          setTransferStatus(Status.SUCCESS);
-          setTimeout(() => setTransferStatus(Status.READY), 1000);
-          console.log("Transfer unlocked, updated balances", updated);
-        });
-        t.client.on("WITHDRAWAL_CONFIRMED_EVENT", async (msg) => {
-          const updated = await refreshBalances();
-          setSendStatus(Status.SUCCESS);
-          setShowSendInput(false);
-          console.log("Withdrawal completed, updated balances", updated);
-        });
-        _clients[t.chainId] = t.client;
-      });
-      setClients(_clients);
-      setBalances(_balances);
-
-      clientsArr.map((clientInfo) =>
-        clientInfo.client.requestCollateral(tokens[clientInfo.chainId])
+            return { client, freeBalance };
+          } catch (e) {
+            console.error(
+              `Failed to create client on ${network.chainId}. Error:`,
+              e.message
+            );
+          }
+        })
       );
+      setClients(
+        clientsAndBalances.reduce((c, entry) => {
+          if (entry) {
+            c[entry.client.chainId] = entry.client;
+          }
+          return c;
+        }, {})
+      );
+      setBalances(
+        clientsAndBalances.reduce((b, entry) => {
+          if (entry) {
+            b[entry.client.chainId] = formatEther(
+              entry.freeBalance[entry.client.signerAddress]
+            );
+          }
+          return b;
+        }, {})
+      );
+
       setInitializing(false);
     }
     initClients();
@@ -326,6 +319,7 @@ function App() {
     const sendToken = sendTokens[activeSendToken];
     const sendClient = clients[sendToken.chainId];
 
+    setSendStatus(Status.IN_PROGRESS);
     try {
       const withdrawParams = {
         amount: parseEther(sendToken.balance),
