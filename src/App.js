@@ -57,6 +57,26 @@ const tokens = {
     color: "#01C853",
     ethProviderUrl: `https://kovan.infura.io/v3/${process.env.REACT_APP_INFURA_ID}`,
   },
+  61: {
+    tokenName: "TOKEN",
+    tokenIcon: ethIcon,
+    tokenBackground: ethBackground,
+    tokenAddress: "0xf502A7897a49A9daFa5542203746Bad6C6E86c11",
+    chainId: 61,
+    name: "ETC",
+    color: "#01C853",
+    ethProviderUrl: `https://www.ethercluster.com/etc`,
+  },
+  100: {
+    tokenName: "TOKEN",
+    tokenIcon: ethIcon,
+    tokenBackground: ethBackground,
+    tokenAddress: "0xf502A7897a49A9daFa5542203746Bad6C6E86c11",
+    chainId: 100,
+    name: "xDAI",
+    color: "#01C853",
+    ethProviderUrl: `https://xdai.poanetwork.dev`,
+  },
 };
 
 const getTweetURL = (publicIdentifier, chainName, tokenName) =>
