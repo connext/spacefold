@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import * as connext from "@connext/client";
 import { ColorfulLogger, stringify } from "@connext/utils";
 import { getLocalStore } from "@connext/store";
@@ -140,6 +140,10 @@ function App() {
   const [sendStatus, setSendStatus] = useState(Status.READY);
   const [transferStatus, setTransferStatus] = useState(Status.READY);
   const [initializing, setInitializing] = useState(true);
+  const [leftSelectHeight, setLeftSelectHeight] = useState(0);
+  const [rightSelectHeight, setRightSelectHeight] = useState(0);
+  const leftCardRef = useRef(null);
+  const rightCardRef = useRef(null);
 
   const mintOptions = mintTokens.map((t) => ({
     label: t.name,
@@ -244,10 +248,23 @@ function App() {
       );
 
       setInitializing(false);
+      setLeftSelectHeight(leftCardRef.current ? leftCardRef.current.clientHeight : 0);
+      setRightSelectHeight(rightCardRef.current ? rightCardRef.current.clientHeight : 0);
     }
     initClients();
     // no exhaustive deps, we only want this to run on start
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // window resize setup
+  useEffect(() => {
+    function changeSelectHeight() {
+      setLeftSelectHeight(leftCardRef.current ? leftCardRef.current.clientHeight : 0);
+      setRightSelectHeight(rightCardRef.current ? rightCardRef.current.clientHeight : 0);
+    };
+    changeSelectHeight();
+    window.addEventListener('resize', changeSelectHeight);
+    return () => window.removeEventListener('resize', changeSelectHeight);
   }, []);
 
   useEffect(() => {
@@ -493,10 +510,11 @@ function App() {
                   mintStatus === Status.IN_PROGRESS
                 }
                 components={{ DropdownIndicator }}
+                maxMenuHeight={leftSelectHeight}
               />
             </div>
             {showTweetInput ? (
-              <div className="Tweet-Body">
+              <div className="Tweet-Body" ref={leftCardRef}>
                 <p className="Tweet-Instructions">
                   Please paste a public tweet containing your public identifier
                   to mint free tokens!{" "}
@@ -578,7 +596,7 @@ function App() {
                 </p>
               </div>
             ) : (
-              <div className="Card-Body">
+              <div className="Card-Body" ref={leftCardRef}>
                 <div className="Card-Token-Content">
                   <div className="Token-Balance">
                     <img
@@ -695,9 +713,10 @@ function App() {
                   sendStatus === Status.IN_PROGRESS
                 }
                 components={{ DropdownIndicator }}
+                maxMenuHeight={rightSelectHeight}
               />
             </div>
-            <div className="Card-Body">
+            <div className="Card-Body" ref={rightCardRef}>
               <div className="Card-Token-Content">
                 <div className="Token-Balance">
                   <img src={sendTokens[activeSendToken].tokenIcon} alt="icon" />
