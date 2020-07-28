@@ -143,9 +143,11 @@ function App() {
             const refreshBalances = async (client) => {
               const token = tokens[client.chainId];
               const channel = await client.getFreeBalance(token.tokenAddress);
-              setBalances({
-                ...balances,
-                [client.chainId]: formatEther(channel[client.signerAddress]),
+              setBalances((prevBalances) => {
+                return {
+                  ...prevBalances,
+                  [client.chainId]: formatEther(channel[client.signerAddress]),
+                };
               });
             };
 
