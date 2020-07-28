@@ -203,18 +203,21 @@ function App() {
             client.on("CONDITIONAL_TRANSFER_CREATED_EVENT", async (msg) => {
               const updated = await refreshBalances(client);
               setMintStatus(Status.SUCCESS);
+              setUpstream(mintTokens[activeMintToken].balance > 0);
               setShowTweetInput(false);
               console.log("Transfer created, updated balances", updated);
             });
             client.on("CONDITIONAL_TRANSFER_UNLOCKED_EVENT", async (msg) => {
               const updated = await refreshBalances(client);
               setTransferStatus(Status.SUCCESS);
+              setUpstream(mintTokens[activeMintToken].balance > 0);
               setTimeout(() => setTransferStatus(Status.READY), 1000);
               console.log("Transfer unlocked, updated balances", updated);
             });
             client.on("WITHDRAWAL_CONFIRMED_EVENT", async (msg) => {
               const updated = await refreshBalances(client);
               setSendStatus(Status.SUCCESS);
+              setUpstream(mintTokens[activeMintToken].balance > 0);
               setShowSendInput(false);
               console.log("Withdrawal completed, updated balances", updated);
             });
