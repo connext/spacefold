@@ -14,8 +14,13 @@ import mintingGif from "./images/minting.gif";
 import ellipsisGif from "./images/ellipsis.gif";
 import ethIcon from "./images/eth.png";
 import moonIcon from "./images/moon.png";
+import brickIcon from "./images/brick.png"
 import ethBackground from "./images/ethBackground.png";
 import rinkebyBackground from "./images/rinkebyBackground.png";
+import brickBackground from "./images/brickBackground.png";
+import skaleBackground from "./images/skaleBackground.png";
+import xDaiBackground from "./images/xDaiBackground.png";
+import maticBackground from "./images/maticBackground.png";
 import "./App.css";
 import { getWallet } from "./wallet";
 
@@ -48,13 +53,13 @@ const tokens = {
     ethProviderUrl: `https://goerli.infura.io/v3/${process.env.REACT_APP_INFURA_ID}`,
   },
   42: {
-    tokenName: "TOKEN",
-    tokenIcon: ethIcon,
-    tokenBackground: ethBackground,
+    tokenName: "BRICK",
+    tokenIcon: brickIcon,
+    tokenBackground: brickBackground,
     tokenAddress: "0x4d4deb65DBC13dE6811095baba7064B41A72D9Db",
     chainId: 42,
     name: "Kovan",
-    color: "#01C853",
+    color: "#5b32a2",
     ethProviderUrl: `https://kovan.infura.io/v3/${process.env.REACT_APP_INFURA_ID}`,
   },
   61: {
@@ -68,9 +73,9 @@ const tokens = {
     ethProviderUrl: `https://www.ethercluster.com/etc`,
   },
   100: {
-    tokenName: "TOKEN",
-    tokenIcon: ethIcon,
-    tokenBackground: ethBackground,
+    tokenName: "xBRICKS",
+    tokenIcon: brickIcon,
+    tokenBackground: xDaiBackground,
     tokenAddress: "0xf502A7897a49A9daFa5542203746Bad6C6E86c11",
     chainId: 100,
     name: "xDAI",
@@ -78,23 +83,23 @@ const tokens = {
     ethProviderUrl: `https://xdai.poanetwork.dev`,
   },
   80001: {
-    tokenName: "TOKEN",
+    tokenName: "mTOKEN",
     tokenIcon: ethIcon,
-    tokenBackground: ethBackground,
+    tokenBackground: maticBackground,
     tokenAddress: "0xf502A7897a49A9daFa5542203746Bad6C6E86c11",
     chainId: 80001,
     name: "Matic",
-    color: "#01C853",
+    color: "#2b6def",
     ethProviderUrl: `https://rpc-mumbai.matic.today`,
   },
   346750: {
-    tokenName: "TOKEN",
+    tokenName: "sTOKEN",
     tokenIcon: ethIcon,
-    tokenBackground: ethBackground,
+    tokenBackground: skaleBackground.png,
     tokenAddress: "0xf502A7897a49A9daFa5542203746Bad6C6E86c11",
     chainId: 346750,
     name: "SKALE",
-    color: "#01C853",
+    color: "#000000",
     ethProviderUrl: `https://dev-testnet-v1-1.skalelabs.com`,
   },
 };
