@@ -468,7 +468,7 @@ function App() {
                   </button>
                   {mintStatus !== Status.IN_PROGRESS && (
                     <p
-                      className="Cancel-Tweet"
+                      className="Cancel"
                       onClick={() => setShowTweetInput(false)}
                     >
                       Cancel
