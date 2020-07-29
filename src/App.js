@@ -146,6 +146,7 @@ function App() {
   useEffect(() => {
     function onMintSucceeded() {
       setMintStatus(Status.SUCCESS);
+      setTimeout(() => setMintStatus(Status.READY), 1000);
       setShowTweetInput(false);
     }
 
