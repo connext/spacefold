@@ -14,13 +14,13 @@ import spinningGearGif from "./images/spinningGear.gif";
 import ellipsisGif from "./images/ellipsis.gif";
 import ethIcon from "./images/eth.png";
 import moonIcon from "./images/moon.png";
-import brickIcon from "./images/brick.png"
+import brickIcon from "./images/brick.png";
 import ethBackground from "./images/ethBackground.png";
 import rinkebyBackground from "./images/rinkebyBackground.png";
 import brickBackground from "./images/brickBackground.png";
-import skaleBackground from "./images/skaleBackground.png";
-import xDaiBackground from "./images/xDaiBackground.png";
-import maticBackground from "./images/maticBackground.png";
+// import skaleBackground from "./images/skaleBackground.png";
+// import xDaiBackground from "./images/xDaiBackground.png";
+// import maticBackground from "./images/maticBackground.png";
 
 import "./App.css";
 
@@ -82,39 +82,39 @@ const TOKENS = {
     ethProviderUrl: `https://www.ethercluster.com/etc`,
     blockchainExplorerURL: 'https://blockscout.com/etc/mainnet/tx/{TRANSACTION_HASH}/token_transfers',
   },
-  100: {
-    tokenName: "xBRICKS",
-    tokenIcon: brickIcon,
-    tokenBackground: xDaiBackground,
-    tokenAddress: "0xf502A7897a49A9daFa5542203746Bad6C6E86c11",
-    chainId: 100,
-    name: "xDAI",
-    color: "#01C853",
-    ethProviderUrl: `https://xdai.poanetwork.dev`,
-    blockchainExplorerURL: 'https://blockscout.com/poa/xdai/tx/{TRANSACTION_HASH}/token_transfers',
-  },
-  80001: {
-    tokenName: "mTOKEN",
-    tokenIcon: ethIcon,
-    tokenBackground: maticBackground,
-    tokenAddress: "0xf502A7897a49A9daFa5542203746Bad6C6E86c11",
-    chainId: 80001,
-    name: "Matic",
-    color: "#2b6def",
-    ethProviderUrl: `https://rpc-mumbai.matic.today`,
-    blockchainExplorerURL: 'https://mumbai-explorer.matic.today/tx/{TRANSACTION_HASH}/token_transfers',
-  },
-  346750: {
-    tokenName: "sTOKEN",
-    tokenIcon: ethIcon,
-    tokenBackground: skaleBackground,
-    tokenAddress: "0xf502A7897a49A9daFa5542203746Bad6C6E86c11",
-    chainId: 346750,
-    name: "SKALE",
-    color: "#000000",
-    ethProviderUrl: `https://dev-testnet-v1-1.skalelabs.com`,
-    blockchainExplorerURL: null,
-  },
+  // 100: {
+  //   tokenName: "xBRICKS",
+  //   tokenIcon: brickIcon,
+  //   tokenBackground: xDaiBackground,
+  //   tokenAddress: "0xf502A7897a49A9daFa5542203746Bad6C6E86c11",
+  //   chainId: 100,
+  //   name: "xDAI",
+  //   color: "#01C853",
+  //   ethProviderUrl: `https://xdai.poanetwork.dev`,
+  //   blockchainExplorerURL: 'https://blockscout.com/poa/xdai/tx/{TRANSACTION_HASH}/token_transfers',
+  // },
+  // 80001: {
+  //   tokenName: "mTOKEN",
+  //   tokenIcon: ethIcon,
+  //   tokenBackground: maticBackground,
+  //   tokenAddress: "0xf502A7897a49A9daFa5542203746Bad6C6E86c11",
+  //   chainId: 80001,
+  //   name: "Matic",
+  //   color: "#2b6def",
+  //   ethProviderUrl: `https://rpc-mumbai.matic.today`,
+  //   blockchainExplorerURL: 'https://mumbai-explorer.matic.today/tx/{TRANSACTION_HASH}/token_transfers',
+  // },
+  // 346750: {
+  //   tokenName: "sTOKEN",
+  //   tokenIcon: ethIcon,
+  //   tokenBackground: skaleBackground,
+  //   tokenAddress: "0xf502A7897a49A9daFa5542203746Bad6C6E86c11",
+  //   chainId: 346750,
+  //   name: "SKALE",
+  //   color: "#000000",
+  //   ethProviderUrl: `https://dev-testnet-v1-1.skalelabs.com`,
+  //   blockchainExplorerURL: null,
+  // },
 };
 
 const getTweetURL = (publicIdentifier, chainName, tokenName) =>
@@ -149,9 +149,7 @@ async function initClients(tokens, onMintSucceeded, onTransferSucceeded, onWithd
           store: getLocalStore({prefix: `INDRA_CLIENT_${pk.substring(0, 10).toUpperCase()}`}),
           logLevel: 3,
         });
-        const freeBalance = await client.getFreeBalance(
-          TOKENS[token.chainId].tokenAddress
-        );
+        const freeBalance = await client.getFreeBalance(token.tokenAddress);
         console.log(
           `Created client for token ${JSON.stringify(token)}: ${
             client.publicIdentifier
@@ -164,6 +162,7 @@ async function initClients(tokens, onMintSucceeded, onTransferSucceeded, onWithd
           const token = TOKENS[client.chainId];
           const channel = await client.getFreeBalance(token.tokenAddress);
           onBalanceRefresh(client.chainId, channel[client.signerAddress]);
+          return channel[client.signerAddress];
         };
 
         client.on("CONDITIONAL_TRANSFER_CREATED_EVENT", async (msg) => {
@@ -219,11 +218,17 @@ async function mint(mintToken, clients, tweetUrl) {
     chainId: mintToken.chainId,
   };
   try {
-    console.log(`Making faucet request to ${faucetUrl}: ${stringify(faucetData, true, 0)}`);
+    console.log(
+      `Making faucet request to ${faucetUrl}: ${stringify(faucetData, true, 0)}`
+    );
     const res = await axios.post(faucetUrl, faucetData);
     console.log(`Faucet response: ${JSON.stringify(res)}`);
   } catch (e) {
-    throw new Error(`Error minting tokens: ${e.response ? JSON.stringify(e.response.data || {}) : e.message}`);
+    throw new Error(
+      `Error minting tokens: ${
+        e.response ? JSON.stringify(e.response.data || {}) : e.message
+      }`
+    );
   }
 }
 
@@ -286,7 +291,6 @@ function App() {
   useEffect(() => {
     function onMintSucceeded() {
       setMintStatus(Status.SUCCESS);
-      setTimeout(() => setMintStatus(Status.READY), 1000);
       setShowTweetInput(false);
     }
 
@@ -326,12 +330,16 @@ function App() {
   // window resize setup
   useEffect(() => {
     function changeSelectHeight() {
-      setLeftSelectHeight(leftCardRef.current ? leftCardRef.current.clientHeight : 0);
-      setRightSelectHeight(rightCardRef.current ? rightCardRef.current.clientHeight : 0);
-    };
+      setLeftSelectHeight(
+        leftCardRef.current ? leftCardRef.current.clientHeight : 0
+      );
+      setRightSelectHeight(
+        rightCardRef.current ? rightCardRef.current.clientHeight : 0
+      );
+    }
     changeSelectHeight();
-    window.addEventListener('resize', changeSelectHeight);
-    return () => window.removeEventListener('resize', changeSelectHeight);
+    window.addEventListener("resize", changeSelectHeight);
+    return () => window.removeEventListener("resize", changeSelectHeight);
   }, []);
 
   // set up mintTokens and sendTokens based on balances retrieved from the network
@@ -370,17 +378,29 @@ function App() {
 
   // select initially active mint and send tokens
   useEffect(() => {
-    if (activeMintTokenIndex === null && mintTokens.length > 0) { // select a random non-MOON token initially
-      let tokenIndex = null;
-      while (tokenIndex === null || mintTokens[tokenIndex].tokenName === 'MOON') {
-        tokenIndex = Math.floor(Math.random() * mintTokens.length);
+    if (activeMintTokenIndex === null && mintTokens.length > 0) {
+      const existingIndex = mintTokens.findIndex(t => t.balance > 0 && t.tokenName !== "MOON");
+      if (existingIndex === -1) {
+        // select a random non-MOON token initially
+        let tokenIndex = null;
+        while (
+          tokenIndex === null ||
+          mintTokens[tokenIndex].tokenName === "MOON"
+        ) {
+          tokenIndex = Math.floor(Math.random() * mintTokens.length);
+        }
+        setActiveMintTokenIndex(tokenIndex);
+      } else {
+        setActiveMintTokenIndex(existingIndex);
       }
-      setActiveMintTokenIndex(tokenIndex);
     }
   }, [mintTokens, activeMintTokenIndex]);
   useEffect(() => {
-    if (activeSendTokenIndex === null && sendTokens.length > 0) { // select MOON token initially
-      setActiveSendTokenIndex(sendTokens.findIndex(t => t.tokenName === 'MOON'));
+    if (activeSendTokenIndex === null && sendTokens.length > 0) {
+      // select MOON token initially
+      setActiveSendTokenIndex(
+        sendTokens.findIndex((t) => t.tokenName === "MOON")
+      );
     }
   }, [sendTokens, activeSendTokenIndex]);
 
@@ -494,7 +514,7 @@ function App() {
                       "popup",
                       "width=600,height=600"
                     );
-                    return false;
+                    setMintStatus(Status.READY);
                   }}
                 >
                   Tweet Now!
@@ -540,14 +560,13 @@ function App() {
                       <p className="Token-Balance-Current">
                         {activeMintToken.balance}&nbsp;<span className="Token-Name">{activeMintToken.tokenName}</span>
                       </p>
-                      {mintStatus === Status.SUCCESS &&
-                        Math.abs(activeMintToken.balance - activeMintToken.oldBalance) > 0 && (
-                          <p className="Token-Balance-Change">
-                            {activeMintToken.balance > activeMintToken.oldBalance ? "+" : "-"}
-                            {Math.abs(activeMintToken.balance - activeMintToken.oldBalance)}{" "}
-                            {activeMintToken.balance > activeMintToken.oldBalance ? "minted" : "folded"}
-                          </p>
-                        )}
+                      <p style={{
+                        visibility: (transferStatus === Status.SUCCESS && activeMintToken.balance !== activeMintToken.oldBalance) ? 'visible' : 'hidden'
+                      }} className="Token-Balance-Change">
+                        {activeMintToken.balance > activeMintToken.oldBalance ? "+" : "-"}
+                        {Math.abs(activeMintToken.balance - activeMintToken.oldBalance)}&nbsp;
+                        {activeMintToken.balance > activeMintToken.oldBalance ? "minted" : "folded"}
+                      </p>
                     </div>
                   </div>
                   <div className="Card-Image" style={{backgroundImage: `url(${activeMintToken.tokenBackground})`}}></div>
@@ -557,7 +576,7 @@ function App() {
                   className={`Mint-Button ${mintStatus === Status.SUCCESS ? "Mint-Success" : ""}`}
                   onClick={() => setShowTweetInput(!showTweetInput)}
                   disabled={
-                    mintStatus === Status.IN_PROGRESS || mintStatus === Status.SUCCESS ||
+                    mintStatus === Status.IN_PROGRESS || transferStatus === Status.IN_PROGRESS ||
                     mintTokens.some(t => t.balance > 0) || sendTokens.some(t => t.balance > 0)
                   }
                 >
@@ -625,13 +644,12 @@ function App() {
                     <p className="Token-Balance-Current">
                       {activeSendToken.balance}&nbsp;<span className="Token-Name">{activeSendToken.tokenName}</span>
                     </p>
-                    {sendStatus === Status.SUCCESS &&
-                      Math.abs(activeSendToken.balance - activeSendToken.oldBalance) > 0 && (
-                        <p className="Token-Balance-Change">
-                          {activeSendToken.balance > activeSendToken.oldBalance ? "+" : "-"}
-                          {Math.abs(activeSendToken.balance - activeSendToken.oldBalance)}&nbsp;sent
-                        </p>
-                      )}
+                    <p style={{
+                      visibility: (transferStatus === Status.SUCCESS && activeSendToken.balance !== activeSendToken.oldBalance) ? 'visible' : 'hidden'
+                    }} className="Token-Balance-Change">
+                      {activeSendToken.balance > activeSendToken.oldBalance ? "+" : "-"}
+                      {Math.abs(activeSendToken.balance - activeSendToken.oldBalance)}&nbsp;sent
+                    </p>
                   </div>
                 </div>
                 <div className="Card-Image" style={{backgroundImage: `url(${activeSendToken.tokenBackground})`}}></div>
@@ -653,7 +671,11 @@ function App() {
                   </>}
                   <button
                     type="button"
-                    className={sendStatus === Status.IN_PROGRESS ? "Sending-Button" : "Send-Button"}
+                    className={
+                      sendStatus === Status.IN_PROGRESS
+                        ? "Sending-Button"
+                        : "Send-Button"
+                    }
                     onClick={async () => {
                       setSendStatus(Status.IN_PROGRESS);
                       try {
@@ -688,14 +710,16 @@ function App() {
                   {sendStatus === Status.SUCCESS ? <><i className="fas fa-check" /> Sent!</> : "Send"}
                 </button>
               )}
-              {sendTransactionURL !== null && <div style={{color: '#559955'}}>
-                {sendTransactionURL === '' ? "Broadcasted transaction" : <a href={sendTransactionURL}>View transaction</a>}
-              </div>}
+              {sendTransactionURL !== null && (
+                sendTransactionURL === '' ? "Broadcasted transaction" : <a href={sendTransactionURL} rel="noreferrer noopener" target="_blank" class="Send-Transaction-URL">View transaction</a>
+              )}
             </div>
           </div>
         </div>
       </>}
-      <a className="Footer" href="https://connext.network/">Made with <i className="fas fa-heart Heart-Icon"></i> by Connext</a>
+      <a className="Footer" href="https://connext.network/">
+        Made with <i className="fas fa-heart Heart-Icon"></i> by Connext
+      </a>
     </div>
   );
 }
