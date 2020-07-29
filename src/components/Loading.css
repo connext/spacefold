@@ -1,0 +1,40 @@
+.Loading {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #F4F5F7;
+  z-index: 999;
+}
+
+.Loading-fadeout {
+  -moz-animation-name: fadeOut;
+  -webkit-animation-name: fadeOut;
+  -ms-animation-name: fadeOut;
+  animation-name: fadeOut;
+  -moz-animation-duration: .5s;
+  -webkit-animation-duration: .5s;
+  -ms-animation-duration: .5s;
+  animation-duration: .5s;
+  -moz-animation-fill-mode: forwards;
+  -webkit-animation-fill-mode: forwards;
+  -ms-animation-fill-mode: forwards;
+  animation-fill-mode: forwards;
+}
+
+.Loading-Circle {
+  height: 96px;
+  width: 96px;
+  border-radius: 64px;
+  background-color: #FCD116;
+  overflow: hidden;
+}
+
+.Loading-Circle img {
+  width: 100%;
+  height: 100%;
+}
