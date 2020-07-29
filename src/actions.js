@@ -16,11 +16,13 @@ export async function initClients(
   onMintSucceeded,
   onTransferSucceeded,
   onWithdrawSucceeded,
-  onBalanceRefresh
+  onBalanceRefresh,
+  setLoadingMessage,
 ) {
   const clientsAndBalances = await Promise.all(
     Object.values(tokens).map(async (token) => {
       try {
+        setLoadingMessage(`Creating client for ${token.name}...`);
         console.log(`Creating client for token ${JSON.stringify(token)}`);
         const pk = getWallet(token.chainId).privateKey;
         const client = await connext.connect({

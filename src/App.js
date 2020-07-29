@@ -139,6 +139,7 @@ function App() {
   const [sendTransactionURL, setSendTransactionURL] = useState(null);
   const [transferStatus, setTransferStatus] = useState(Status.READY);
   const [initializing, setInitializing] = useState(true);
+  const [loadingMessage, setLoadingMessage] = useState('');
   const [leftSelectHeight, setLeftSelectHeight] = useState(0);
   const [rightSelectHeight, setRightSelectHeight] = useState(0);
   const leftCardRef = useRef(null);
@@ -175,7 +176,8 @@ function App() {
           onMintSucceeded,
           onTransferSucceeded,
           onWithdrawSucceeded,
-          onBalanceRefresh
+          onBalanceRefresh,
+          setLoadingMessage,
         );
         setClients(clients);
         setBalances(balances);
@@ -341,7 +343,7 @@ function App() {
 
   return (
     <div className="App">
-      <Loading initializing={initializing} />
+      <Loading initializing={initializing} message={loadingMessage} />
       <div className="More-Buttons">
         <a href="https://github.com/connext/spacefold" target="_blank" rel="noopener noreferrer">
           <i className="fab fa-github Github-Icon"></i> GitHub
