@@ -3,9 +3,13 @@
 # Spacefold
 [Spacefold](https://spacefold.io) is a demo and reference implementation of instant cross-evm-chain communication using Connext! Spacefold was built as part of [The Great Reddit Scaling Bake-Off](https://www.reddit.com/r/ethereum/comments/hbjx25/the_great_reddit_scaling_bakeoff/) in July 2020.
 
+### Quick Resources
+
 You can read more about how to use Spacefold in our announcement post. //TODO
 
 Found a bug, want to learn more, or just say hello? [Join us in our discord](https://discord.gg/raNmNb5)!
+
+Learn more about Connext through [our docs](https://docs.connext.network), and by checking out [our monorepo](https://github.com/connext/indra).
 
 ### Introduction: "Hold up, how does this meet the Reddit requirements outlined above"?
 Great question! It doesn't and it's not supposed to.
@@ -29,21 +33,25 @@ Spacefold demonstrates Connext's solution to this. Users can use state channels 
     
     b. Running your own Connext Node on Multiple Chains
     
-3. Demo implementation details
-
-    a. Minting via a Faucet
-    
-    b. Functionality Limitations
-    
 3. How does it work?
 
     a. Background on Connext
     
     b. Cross-chain transfers with Connext
-    
-4. Security and Trust Assumptions
 
-## Compatibility with Other Chains
+4. Demo Implementation Details
+
+    a. 
+
+    b. Minting via a Faucet
+    
+    c. Functionality Limitations
+    
+5. Security, Trust Assumptions, and Other Considerations
+
+6. FAQ
+
+## 1. Compatibility with Other Chains
 In general, Connext can support any chain/l2/shard/rollup system that supports turing-complete computation. For limited cases, we may also be able to get away with non-turing-complete chains using a slightly different pattern for cross-chain transfers.
 
 While the above is true, in the ideal case (to avoid custom work), it's best for Connext to work with Ethereum-like systems (that run the EVM and support Solidity). Running Connext on anything else would likely require lots of custom work. 
@@ -54,48 +62,75 @@ Spacefold demonstrates the following out-of-the-box integrations with several ch
 
 ### L2/Scalability Chains
 **Matic Public Testnet**
-ChainId:
-Website:
-Type: Plasma chain
-Reddit Submission:
+- ChainId:
+- Website:
+- Type: Plasma chain
+- Reddit Submission:
 
 **xDai Mainnet**
-ChainId:
-Website:
-Type: PoS sidechain
-Reddit Submission:
+- ChainId:
+- Website:
+- Type: PoS sidechain
+- Reddit Submission:
 
 **SKALE Public Testnet**
-ChainId:
-Website:
-Type: Elastic sidechains with BLS signature validation on Ethereum
-Reddit Submission:
+- ChainId:
+- Website:
+- Type: Elastic sidechains with BLS signature validation on Ethereum
+- Reddit Submission:
 
 **Optimism Hosted Testnet**
-ChainId:
-Website:
-Type: Optimistic rollup
+- ChainId:
+- Website:
+- Type: Optimistic rollup
 
 **Arbitrum Hosted Testnet**
-ChainId:
-Website:
-Type: Optimistic rollup
+- ChainId:
+- Website:
+- Type: Optimistic rollup
 
 ### Other Chains
 **Rinkeby (Ethereum testnet)**
-ChainId: `4`
-Website: https://www.rinkeby.io/#stats
+- ChainId: `4`
+- Website: https://www.rinkeby.io/#stats
 
 **Kovan (Ethereum testnet)**
-ChainId:
-Website
+- ChainId:
+- Website
 
 **Goerli (Ethereum testnet)**
-ChainId:
-Website
+- ChainId:
+- Website
 
 **Ethereum Classic (mainnet)**
-ChainId:
-Website:
+- ChainId:
+- Website:
 
-Other solutions that are out there:
+## 2. Run it Yourself
+### Running the Spacefold Demo Locally
+The spacefold demo is pretty simple to run:
+
+```bash
+git clone git@github.com:connext/spacefold.git
+cd spacefold
+yarn start
+```
+
+By default, the demo will point to a Connext node that we're hosting at https://node.spacefold.io.
+
+### Running your own Connext Node on Multiple Chains
+Running your own Connext node locally is also pretty easy!
+
+```bash
+git clone git@github.com:connext/indra.git
+cd indra
+make start
+```
+By default, this local node will spin up on a single testnet chain. You can point it at a remote chain (or multiple chains) by following the steps in this guide.
+//TODO
+
+Lastly, your node can be deployed to a production environment by following [this guide](https://docs.connext.network/en/latest/how-to/deploy-indra.html).
+
+## 3. How does it work?
+### A Quick Background on Connext
+Connext is a state channel network. 
