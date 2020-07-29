@@ -330,13 +330,13 @@ function App() {
     <div className="App">
       <Loading initializing={initializing} />
       <div className="More-Buttons">
-        <a href="https://github.com/connext/spacefold">
+        <a href="https://github.com/connext/spacefold" target="_blank">
           <i className="fab fa-github Github-Icon"></i> GitHub
         </a>
-        <a href="https://discord.com/channels/454734546869551114">
+        <a href="https://discord.com/channels/454734546869551114" target="_blank">
           <i className="fab fa-discord Discord-Icon"></i> Chat
         </a>
-        <a href="https://connext.network/">
+        <a href="https://connext.network/" target="_blank">
           <i className="fa fa-info About-Icon"></i> About
         </a>
       </div>
@@ -764,7 +764,7 @@ function App() {
           </div>
         </>
       )}
-      <a className="Footer" href="https://connext.network/">
+      <a className="Footer" href="https://connext.network/" target="_blank">
         Made with <i className="fas fa-heart Heart-Icon"></i> by Connext
       </a>
     </div>
