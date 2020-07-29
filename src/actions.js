@@ -11,7 +11,13 @@ dotenv.config();
 
 const nodeUrl = "https://node.spacefold.io/";
 
-export async function initClients(tokens, onMintSucceeded, onTransferSucceeded, onWithdrawSucceeded, onBalanceRefresh) {
+export async function initClients(
+  tokens,
+  onMintSucceeded,
+  onTransferSucceeded,
+  onWithdrawSucceeded,
+  onBalanceRefresh
+) {
   const clientsAndBalances = await Promise.all(
     Object.values(tokens).map(async (token) => {
       try {
@@ -27,7 +33,9 @@ export async function initClients(tokens, onMintSucceeded, onTransferSucceeded, 
             false,
             token.chainId
           ),
-          store: getLocalStore({prefix: `INDRA_CLIENT_${pk.substring(0, 10).toUpperCase()}`}),
+          store: getLocalStore({
+            prefix: `INDRA_CLIENT_${pk.substring(0, 10).toUpperCase()}`,
+          }),
           logLevel: 3,
         });
         const freeBalance = await client.getFreeBalance(token.tokenAddress);
@@ -37,7 +45,7 @@ export async function initClients(tokens, onMintSucceeded, onTransferSucceeded, 
           } with balance: ${freeBalance[client.signerAddress]}`
         );
 
-        client.requestCollateral(token);
+        client.requestCollateral(token.tokenAddress);
 
         const refreshBalances = async (client) => {
           const token = tokens[client.chainId];
@@ -64,7 +72,9 @@ export async function initClients(tokens, onMintSucceeded, onTransferSucceeded, 
 
         return { client, freeBalance };
       } catch (e) {
-        throw new Error(`Failed to create client on ${token.chainId}. Error: ${e.message}`);
+        throw new Error(
+          `Failed to create client on ${token.chainId}. Error: ${e.message}`
+        );
       }
     })
   );
