@@ -147,13 +147,13 @@ function App() {
   useEffect(() => {
     function onMintSucceeded() {
       setMintStatus(Status.SUCCESS);
-      setTimeout(() => setMintStatus(Status.READY), 1000);
+      setTimeout(() => setMintStatus(Status.READY), 2000);
       setShowTweetInput(false);
     }
 
     function onTransferSucceeded() {
       setTransferStatus(Status.SUCCESS);
-      setTimeout(() => setTransferStatus(Status.READY), 1000);
+      setTimeout(() => setTransferStatus(Status.READY), 2000);
     }
 
     function onWithdrawSucceeded() {
@@ -562,7 +562,11 @@ function App() {
               type="button"
               className={`Swap-Button${
                 transferDirection === "right" ? "" : " Flip-Image"
-              }${transferStatus === Status.SUCCESS ? " Transfer-Success" : ""}`}
+              }${
+                transferStatus === Status.SUCCESS
+                  ? " Transfer-Success"
+                  : (transferStatus === Status.ERROR ? " Transfer-Error" : "")
+              }`}
               onClick={async () => {
                 setTransferStatus(Status.IN_PROGRESS);
                 try {
@@ -578,20 +582,34 @@ function App() {
                   );
                 } catch(e) {
                   setTransferStatus(Status.ERROR);
-                  alert("Folding failed!");
+                  setTimeout(() => setTransferStatus(Status.READY), 2000);
                 }
               }}
               disabled={transferDisabled}
             >
-              {transferStatus === Status.SUCCESS ? "SUCCESS!" : "FOLD"}
-              {transferStatus === Status.SUCCESS ? (
-                <i className="fas fa-check" />
-              ) : (
-                <img
-                  src={transferDisabled ? transferDisabledImage : transferGif}
-                  alt="fold"
-                />
-              )}
+              {
+                transferStatus === Status.SUCCESS
+                  ? "SUCCESS!"
+                  : (transferStatus === Status.ERROR ? "ERROR" : "FOLD")
+              }
+              {
+                transferStatus === Status.SUCCESS
+                  ? (
+                    <i className="fas fa-check" />
+                  )
+                  : (
+                    transferStatus === Status.ERROR
+                      ? (
+                        <i className="fas fa-exclamation" />
+                      )
+                      : (
+                        <img
+                          src={transferDisabled ? transferDisabledImage : transferGif}
+                          alt="fold"
+                        />
+                      )
+                  )
+              }
             </button>
           )}
           <div

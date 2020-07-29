@@ -347,6 +347,13 @@
   background-color: #FCD116;
 }
 
+.Transfer-Error {
+  background-color: #b41f1f;
+}
+.Transfer-Error:disabled {
+  background-color: #b41f1f;
+}
+
 .Footer {
   position: fixed;
   bottom: 0;
