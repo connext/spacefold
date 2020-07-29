@@ -10,7 +10,7 @@ import loadingGif from "./images/loading.gif";
 import transferDisabledImage from "./images/transferDisabled.png";
 import transferGif from "./images/transfer.gif";
 import dropdownGif from "./images/dropdown.gif";
-import mintingGif from "./images/minting.gif";
+import spinningGearGif from "./images/spinningGear.gif";
 import ellipsisGif from "./images/ellipsis.gif";
 import ethIcon from "./images/eth.png";
 import moonIcon from "./images/moon.png";
@@ -46,6 +46,7 @@ const TOKENS = {
     name: "Rinkeby",
     color: "#EFC45C",
     ethProviderUrl: `https://rinkeby.infura.io/v3/${process.env.REACT_APP_INFURA_ID}`,
+    blockchainExplorerURL: 'https://rinkeby.etherscan.io/tx/{TRANSACTION_HASH}',
   },
   5: {
     tokenName: "ETH",
@@ -56,6 +57,8 @@ const TOKENS = {
     name: "Goerli",
     color: "#0091F2",
     ethProviderUrl: `https://goerli.infura.io/v3/${process.env.REACT_APP_INFURA_ID}`,
+    blockchainExplorerURL: 'https://goerli.etherscan.io/tx/{TRANSACTION_HASH}',
+
   },
   42: {
     tokenName: "BRICK",
@@ -66,6 +69,7 @@ const TOKENS = {
     name: "Kovan",
     color: "#5b32a2",
     ethProviderUrl: `https://kovan.infura.io/v3/${process.env.REACT_APP_INFURA_ID}`,
+    blockchainExplorerURL: 'https://kovan.etherscan.io/tx/{TRANSACTION_HASH}',
   },
   61: {
     tokenName: "TOKEN",
@@ -76,6 +80,7 @@ const TOKENS = {
     name: "ETC",
     color: "#01C853",
     ethProviderUrl: `https://www.ethercluster.com/etc`,
+    blockchainExplorerURL: 'https://blockscout.com/etc/mainnet/tx/{TRANSACTION_HASH}/token_transfers',
   },
   100: {
     tokenName: "xBRICKS",
@@ -86,6 +91,7 @@ const TOKENS = {
     name: "xDAI",
     color: "#01C853",
     ethProviderUrl: `https://xdai.poanetwork.dev`,
+    blockchainExplorerURL: 'https://blockscout.com/poa/xdai/tx/{TRANSACTION_HASH}/token_transfers',
   },
   80001: {
     tokenName: "mTOKEN",
@@ -96,6 +102,7 @@ const TOKENS = {
     name: "Matic",
     color: "#2b6def",
     ethProviderUrl: `https://rpc-mumbai.matic.today`,
+    blockchainExplorerURL: 'https://mumbai-explorer.matic.today/tx/{TRANSACTION_HASH}/token_transfers',
   },
   346750: {
     tokenName: "sTOKEN",
@@ -106,6 +113,7 @@ const TOKENS = {
     name: "SKALE",
     color: "#000000",
     ethProviderUrl: `https://dev-testnet-v1-1.skalelabs.com`,
+    blockchainExplorerURL: null,
   },
 };
 
@@ -121,6 +129,81 @@ const Status = {
   ERROR: 2,
   SUCCESS: 3,
 };
+
+async function initClients(tokens, onMintSucceeded, onTransferSucceeded, onWithdrawSucceeded, onBalanceRefresh) {
+  const clientsAndBalances = await Promise.all(
+    Object.values(tokens).map(async (token) => {
+      try {
+        console.log(`Creating client for token ${JSON.stringify(token)}`);
+        const pk = getWallet(token.chainId).privateKey;
+        const client = await connext.connect({
+          nodeUrl,
+          ethProviderUrl: token.ethProviderUrl,
+          signer: getWallet(token.chainId).privateKey,
+          loggerService: new ColorfulLogger(
+            token.chainId.toString(),
+            3,
+            false,
+            token.chainId
+          ),
+          store: getLocalStore({prefix: `INDRA_CLIENT_${pk.substring(0, 10).toUpperCase()}`}),
+          logLevel: 3,
+        });
+        const freeBalance = await client.getFreeBalance(
+          TOKENS[token.chainId].tokenAddress
+        );
+        console.log(
+          `Created client for token ${JSON.stringify(token)}: ${
+            client.publicIdentifier
+          } with balance: ${freeBalance[client.signerAddress]}`
+        );
+
+        client.requestCollateral(TOKENS[client.chainId]);
+
+        const refreshBalances = async (client) => {
+          const token = TOKENS[client.chainId];
+          const channel = await client.getFreeBalance(token.tokenAddress);
+          onBalanceRefresh(client.chainId, channel[client.signerAddress]);
+        };
+
+        client.on("CONDITIONAL_TRANSFER_CREATED_EVENT", async (msg) => {
+          const updated = await refreshBalances(client);
+          console.log("Transfer created, updated balances", updated);
+          onMintSucceeded();
+        });
+        client.on("CONDITIONAL_TRANSFER_UNLOCKED_EVENT", async (msg) => {
+          const updated = await refreshBalances(client);
+          console.log("Transfer unlocked, updated balances", updated);
+          onTransferSucceeded();
+        });
+        client.on("WITHDRAWAL_CONFIRMED_EVENT", async (msg) => {
+          const updated = await refreshBalances(client);
+          console.log("Withdrawal completed, updated balances", updated);
+          onWithdrawSucceeded();
+        });
+
+        return { client, freeBalance };
+      } catch (e) {
+        throw new Error(`Failed to create client on ${token.chainId}. Error: ${e.message}`);
+      }
+    })
+  );
+  const clients = clientsAndBalances.reduce((c, entry) => {
+    if (entry) {
+      c[entry.client.chainId] = entry.client;
+    }
+    return c;
+  }, {});
+  const balances = clientsAndBalances.reduce((b, entry) => {
+    if (entry) {
+      b[entry.client.chainId] = formatEther(
+        entry.freeBalance[entry.client.signerAddress]
+      );
+    }
+    return b;
+  }, {});
+  return { clients, balances };
+}
 
 async function mint(mintToken, clients, tweetUrl) {
   const assetId = mintToken.tokenAddress;
@@ -173,13 +256,13 @@ async function send(sendToken, sendAddress, clients) {
     console.log(`Sending tokens: ${JSON.stringify(withdrawParams)}`);
     const res = await sendClient.withdraw(withdrawParams);
     console.log(`Withdraw response: ${JSON.stringify(res)}`);
+    return res.transaction.hash;
   } catch (e) {
     throw new Error(`Error sending tokens: ${e.stack}`);
   }
 }
 
 function App() {
-  const [upstream, setUpstream] = useState(true);
   const [clients, setClients] = useState({});
   const [balances, setBalances] = useState({});
   const [mintTokens, setMintTokens] = useState([]);
@@ -192,6 +275,7 @@ function App() {
   const [sendAddress, setSendAddress] = useState("");
   const [showSendInput, setShowSendInput] = useState(false);
   const [sendStatus, setSendStatus] = useState(Status.READY);
+  const [sendTransactionURL, setSendTransactionURL] = useState(null);
   const [transferStatus, setTransferStatus] = useState(Status.READY);
   const [initializing, setInitializing] = useState(true);
   const [leftSelectHeight, setLeftSelectHeight] = useState(0);
@@ -199,112 +283,42 @@ function App() {
   const leftCardRef = useRef(null);
   const rightCardRef = useRef(null);
 
-  const mintOptions = mintTokens.map((t) => ({
-    label: t.name,
-    value: t.chainId,
-  }));
-  const sendOptions = sendTokens.map((t) => ({
-    label: t.name,
-    value: t.chainId,
-  }));
-
   useEffect(() => {
-    async function initClients() {
-      const clientsAndBalances = await Promise.all(
-        Object.values(TOKENS).map(async (network) => {
-          try {
-            console.log(`Creating client for network ${JSON.stringify(network)}`);
-            const pk = getWallet(network.chainId).privateKey;
-            const client = await connext.connect({
-              nodeUrl,
-              ethProviderUrl: network.ethProviderUrl,
-              signer: getWallet(network.chainId).privateKey,
-              loggerService: new ColorfulLogger(
-                network.chainId.toString(),
-                3,
-                false,
-                network.chainId
-              ),
-              store: getLocalStore({
-                prefix: `INDRA_CLIENT_${pk.substring(0, 10).toUpperCase()}`,
-              }),
-              logLevel: 3,
-            });
-            const freeBalance = await client.getFreeBalance(
-              TOKENS[network.chainId].tokenAddress
-            );
-            console.log(
-              `Created client for network ${JSON.stringify(network)}: ${
-                client.publicIdentifier
-              } with balance: ${freeBalance[client.signerAddress]}`
-            );
-
-            client.requestCollateral(TOKENS[client.chainId]);
-
-            const refreshBalances = async (client) => {
-              const token = TOKENS[client.chainId];
-              const channel = await client.getFreeBalance(token.tokenAddress);
-              setBalances((prevBalances) => {
-                return {
-                  ...prevBalances,
-                  [client.chainId]: formatEther(channel[client.signerAddress]),
-                };
-              });
-            };
-
-            client.on("CONDITIONAL_TRANSFER_CREATED_EVENT", async (msg) => {
-              const updated = await refreshBalances(client);
-              setMintStatus(Status.SUCCESS);
-              setUpstream(sendTokens[activeSendTokenIndex].balance < MINIMUM_BALANCE);
-              setTimeout(() => setMintStatus(Status.READY), 1000);
-              setShowTweetInput(false);
-              console.log("Transfer created, updated balances", updated);
-            });
-            client.on("CONDITIONAL_TRANSFER_UNLOCKED_EVENT", async (msg) => {
-              const updated = await refreshBalances(client);
-              setTransferStatus(Status.SUCCESS);
-              setUpstream(sendTokens[activeSendTokenIndex].balance < MINIMUM_BALANCE);
-              setTimeout(() => setTransferStatus(Status.READY), 1000);
-              console.log("Transfer unlocked, updated balances", updated);
-            });
-            client.on("WITHDRAWAL_CONFIRMED_EVENT", async (msg) => {
-              const updated = await refreshBalances(client);
-              setSendStatus(Status.SUCCESS);
-              setUpstream(sendTokens[activeSendTokenIndex].balance < MINIMUM_BALANCE);
-              setShowSendInput(false);
-              console.log("Withdrawal completed, updated balances", updated);
-            });
-
-            return { client, freeBalance };
-          } catch (e) {
-            console.error(`Failed to create client on ${network.chainId}. Error:`, e.message);
-          }
-        })
-      );
-      setClients(
-        clientsAndBalances.reduce((c, entry) => {
-          if (entry) {
-            c[entry.client.chainId] = entry.client;
-          }
-          return c;
-        }, {})
-      );
-      setBalances(
-        clientsAndBalances.reduce((b, entry) => {
-          if (entry) {
-            b[entry.client.chainId] = formatEther(
-              entry.freeBalance[entry.client.signerAddress]
-            );
-          }
-          return b;
-        }, {})
-      );
-
-      setInitializing(false);
-      setLeftSelectHeight(leftCardRef.current ? leftCardRef.current.clientHeight : 0);
-      setRightSelectHeight(rightCardRef.current ? rightCardRef.current.clientHeight : 0);
+    function onMintSucceeded() {
+      setMintStatus(Status.SUCCESS);
+      setTimeout(() => setMintStatus(Status.READY), 1000);
+      setShowTweetInput(false);
     }
-    initClients();
+
+    function onTransferSucceeded() {
+      setTransferStatus(Status.SUCCESS);
+      setTimeout(() => setTransferStatus(Status.READY), 1000);
+    }
+
+    function onWithdrawSucceeded() {
+      setSendStatus(Status.SUCCESS);
+      setShowSendInput(false);
+    }
+
+    function onBalanceRefresh(chainId, newBalance) {
+      setBalances((prevBalances) => {
+        return {...prevBalances, [chainId]: formatEther(newBalance)};
+      });
+    }
+
+    async function init() {
+      try {
+        const { clients, balances } = await initClients(TOKENS, onMintSucceeded, onTransferSucceeded, onWithdrawSucceeded, onBalanceRefresh);
+        setClients(clients);
+        setBalances(balances);
+        setInitializing(false);
+        setLeftSelectHeight(leftCardRef.current ? leftCardRef.current.clientHeight : 0);
+        setRightSelectHeight(rightCardRef.current ? rightCardRef.current.clientHeight : 0);
+      } catch (e) {
+        console.error(e.message);
+      }
+    }
+    init();
     // no exhaustive deps, we only want this to run on start
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -370,6 +384,9 @@ function App() {
     }
   }, [sendTokens, activeSendTokenIndex]);
 
+  const activeMintToken = activeMintTokenIndex === null ? null : mintTokens[activeMintTokenIndex];
+  const activeSendToken = activeSendTokenIndex === null ? null : sendTokens[activeSendTokenIndex];
+
   const controlStyles = {
     padding: "0 56px",
     background: "#DEEBFF",
@@ -406,17 +423,10 @@ function App() {
     }),
   };
   const transferDisabled =
-    mintTokens.length === 0 ||
-    !mintTokens[activeMintTokenIndex] ||
-    sendTokens.length === 0 ||
-    !sendTokens[activeSendTokenIndex] ||
-    transferStatus === Status.IN_PROGRESS ||
-    transferStatus === Status.SUCCESS ||
-    (mintTokens[activeMintTokenIndex].balance <= MINIMUM_BALANCE &&
-      sendTokens[activeSendTokenIndex].balance <= MINIMUM_BALANCE);
-  const totalBalance =
-    mintTokens.reduce((bal, t) => bal + t.balance, 0) +
-    sendTokens.reduce((bal, t) => bal + t.balance, 0);
+    activeMintToken === null || activeSendToken === null || // no tokens selected
+    transferStatus === Status.IN_PROGRESS || transferStatus === Status.SUCCESS || // transfer occurring or occurred
+    (activeMintToken.balance <= MINIMUM_BALANCE && activeSendToken.balance <= MINIMUM_BALANCE); // not enough tokens to transfer, in either direction
+  const transferDirection = activeSendToken === null ? null : activeSendToken.balance < MINIMUM_BALANCE ? 'right' : 'left';
 
   return (
     <div className="App">
@@ -432,38 +442,28 @@ function App() {
           <i className="fa fa-info About-Icon"></i> About
         </a>
       </div>
-      {activeMintTokenIndex !== null && activeSendTokenIndex !== null && <>
-        <div
-          className="Token Token-Left"
-          style={{
-            backgroundColor:
-              mintTokens[activeMintTokenIndex].balance > 0
-                ? mintTokens[activeMintTokenIndex].color
-                : "#F4F5F7",
-          }}
-        >
+      {activeMintToken !== null && activeSendToken !== null && <>
+        <div className="Token Token-Left" style={{backgroundColor: activeMintToken.balance > 0 ? activeMintToken.color : "#F4F5F7"}}>
           <div className="Card">
             <div className="Card-Header">
               <Select
                 className="Token-Select"
-                value={mintOptions[activeMintTokenIndex]}
+                value={{label: activeMintToken.name, value: activeMintToken.chainId}}
                 onChange={(option) => {
                   const newTokenIndex = mintTokens.findIndex((t) => t.chainId === option.value);
                   setActiveMintTokenIndex(newTokenIndex);
-                  setUpstream(sendTokens[activeSendTokenIndex].balance < MINIMUM_BALANCE);
                   setMintStatus(Status.READY);
                 }}
                 styles={selectStyles}
-                options={mintOptions.filter(
-                  (opt) =>
-                    opt.value !== mintTokens[activeMintTokenIndex].chainId &&
-                    opt.value !== sendTokens[activeSendTokenIndex].chainId
-                )}
+                options={
+                  mintTokens.map(t => ({label: t.name, value: t.chainId}))
+                            .filter((opt) => opt.value !== activeMintToken.chainId && opt.value !== activeSendToken.chainId)
+                }
                 isSearchable={false}
                 isDisabled={
                   transferStatus === Status.IN_PROGRESS ||
                   mintStatus === Status.IN_PROGRESS ||
-                  mintTokens[activeMintTokenIndex].balance > 0
+                  activeMintToken.balance > 0
                 }
                 components={{ DropdownIndicator }}
                 maxMenuHeight={leftSelectHeight}
@@ -471,26 +471,25 @@ function App() {
             </div>
             {showTweetInput ? (
               <div className="Tweet-Body" ref={leftCardRef}>
-                <p className="Tweet-Instructions">
+                <p className="Instructions">
                   Please paste a public tweet containing your public identifier to mint free tokens!
                 </p>
-                <p className="Tweet-Identifier">
-                  {clients[mintTokens[activeMintTokenIndex].chainId]?.publicIdentifier}
+                <p className="Identifier">
+                  {clients[activeMintToken.chainId]?.publicIdentifier}
                 </p>
                 <a
-                  className="Tweet-Action"
+                  className="Action"
                   href={getTweetURL(
-                    clients[mintTokens[activeMintTokenIndex].chainId]?.publicIdentifier,
-                    mintTokens[activeMintTokenIndex].name,
-                    mintTokens[activeMintTokenIndex].tokenName
+                    clients[activeMintToken.chainId]?.publicIdentifier,
+                    activeMintToken.name,
+                    activeMintToken.tokenName
                   )}
                   target="popup"
                   onClick={() => {
-                    window.open(
-                      getTweetURL(
-                        clients[mintTokens[activeMintTokenIndex].chainId]?.publicIdentifier,
-                        mintTokens[activeMintTokenIndex].name,
-                        mintTokens[activeMintTokenIndex].tokenName
+                    window.open(getTweetURL(
+                        clients[activeMintToken.chainId]?.publicIdentifier,
+                        activeMintToken.name,
+                        activeMintToken.tokenName
                       ),
                       "popup",
                       "width=600,height=600"
@@ -501,7 +500,7 @@ function App() {
                   Tweet Now!
                 </a>
                 <input
-                  className="Tweet-URL-Input"
+                  className="URL-Input"
                   placeholder="Enter Tweet URL"
                   type="text"
                   name="tweet"
@@ -518,7 +517,7 @@ function App() {
                   onClick={async () => {
                     setMintStatus(Status.IN_PROGRESS);
                     try {
-                      await mint(mintTokens[activeMintTokenIndex], clients, tweetUrl);
+                      await mint(activeMintToken, clients, tweetUrl);
                     } catch (e) {
                       console.error(e.message);
                       setMintStatus(Status.ERROR);
@@ -527,7 +526,7 @@ function App() {
                   disabled={mintStatus === Status.IN_PROGRESS}
                 >
                   {mintStatus === Status.IN_PROGRESS ? <>
-                    <img src={mintingGif} alt="gear" /> Minting <img className="Ellipsis-Gif" src={ellipsisGif} alt="ellipsis" />
+                    <img src={spinningGearGif} alt="gear" /> Minting <img className="Ellipsis-Gif" src={ellipsisGif} alt="ellipsis" />
                   </> : "Confirm Mint"}
                 </button>
                 <p className="Cancel-Tweet" onClick={() => setShowTweetInput(false)}>Cancel</p>
@@ -536,28 +535,31 @@ function App() {
               <div className="Card-Body" ref={leftCardRef}>
                 <div className="Card-Token-Content">
                   <div className="Token-Balance">
-                    <img src={mintTokens[activeMintTokenIndex].tokenIcon} alt="icon" />
+                    <img src={activeMintToken.tokenIcon} alt="icon" />
                     <div className="Toke-Balance-Numbers">
                       <p className="Token-Balance-Current">
-                        {mintTokens[activeMintTokenIndex].balance}&nbsp;<span className="Token-Name">{mintTokens[activeMintTokenIndex].tokenName}</span>
+                        {activeMintToken.balance}&nbsp;<span className="Token-Name">{activeMintToken.tokenName}</span>
                       </p>
                       {mintStatus === Status.SUCCESS &&
-                        Math.abs(mintTokens[activeMintTokenIndex].balance - mintTokens[activeMintTokenIndex].oldBalance) > 0 && (
+                        Math.abs(activeMintToken.balance - activeMintToken.oldBalance) > 0 && (
                           <p className="Token-Balance-Change">
-                            {mintTokens[activeMintTokenIndex].balance > mintTokens[activeMintTokenIndex].oldBalance ? "+" : "-"}
-                            {Math.abs(mintTokens[activeMintTokenIndex].balance - mintTokens[activeMintTokenIndex].oldBalance)}{" "}
-                            {mintTokens[activeMintTokenIndex].balance > mintTokens[activeMintTokenIndex].oldBalance ? "minted" : "folded"}
+                            {activeMintToken.balance > activeMintToken.oldBalance ? "+" : "-"}
+                            {Math.abs(activeMintToken.balance - activeMintToken.oldBalance)}{" "}
+                            {activeMintToken.balance > activeMintToken.oldBalance ? "minted" : "folded"}
                           </p>
                         )}
                     </div>
                   </div>
-                  <div className="Card-Image" style={{backgroundImage: `url(${mintTokens[activeMintTokenIndex].tokenBackground})`}}></div>
+                  <div className="Card-Image" style={{backgroundImage: `url(${activeMintToken.tokenBackground})`}}></div>
                 </div>
                 <button
                   type="button"
                   className={`Mint-Button ${mintStatus === Status.SUCCESS ? "Mint-Success" : ""}`}
                   onClick={() => setShowTweetInput(!showTweetInput)}
-                  disabled={mintStatus === Status.IN_PROGRESS || mintStatus === Status.SUCCESS || totalBalance > 0}
+                  disabled={
+                    mintStatus === Status.IN_PROGRESS || mintStatus === Status.SUCCESS ||
+                    mintTokens.some(t => t.balance > 0) || sendTokens.some(t => t.balance > 0)
+                  }
                 >
                   {mintStatus === Status.SUCCESS ? <><i className="fas fa-check" /> Minted!</>  : "Mint"}
                 </button>
@@ -572,14 +574,14 @@ function App() {
         ) : (
           <button
             type="button"
-            className={`Swap-Button${upstream ? "" : " Flip-Image"}${
+            className={`Swap-Button${transferDirection === 'right' ? "" : " Flip-Image"}${
               transferStatus === Status.SUCCESS ? " Transfer-Success" : ""
             }`}
             onClick={async () => {
               setTransferStatus(Status.IN_PROGRESS);
               await transfer(
-                upstream ? mintTokens[activeMintTokenIndex] : sendTokens[activeSendTokenIndex],
-                upstream ? sendTokens[activeSendTokenIndex] : mintTokens[activeMintTokenIndex],
+                transferDirection === 'right' ? activeMintToken : activeSendToken,
+                transferDirection === 'left' ? activeMintToken : activeSendToken,
                 clients,
                 balances,
               );
@@ -587,44 +589,30 @@ function App() {
             disabled={transferDisabled}
           >
             {transferStatus === Status.SUCCESS ? "SUCCESS!" : "FOLD"}
-            {transferStatus === Status.SUCCESS ? (
-              <i className="fas fa-check" />
-            ) : (
-              <img src={transferDisabled ? transferDisabledImage : transferGif} alt="fold" />
-            )}
+            {transferStatus === Status.SUCCESS ? <i className="fas fa-check" /> : <img src={transferDisabled ? transferDisabledImage : transferGif} alt="fold" />}
           </button>
         )}
         <div
           className="Token Token-Right"
-          style={{
-            backgroundColor:
-              sendTokens[activeSendTokenIndex].balance > 0
-                ? sendTokens[activeSendTokenIndex].color
-                : "#F4F5F7",
-          }}
+          style={{backgroundColor: activeSendToken.balance > 0 ? activeSendToken.color : "#F4F5F7"}}
         >
           <div className="Card">
             <div className="Card-Header">
               <Select
                 className="Token-Select"
-                value={sendOptions[activeSendTokenIndex]}
+                value={{label: activeSendToken.name, value: activeSendToken.chainId}}
                 onChange={(option) => {
                   const newTokenIndex = sendTokens.findIndex((t) => t.chainId === option.value);
                   setActiveSendTokenIndex(newTokenIndex);
-                  setUpstream(sendTokens[newTokenIndex].balance < MINIMUM_BALANCE);
                   setSendStatus(Status.READY);
                 }}
                 styles={selectStyles}
-                options={sendOptions.filter(
-                  (opt) =>
-                    opt.value !== sendTokens[activeSendTokenIndex].chainId &&
-                    opt.value !== mintTokens[activeMintTokenIndex].chainId
-                )}
-                isSearchable={false}
-                isDisabled={
-                  transferStatus === Status.IN_PROGRESS ||
-                  sendStatus === Status.IN_PROGRESS
+                options={
+                  sendTokens.map((t) => ({label: t.name, value: t.chainId}))
+                            .filter(o => o.value !== activeSendToken.chainId && o.value !== activeMintToken.chainId)
                 }
+                isSearchable={false}
+                isDisabled={transferStatus === Status.IN_PROGRESS || sendStatus === Status.IN_PROGRESS}
                 components={{ DropdownIndicator }}
                 maxMenuHeight={rightSelectHeight}
               />
@@ -632,91 +620,77 @@ function App() {
             <div className="Card-Body" ref={rightCardRef}>
               <div className="Card-Token-Content">
                 <div className="Token-Balance">
-                  <img src={sendTokens[activeSendTokenIndex].tokenIcon} alt="icon" />
+                  <img src={activeSendToken.tokenIcon} alt="icon" />
                   <div className="Toke-Balance-Numbers">
                     <p className="Token-Balance-Current">
-                      {sendTokens[activeSendTokenIndex].balance}{" "}
-                      <span className="Token-Name">
-                        {sendTokens[activeSendTokenIndex].tokenName}
-                      </span>
+                      {activeSendToken.balance}&nbsp;<span className="Token-Name">{activeSendToken.tokenName}</span>
                     </p>
                     {sendStatus === Status.SUCCESS &&
-                      Math.abs(
-                        sendTokens[activeSendTokenIndex].balance -
-                          sendTokens[activeSendTokenIndex].oldBalance
-                      ) > 0 && (
+                      Math.abs(activeSendToken.balance - activeSendToken.oldBalance) > 0 && (
                         <p className="Token-Balance-Change">
-                          {sendTokens[activeSendTokenIndex].balance >
-                          sendTokens[activeSendTokenIndex].oldBalance
-                            ? "+"
-                            : "-"}
-                          {Math.abs(
-                            sendTokens[activeSendTokenIndex].balance -
-                              sendTokens[activeSendTokenIndex].oldBalance
-                          )}{" "}
-                          sent
+                          {activeSendToken.balance > activeSendToken.oldBalance ? "+" : "-"}
+                          {Math.abs(activeSendToken.balance - activeSendToken.oldBalance)}&nbsp;sent
                         </p>
                       )}
                   </div>
                 </div>
-                <div className="Card-Image" style={{backgroundImage: `url(${sendTokens[activeSendTokenIndex].tokenBackground})`}}></div>
+                <div className="Card-Image" style={{backgroundImage: `url(${activeSendToken.tokenBackground})`}}></div>
               </div>
               {showSendInput ? (
                 <>
-                  <p className="Tweet-Instructions">
-                    Enter address to send funds to (double check which chain you
-                    are sending from!){" "}
-                  </p>
+                  <p className="Instructions">Enter address to send funds to (double check which chain you are sending from!)&nbsp;</p>
                   <input
-                    className="Tweet-URL-Input"
+                    className="URL-Input"
                     placeholder="Enter Address"
                     type="text"
                     name="send-address"
                     onChange={(event) => setSendAddress(event.target.value)}
                   />
                   <div style={{ paddingBottom: "10px" }} />
-                  {sendStatus === Status.ERROR && (
-                    <>
-                      <span style={{ color: "red" }}>Error sending :(</span>
-                      <div style={{ paddingBottom: "10px" }} />
-                    </>
-                  )}
+                  {sendStatus === Status.ERROR && <>
+                    <span style={{ color: "red" }}>Error sending :(</span>
+                    <div style={{ paddingBottom: "10px" }} />
+                  </>}
                   <button
                     type="button"
                     className={sendStatus === Status.IN_PROGRESS ? "Sending-Button" : "Send-Button"}
                     onClick={async () => {
                       setSendStatus(Status.IN_PROGRESS);
                       try {
-                        await send(sendTokens[activeSendTokenIndex], sendAddress, clients);
+                        const transactionHash = await send(activeSendToken, sendAddress, clients);
+                        if (activeSendToken.blockchainExplorerURL !== null) {
+                          setSendTransactionURL(activeSendToken.blockchainExplorerURL.replace('{TRANSACTION_HASH}', transactionHash));
+                        } else {
+                          setSendTransactionURL('');
+                        }
                       } catch (e) {
                         console.error(e.message);
                         setSendStatus(Status.ERROR);
                       }
                     }}
-                    disabled={sendStatus === Status.IN_PROGRESS || sendTokens[activeSendTokenIndex].balance < MINIMUM_BALANCE}
+                    disabled={sendStatus === Status.IN_PROGRESS || activeSendToken.balance < MINIMUM_BALANCE}
                   >
-                    {sendStatus === Status.IN_PROGRESS ? (
-                      <>
-                        <img src={mintingGif} alt="gear" />
-                        Sending
-                        <img className="Ellipsis-Gif" src={ellipsisGif} alt="ellipsis" />
-                      </>
-                    ) : (
-                      "Confirm Send"
-                    )}
+                    {sendStatus === Status.IN_PROGRESS ? <>
+                      <img src={spinningGearGif} alt="gear" /> Sending <img className="Ellipsis-Gif" src={ellipsisGif} alt="ellipsis" />
+                    </> : <>
+                      Confirm Send
+                    </>}
                   </button>
-                  <p className="Cancel-Tweet" onClick={() => setShowSendInput(false)}>Cancel</p>
+                  <p className="Cancel" onClick={() => setShowSendInput(false)}>Cancel</p>
                 </>
               ) : (
                 <button
                   type="button"
                   className={`Send-Button ${sendStatus === Status.SUCCESS ? "Send-Success" : ""}`}
-                  disabled={sendStatus === Status.SUCCESS || sendTokens[activeSendTokenIndex].balance < MINIMUM_BALANCE}
+                  disabled={sendStatus === Status.SUCCESS || activeSendToken.balance < MINIMUM_BALANCE}
                   onClick={() => setShowSendInput(!showSendInput)}
                 >
                   {sendStatus === Status.SUCCESS ? <><i className="fas fa-check" /> Sent!</> : "Send"}
                 </button>
               )}
+              {sendTransactionURL !== null && <div style={{color: '#559955'}}>
+                {sendTransactionURL === '' ? "Broadcasted transaction" : <a href={sendTransactionURL}>View transaction</a>}
+              </div>}
             </div>
           </div>
         </div>

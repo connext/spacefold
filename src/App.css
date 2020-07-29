@@ -172,25 +172,25 @@
   text-align: left;
 }
 
-.Tweet-Instructions {
+.Instructions {
   font-size: 14px;
   margin: 0 0 12px 0;
 }
 
-.Tweet-Identifier {
+.Identifier {
   font-size: 12px;
   word-break: break-word;
   color: #788E99;
   margin: 0 0 12px 0;
 }
 
-.Tweet-Action {
+.Action {
   color: #7D17EA;
   font-size: 18px;
   margin-bottom: 12px;
 }
 
-.Tweet-URL-Input {
+.URL-Input {
   padding: 8px;
   margin-bottom: 12px;
   border: none;
@@ -198,7 +198,7 @@
   border-bottom: 1px solid #202E66;
 }
 
-.Cancel-Tweet {
+.Cancel {
   word-break: break-word;
   cursor: pointer;
   margin: 12px 0 0 0;
