@@ -562,7 +562,7 @@ function App() {
                 </button>
               )}
               {sendTransactionURL !== null && (
-                sendTransactionURL === '' ? "Broadcasted transaction" : <a href={sendTransactionURL} rel="noreferrer noopener" target="_blank" class="Send-Transaction-URL">View transaction</a>
+                sendTransactionURL === '' ? "Broadcasted transaction" : <a href={sendTransactionURL} rel="noreferrer noopener" target="_blank" className="Send-Transaction-URL">View transaction</a>
               )}
             </div>
           </div>
