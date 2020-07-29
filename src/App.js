@@ -464,12 +464,14 @@ function App() {
                       "Confirm Mint"
                     )}
                   </button>
-                  <p
-                    className="Cancel-Tweet"
-                    onClick={() => setShowTweetInput(false)}
-                  >
-                    Cancel
-                  </p>
+                  {mintStatus !== Status.IN_PROGRESS &&
+                    <p
+                      className="Cancel-Tweet"
+                      onClick={() => setShowTweetInput(false)}
+                    >
+                      Cancel
+                    </p>
+                  }
                 </div>
               ) : (
                 <div className="Card-Body" ref={leftCardRef}>
