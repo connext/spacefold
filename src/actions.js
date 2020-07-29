@@ -127,18 +127,22 @@ export async function transfer(fromToken, toToken, clients, balances) {
   const fromClient = clients[fromToken.chainId];
   const toClient = clients[toToken.chainId];
 
-  const params = {
-    assetId: fromToken.tokenAddress,
-    amount: utils.parseEther(balances[fromToken.chainId]),
-    recipient: toClient.publicIdentifier,
-    meta: {
-      receiverAssetId: toToken.tokenAddress,
-      receiverChainId: toToken.chainId,
-    },
-  };
-  console.log(`Transferring with params ${stringify(params, true, 0)}`);
-  const res = await fromClient.transfer(params);
-  console.log(`Transfer complete: ${stringify(res, true, 0)}`);
+  try {
+    const params = {
+      assetId: fromToken.tokenAddress,
+      amount: utils.parseEther(balances[fromToken.chainId]),
+      recipient: toClient.publicIdentifier,
+      meta: {
+        receiverAssetId: toToken.tokenAddress,
+        receiverChainId: toToken.chainId,
+      },
+    };
+    console.log(`Transferring with params ${stringify(params, true, 0)}`);
+    const res = await fromClient.transfer(params);
+    console.log(`Transfer complete: ${stringify(res, true, 0)}`);
+  } catch (e) {
+    throw new Error(`Error folding: ${e.stack}`);
+  }
 }
 
 export async function send(sendToken, sendAddress, clients) {

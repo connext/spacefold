@@ -565,16 +565,21 @@ function App() {
               }${transferStatus === Status.SUCCESS ? " Transfer-Success" : ""}`}
               onClick={async () => {
                 setTransferStatus(Status.IN_PROGRESS);
-                await transfer(
-                  transferDirection === "right"
-                    ? activeMintToken
-                    : activeSendToken,
-                  transferDirection === "left"
-                    ? activeMintToken
-                    : activeSendToken,
-                  clients,
-                  balances
-                );
+                try {
+                  await transfer(
+                    transferDirection === "right"
+                      ? activeMintToken
+                      : activeSendToken,
+                    transferDirection === "left"
+                      ? activeMintToken
+                      : activeSendToken,
+                    clients,
+                    balances
+                  );
+                } catch(e) {
+                  setTransferStatus(Status.ERROR);
+                  alert("Folding failed!");
+                }
               }}
               disabled={transferDisabled}
             >
