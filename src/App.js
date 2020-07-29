@@ -317,6 +317,8 @@ function App() {
     activeSendToken === null || // no tokens selected
     transferStatus === Status.IN_PROGRESS ||
     transferStatus === Status.SUCCESS || // transfer occurring or occurred
+    mintStatus === Status.IN_PROGRESS || // minting occurring
+    sendStatus === Status.IN_PROGRESS || // sending occurring
     (activeMintToken.balance <= MINIMUM_BALANCE &&
       activeSendToken.balance <= MINIMUM_BALANCE); // not enough tokens to transfer, in either direction
   const transferDirection =
