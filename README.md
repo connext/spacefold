@@ -23,8 +23,10 @@ Spacefold demonstrates Connext's solution to this. Users can use state channels 
 ## Table of Contents
 1. Compatibility with Other Chains
 2. Running it Yourself
+
     a. Setting Up the Demo Locally
     b. Running your own Connext Node on Multiple Chains
+    
 3. Demo implementation details
     a. Minting via a Faucet
     b. Functionality Limitations
