@@ -5,6 +5,7 @@ import Select from "react-select";
 import loadingGif from "./images/loading.gif";
 import transferDisabledImage from "./images/transferDisabled.png";
 import transferGif from "./images/transfer.gif";
+import dropdownDisabledImage from "./images/dropdownDisabled.png";
 import dropdownGif from "./images/dropdown.gif";
 import spinningGearGif from "./images/spinningGear.gif";
 import ellipsisGif from "./images/ellipsis.gif";
@@ -313,6 +314,15 @@ function App() {
       width: 0,
     }),
   };
+  const leftSelectDisabled = 
+    activeMintToken === null ||
+    transferStatus === Status.IN_PROGRESS ||
+    mintStatus === Status.IN_PROGRESS ||
+    activeMintToken.balance > 0;
+  const rightSelectDisabled =
+    activeSendToken === null ||
+    transferStatus === Status.IN_PROGRESS ||
+    sendStatus === Status.IN_PROGRESS;
   const transferDisabled =
     activeMintToken === null ||
     activeSendToken === null || // no tokens selected
@@ -333,16 +343,17 @@ function App() {
     <div className="App">
       <Loading initializing={initializing} />
       <div className="More-Buttons">
-        <a href="https://github.com/connext/spacefold" target="_blank">
+        <a href="https://github.com/connext/spacefold" target="_blank" rel="noopener noreferrer">
           <i className="fab fa-github Github-Icon"></i> GitHub
         </a>
         <a
           href="https://discord.com/channels/454734546869551114"
           target="_blank"
+          rel="noopener noreferrer"
         >
           <i className="fab fa-discord Discord-Icon"></i> Chat
         </a>
-        <a href="https://connext.network/" target="_blank">
+        <a href="https://connext.network/" target="_blank" rel="noopener noreferrer">
           <i className="fa fa-info About-Icon"></i> About
         </a>
       </div>
@@ -379,12 +390,10 @@ function App() {
                         opt.value !== activeSendToken.chainId
                     )}
                   isSearchable={false}
-                  isDisabled={
-                    transferStatus === Status.IN_PROGRESS ||
-                    mintStatus === Status.IN_PROGRESS ||
-                    activeMintToken.balance > 0
-                  }
-                  components={{ DropdownIndicator }}
+                  isDisabled={leftSelectDisabled}
+                  components={{
+                    DropdownIndicator: leftSelectDisabled ? DisabledDropdownIndicator : DropdownIndicator
+                  }}
                   maxMenuHeight={leftSelectHeight}
                 />
               </div>
@@ -611,11 +620,10 @@ function App() {
                         o.value !== activeMintToken.chainId
                     )}
                   isSearchable={false}
-                  isDisabled={
-                    transferStatus === Status.IN_PROGRESS ||
-                    sendStatus === Status.IN_PROGRESS
-                  }
-                  components={{ DropdownIndicator }}
+                  isDisabled={rightSelectDisabled}
+                  components={{ 
+                    DropdownIndicator: rightSelectDisabled ? DisabledDropdownIndicator : DropdownIndicator,
+                  }}
                   maxMenuHeight={rightSelectHeight}
                 />
               </div>
@@ -772,7 +780,7 @@ function App() {
           </div>
         </>
       )}
-      <a className="Footer" href="https://connext.network/" target="_blank">
+      <a className="Footer" href="https://connext.network/" target="_blank" rel="noopener noreferrer">
         Made with <i className="fas fa-heart Heart-Icon"></i> by Connext
       </a>
     </div>
@@ -788,6 +796,20 @@ const DropdownIndicator = ({ selectProps }) => {
           : "Dropdown-Indicator"
       }
       src={dropdownGif}
+      alt="dropdownIndicator"
+    />
+  );
+};
+
+const DisabledDropdownIndicator = ({ selectProps }) => {
+  return (
+    <img
+      className={
+        selectProps && selectProps.menuIsOpen
+          ? "Dropdown-Indicator Dropdown-Indicator-Open"
+          : "Dropdown-Indicator"
+      }
+      src={dropdownDisabledImage}
       alt="dropdownIndicator"
     />
   );
