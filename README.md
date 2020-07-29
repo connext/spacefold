@@ -50,10 +50,10 @@ While the above is true, in the ideal case (to avoid custom work), it's best for
 
 To help with parsing out which solutions can and can't work with Connext, we've created an easy-to-parse compatiblity chart: //TODO
 
-Spacefold demonstrates the following out-of-the-box integrations with several chains and scalability solutions:
+Spacefold demonstrates the following out-of-the-box integrations with several chains and scalability solutions (in no particular order):
 
 ### L2/Scalability Chains
-**Matic Mumbai Testnet**
+**Matic Public Testnet**
 ChainId:
 Website:
 Type: Plasma chain
