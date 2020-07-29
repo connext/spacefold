@@ -278,6 +278,13 @@
   font-size: 14px;
 }
 
+.Send-Transaction-URL {
+  color: gray;
+  display: block;
+  text-align: center;
+  margin-top: 15px;
+}
+
 .Swap-Button {
   position: absolute;
   top: 50%;

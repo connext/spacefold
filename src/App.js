@@ -1,10 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
-import * as connext from "@connext/client";
-import { ColorfulLogger, stringify } from "@connext/utils";
-import { getLocalStore } from "@connext/store";
 import { constants, utils } from "ethers";
 import Select from "react-select";
-import axios from "axios";
 
 import loadingGif from "./images/loading.gif";
 import transferDisabledImage from "./images/transferDisabled.png";
@@ -22,19 +18,20 @@ import brickBackground from "./images/brickBackground.png";
 // import xDaiBackground from "./images/xDaiBackground.png";
 // import maticBackground from "./images/maticBackground.png";
 
+import { initClients, mint, transfer, send } from "./actions";
+
 import "./App.css";
 
 import Loading from "./components/Loading";
-import { getWallet } from "./wallet";
-
-const { formatEther, parseEther } = utils;
-
-const dotenv = require("dotenv");
-dotenv.config();
-
-const nodeUrl = "https://node.spacefold.io/";
 
 const MINIMUM_BALANCE = 0.001;
+
+const Status = {
+  READY: 0,
+  IN_PROGRESS: 1,
+  ERROR: 2,
+  SUCCESS: 3,
+};
 
 const TOKENS = {
   4: {
@@ -123,150 +120,6 @@ const getTweetURL = (publicIdentifier, chainName, tokenName) =>
     `Minting ${tokenName} tokens for channel ${publicIdentifier} https://spacefold.io on ${chainName}! By @ConnextNetwork`
   );
 
-const Status = {
-  READY: 0,
-  IN_PROGRESS: 1,
-  ERROR: 2,
-  SUCCESS: 3,
-};
-
-async function initClients(tokens, onMintSucceeded, onTransferSucceeded, onWithdrawSucceeded, onBalanceRefresh) {
-  const clientsAndBalances = await Promise.all(
-    Object.values(tokens).map(async (token) => {
-      try {
-        console.log(`Creating client for token ${JSON.stringify(token)}`);
-        const pk = getWallet(token.chainId).privateKey;
-        const client = await connext.connect({
-          nodeUrl,
-          ethProviderUrl: token.ethProviderUrl,
-          signer: getWallet(token.chainId).privateKey,
-          loggerService: new ColorfulLogger(
-            token.chainId.toString(),
-            3,
-            false,
-            token.chainId
-          ),
-          store: getLocalStore({prefix: `INDRA_CLIENT_${pk.substring(0, 10).toUpperCase()}`}),
-          logLevel: 3,
-        });
-        const freeBalance = await client.getFreeBalance(token.tokenAddress);
-        console.log(
-          `Created client for token ${JSON.stringify(token)}: ${
-            client.publicIdentifier
-          } with balance: ${freeBalance[client.signerAddress]}`
-        );
-
-        client.requestCollateral(TOKENS[client.chainId]);
-
-        const refreshBalances = async (client) => {
-          const token = TOKENS[client.chainId];
-          const channel = await client.getFreeBalance(token.tokenAddress);
-          onBalanceRefresh(client.chainId, channel[client.signerAddress]);
-          return channel[client.signerAddress];
-        };
-
-        client.on("CONDITIONAL_TRANSFER_CREATED_EVENT", async (msg) => {
-          const updated = await refreshBalances(client);
-          console.log("Transfer created, updated balances", updated);
-          onMintSucceeded();
-        });
-        client.on("CONDITIONAL_TRANSFER_UNLOCKED_EVENT", async (msg) => {
-          const updated = await refreshBalances(client);
-          console.log("Transfer unlocked, updated balances", updated);
-          onTransferSucceeded();
-        });
-        client.on("WITHDRAWAL_CONFIRMED_EVENT", async (msg) => {
-          const updated = await refreshBalances(client);
-          console.log("Withdrawal completed, updated balances", updated);
-          onWithdrawSucceeded();
-        });
-
-        return { client, freeBalance };
-      } catch (e) {
-        throw new Error(`Failed to create client on ${token.chainId}. Error: ${e.message}`);
-      }
-    })
-  );
-  const clients = clientsAndBalances.reduce((c, entry) => {
-    if (entry) {
-      c[entry.client.chainId] = entry.client;
-    }
-    return c;
-  }, {});
-  const balances = clientsAndBalances.reduce((b, entry) => {
-    if (entry) {
-      b[entry.client.chainId] = formatEther(
-        entry.freeBalance[entry.client.signerAddress]
-      );
-    }
-    return b;
-  }, {});
-  return { clients, balances };
-}
-
-async function mint(mintToken, clients, tweetUrl) {
-  const assetId = mintToken.tokenAddress;
-  const client = clients[mintToken.chainId];
-  if (!client) {
-    throw new Error(`Failed to find client for ${mintToken.chainId}`);
-  }
-  const faucetUrl = `${process.env.REACT_APP_FAUCET_URL}/faucet`;
-  const faucetData = {
-    assetId,
-    recipient: client.publicIdentifier,
-    tweet: tweetUrl,
-    chainId: mintToken.chainId,
-  };
-  try {
-    console.log(
-      `Making faucet request to ${faucetUrl}: ${stringify(faucetData, true, 0)}`
-    );
-    const res = await axios.post(faucetUrl, faucetData);
-    console.log(`Faucet response: ${JSON.stringify(res)}`);
-  } catch (e) {
-    throw new Error(
-      `Error minting tokens: ${
-        e.response ? JSON.stringify(e.response.data || {}) : e.message
-      }`
-    );
-  }
-}
-
-async function transfer(fromToken, toToken, clients, balances) {
-  const fromClient = clients[fromToken.chainId];
-  const toClient = clients[toToken.chainId];
-
-  const params = {
-    assetId: fromToken.tokenAddress,
-    amount: parseEther(balances[fromToken.chainId]),
-    recipient: toClient.publicIdentifier,
-    meta: {
-      receiverAssetId: toToken.tokenAddress,
-      receiverChainId: toToken.chainId,
-    },
-  };
-  console.log(`Transferring with params ${stringify(params, true, 0)}`);
-  const res = await fromClient.transfer(params);
-  console.log(`Transfer complete: ${stringify(res, true, 0)}`);
-}
-
-async function send(sendToken, sendAddress, clients) {
-  const sendClient = clients[sendToken.chainId];
-  try {
-    const withdrawParams = {
-      amount: parseEther(sendToken.balance),
-      assetId: sendToken.tokenAddress,
-      recipient: sendAddress,
-    };
-    console.log(`Sending tokens: ${JSON.stringify(withdrawParams)}`);
-    const res = await sendClient.withdraw(withdrawParams);
-    console.log(`Withdraw response: ${JSON.stringify(res)}`);
-    return res.transaction.hash;
-  } catch (e) {
-    throw new Error(`Error sending tokens: ${e.stack}`);
-  }
-}
-
 function App() {
   const [clients, setClients] = useState({});
   const [balances, setBalances] = useState({});
@@ -305,9 +158,7 @@ function App() {
     }
 
     function onBalanceRefresh(chainId, newBalance) {
-      setBalances((prevBalances) => {
-        return {...prevBalances, [chainId]: formatEther(newBalance)};
-      });
+      setBalances(prevBalances => ({...prevBalances, [chainId]: utils.formatEther(newBalance)}));
     }
 
     async function init() {
