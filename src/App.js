@@ -67,53 +67,53 @@ const TOKENS = {
     ethProviderUrl: `https://kovan.infura.io/v3/${process.env.REACT_APP_INFURA_ID}`,
     blockchainExplorerURL: "https://kovan.etherscan.io/tx/{TRANSACTION_HASH}",
   },
-  // 61: {
-  //   tokenName: "TOKEN",
-  //   tokenIcon: ethIcon,
-  //   tokenBackground: ethBackground,
-  //   tokenAddress: "0xf502A7897a49A9daFa5542203746Bad6C6E86c11",
-  //   chainId: 61,
-  //   name: "ETC",
-  //   color: "#01C853",
-  //   ethProviderUrl: `https://www.ethercluster.com/etc`,
-  //   blockchainExplorerURL:
-  //     "https://blockscout.com/etc/mainnet/tx/{TRANSACTION_HASH}/token_transfers",
-  // },
-  // 100: {
-  //   tokenName: "xBRICKS",
-  //   tokenIcon: brickIcon,
-  //   tokenBackground: xDaiBackground,
-  //   tokenAddress: "0xf502A7897a49A9daFa5542203746Bad6C6E86c11",
-  //   chainId: 100,
-  //   name: "xDAI",
-  //   color: "#01C853",
-  //   ethProviderUrl: `https://xdai.poanetwork.dev`,
-  //   blockchainExplorerURL:
-  //     "https://blockscout.com/poa/xdai/tx/{TRANSACTION_HASH}/token_transfers",
-  // },
-  // 80001: {
-  //   tokenName: "mTOKEN",
-  //   tokenIcon: ethIcon,
-  //   tokenBackground: maticBackground,
-  //   tokenAddress: "0xf502A7897a49A9daFa5542203746Bad6C6E86c11",
-  //   chainId: 80001,
-  //   name: "Matic",
-  //   color: "#2b6def",
-  //   ethProviderUrl: `https://rpc-mumbai.matic.today`,
-  //   blockchainExplorerURL:
-  //     "https://mumbai-explorer.matic.today/tx/{TRANSACTION_HASH}/token_transfers",
-  // },
-  // 346750: {
-  //   tokenName: "sTOKEN",
-  //   tokenIcon: ethIcon,
-  //   tokenBackground: skaleBackground,
-  //   tokenAddress: "0xf502A7897a49A9daFa5542203746Bad6C6E86c11",
-  //   chainId: 346750,
-  //   name: "SKALE",
-  //   color: "#000000",
-  //   ethProviderUrl: `https://dev-testnet-v1-1.skalelabs.com`,
-  //   blockchainExplorerURL: null,
-  // },
+  61: {
+    tokenName: "TOKEN",
+    tokenIcon: ethIcon,
+    tokenBackground: ethBackground,
+    tokenAddress: "0xf502A7897a49A9daFa5542203746Bad6C6E86c11",
+    chainId: 61,
+    name: "ETC",
+    color: "#01C853",
+    ethProviderUrl: `https://www.ethercluster.com/etc`,
+    blockchainExplorerURL:
+      "https://blockscout.com/etc/mainnet/tx/{TRANSACTION_HASH}/token_transfers",
+  },
+  100: {
+    tokenName: "xBRICKS",
+    tokenIcon: brickIcon,
+    tokenBackground: xDaiBackground,
+    tokenAddress: "0xf502A7897a49A9daFa5542203746Bad6C6E86c11",
+    chainId: 100,
+    name: "xDAI",
+    color: "#01C853",
+    ethProviderUrl: `https://xdai.poanetwork.dev`,
+    blockchainExplorerURL:
+      "https://blockscout.com/poa/xdai/tx/{TRANSACTION_HASH}/token_transfers",
+  },
+  80001: {
+    tokenName: "mTOKEN",
+    tokenIcon: ethIcon,
+    tokenBackground: maticBackground,
+    tokenAddress: "0xf502A7897a49A9daFa5542203746Bad6C6E86c11",
+    chainId: 80001,
+    name: "Matic",
+    color: "#2b6def",
+    ethProviderUrl: `https://rpc-mumbai.matic.today`,
+    blockchainExplorerURL:
+      "https://mumbai-explorer.matic.today/tx/{TRANSACTION_HASH}/token_transfers",
+  },
+  346750: {
+    tokenName: "sTOKEN",
+    tokenIcon: ethIcon,
+    tokenBackground: skaleBackground,
+    tokenAddress: "0xf502A7897a49A9daFa5542203746Bad6C6E86c11",
+    chainId: 346750,
+    name: "SKALE",
+    color: "#000000",
+    ethProviderUrl: `https://dev-testnet-v1-1.skalelabs.com`,
+    blockchainExplorerURL: null,
+  },
 };
 
 const getTweetURL = (publicIdentifier, chainName, tokenName) =>
@@ -464,14 +464,14 @@ function App() {
                       "Confirm Mint"
                     )}
                   </button>
-                  {mintStatus !== Status.IN_PROGRESS &&
+                  {mintStatus !== Status.IN_PROGRESS && (
                     <p
                       className="Cancel-Tweet"
                       onClick={() => setShowTweetInput(false)}
                     >
                       Cancel
                     </p>
-                  }
+                  )}
                 </div>
               ) : (
                 <div className="Card-Body" ref={leftCardRef}>
