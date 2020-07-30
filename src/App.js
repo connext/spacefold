@@ -109,7 +109,7 @@ const TOKENS = {
   //   tokenIcon: ethIcon,
   //   tokenBackground: skaleBackground,
   //   tokenAddress: "0xf502A7897a49A9daFa5542203746Bad6C6E86c11",
-  //   chainId: 346750,
+  //   chainId: 16,
   //   name: "SKALE",
   //   color: "#000000",
   //   ethProviderUrl: `https://dev-testnet-v1-1.skalelabs.com`,
@@ -117,12 +117,12 @@ const TOKENS = {
   // },
   108: {
     tokenName: "oTOKEN",
-    tokenIcon: brickIcon, // FIXME: ovm token icon
+    tokenIcon: ethIcon,
     tokenBackground: optimismBackground,
     tokenAddress: "0x9313b03453730D296EC4A62b6f3Fc758A9D1d199",
     chainId: 108,
     name: "OVM",
-    color: "#D72E20", // FIXME: better background color
+    color: "#F50025",
     ethProviderUrl: `https://connext.optimism.io`,
     blockchainExplorerURL: null,
   },
