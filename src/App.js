@@ -139,7 +139,7 @@ function App() {
   const [sendTransactionURL, setSendTransactionURL] = useState(null);
   const [transferStatus, setTransferStatus] = useState(Status.READY);
   const [initializing, setInitializing] = useState(true);
-  const [collateralizing, setCollateralizing] = useState(false);
+  const [collateralizing, setCollateralizing] = useState(true);
   const [loadingMessage, setLoadingMessage] = useState("");
   const [leftSelectHeight, setLeftSelectHeight] = useState(0);
   const [rightSelectHeight, setRightSelectHeight] = useState(0);
@@ -189,6 +189,8 @@ function App() {
         setRightSelectHeight(
           rightCardRef.current ? rightCardRef.current.clientHeight : 0
         );
+        await collateralize(clients, TOKENS);
+        setCollateralizing(false);
       } catch (e) {
         console.error(e.message);
       }
@@ -197,15 +199,6 @@ function App() {
     // no exhaustive deps, we only want this to run on start
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  useEffect(() => {
-    async function requestCollateral() {
-      setCollateralizing(true);
-      await collateralize(clients, TOKENS);
-      setCollateralizing(false);
-    }
-    requestCollateral()
-  }, [clients])
 
   // window resize setup
   useEffect(() => {
