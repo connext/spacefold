@@ -173,15 +173,15 @@ function App() {
     async function init() {
       try {
         setLoadingMessage(`Initializating channels...`);
-        const { clients: _clients, balances: _balances } = await initClients(
+        const { clients, balances } = await initClients(
           TOKENS,
           onMintSucceeded,
           onTransferSucceeded,
           onWithdrawSucceeded,
           onBalanceRefresh,
         );
-        setClients(_clients);
-        setBalances(_balances);
+        setClients(clients);
+        setBalances(balances);
         setInitializing(false);
         setLeftSelectHeight(
           leftCardRef.current ? leftCardRef.current.clientHeight : 0
@@ -189,9 +189,6 @@ function App() {
         setRightSelectHeight(
           rightCardRef.current ? rightCardRef.current.clientHeight : 0
         );
-        setCollateralizing(true);
-        await collateralize(_clients, TOKENS);
-        setCollateralizing(false);
       } catch (e) {
         console.error(e.message);
       }
@@ -200,6 +197,15 @@ function App() {
     // no exhaustive deps, we only want this to run on start
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    async function requestCollateral() {
+      setCollateralizing(true);
+      await collateralize(clients, TOKENS);
+      setCollateralizing(false);
+    }
+    requestCollateral()
+  }, [clients])
 
   // window resize setup
   useEffect(() => {
