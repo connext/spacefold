@@ -108,7 +108,8 @@ export async function collateralize(
   await Promise.all(
     Object.values(clients).map(async client => {
       const token = tokens[client.chainId];
-      await client.requestCollateral(token.tokenAddress);
+      const tx = await client.requestCollateral(token.tokenAddress);
+      await client.ethProvider.waitForTransaction(tx.hash);
       await client.waitFor(EventNames.UNINSTALL_EVENT, 10_000);
     })
   )
