@@ -80,18 +80,18 @@ const TOKENS = {
     blockchainExplorerURL:
       "https://blockscout.com/etc/mainnet/tx/{TRANSACTION_HASH}/token_transfers",
   },
-  100: {
-    tokenName: "xBRICKS",
-    tokenIcon: brickIcon,
-    tokenBackground: xDaiBackground,
-    tokenAddress: "0xf502A7897a49A9daFa5542203746Bad6C6E86c11",
-    chainId: 100,
-    name: "xDAI",
-    color: "#01C853",
-    ethProviderUrl: `https://xdai.poanetwork.dev`,
-    blockchainExplorerURL:
-      "https://blockscout.com/poa/xdai/tx/{TRANSACTION_HASH}/token_transfers",
-  },
+  // 100: {
+  //   tokenName: "xBRICKS",
+  //   tokenIcon: brickIcon,
+  //   tokenBackground: xDaiBackground,
+  //   tokenAddress: "0xf502A7897a49A9daFa5542203746Bad6C6E86c11",
+  //   chainId: 100,
+  //   name: "xDAI",
+  //   color: "#01C853",
+  //   ethProviderUrl: `https://xdai.poanetwork.dev`,
+  //   blockchainExplorerURL:
+  //     "https://blockscout.com/poa/xdai/tx/{TRANSACTION_HASH}/token_transfers",
+  // },
   80001: {
     tokenName: "mTOKEN",
     tokenIcon: ethIcon,
@@ -104,17 +104,17 @@ const TOKENS = {
     blockchainExplorerURL:
       "https://mumbai-explorer.matic.today/tx/{TRANSACTION_HASH}/token_transfers",
   },
-  346750: {
-    tokenName: "sTOKEN",
-    tokenIcon: ethIcon,
-    tokenBackground: skaleBackground,
-    tokenAddress: "0xf502A7897a49A9daFa5542203746Bad6C6E86c11",
-    chainId: 346750,
-    name: "SKALE",
-    color: "#000000",
-    ethProviderUrl: `https://dev-testnet-v1-1.skalelabs.com`,
-    blockchainExplorerURL: null,
-  },
+  // 346750: {
+  //   tokenName: "sTOKEN",
+  //   tokenIcon: ethIcon,
+  //   tokenBackground: skaleBackground,
+  //   tokenAddress: "0xf502A7897a49A9daFa5542203746Bad6C6E86c11",
+  //   chainId: 346750,
+  //   name: "SKALE",
+  //   color: "#000000",
+  //   ethProviderUrl: `https://dev-testnet-v1-1.skalelabs.com`,
+  //   blockchainExplorerURL: null,
+  // },
 };
 
 const getTweetURL = (publicIdentifier, chainName, tokenName) =>
@@ -139,7 +139,7 @@ function App() {
   const [sendTransactionURL, setSendTransactionURL] = useState(null);
   const [transferStatus, setTransferStatus] = useState(Status.READY);
   const [initializing, setInitializing] = useState(true);
-  const [loadingMessage, setLoadingMessage] = useState('');
+  const [loadingMessage, setLoadingMessage] = useState("");
   const [leftSelectHeight, setLeftSelectHeight] = useState(0);
   const [rightSelectHeight, setRightSelectHeight] = useState(0);
   const leftCardRef = useRef(null);
@@ -177,7 +177,7 @@ function App() {
           onTransferSucceeded,
           onWithdrawSucceeded,
           onBalanceRefresh,
-          setLoadingMessage,
+          setLoadingMessage
         );
         setClients(clients);
         setBalances(balances);
@@ -316,7 +316,7 @@ function App() {
       width: 0,
     }),
   };
-  const leftSelectDisabled = 
+  const leftSelectDisabled =
     activeMintToken === null ||
     transferStatus === Status.IN_PROGRESS ||
     mintStatus === Status.IN_PROGRESS ||
@@ -345,7 +345,11 @@ function App() {
     <div className="App">
       <Loading initializing={initializing} message={loadingMessage} />
       <div className="More-Buttons">
-        <a href="https://github.com/connext/spacefold" target="_blank" rel="noopener noreferrer">
+        <a
+          href="https://github.com/connext/spacefold"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           <i className="fab fa-github Github-Icon"></i> GitHub
         </a>
         <a
@@ -355,7 +359,11 @@ function App() {
         >
           <i className="fab fa-discord Discord-Icon"></i> Chat
         </a>
-        <a href="https://connext.network/" target="_blank" rel="noopener noreferrer">
+        <a
+          href="https://connext.network/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           <i className="fa fa-info About-Icon"></i> About
         </a>
       </div>
@@ -394,7 +402,9 @@ function App() {
                   isSearchable={false}
                   isDisabled={leftSelectDisabled}
                   components={{
-                    DropdownIndicator: leftSelectDisabled ? DisabledDropdownIndicator : DropdownIndicator
+                    DropdownIndicator: leftSelectDisabled
+                      ? DisabledDropdownIndicator
+                      : DropdownIndicator,
                   }}
                   maxMenuHeight={leftSelectHeight}
                 />
@@ -567,7 +577,9 @@ function App() {
               }${
                 transferStatus === Status.SUCCESS
                   ? " Transfer-Success"
-                  : (transferStatus === Status.ERROR ? " Transfer-Error" : "")
+                  : transferStatus === Status.ERROR
+                  ? " Transfer-Error"
+                  : ""
               }`}
               onClick={async () => {
                 setTransferStatus(Status.IN_PROGRESS);
@@ -582,36 +594,28 @@ function App() {
                     clients,
                     balances
                   );
-                } catch(e) {
+                } catch (e) {
                   setTransferStatus(Status.ERROR);
                   setTimeout(() => setTransferStatus(Status.READY), 2000);
                 }
               }}
               disabled={transferDisabled}
             >
-              {
-                transferStatus === Status.SUCCESS
-                  ? "SUCCESS!"
-                  : (transferStatus === Status.ERROR ? "ERROR" : "FOLD")
-              }
-              {
-                transferStatus === Status.SUCCESS
-                  ? (
-                    <i className="fas fa-check" />
-                  )
-                  : (
-                    transferStatus === Status.ERROR
-                      ? (
-                        <i className="fas fa-exclamation" />
-                      )
-                      : (
-                        <img
-                          src={transferDisabled ? transferDisabledImage : transferGif}
-                          alt="fold"
-                        />
-                      )
-                  )
-              }
+              {transferStatus === Status.SUCCESS
+                ? "SUCCESS!"
+                : transferStatus === Status.ERROR
+                ? "ERROR"
+                : "FOLD"}
+              {transferStatus === Status.SUCCESS ? (
+                <i className="fas fa-check" />
+              ) : transferStatus === Status.ERROR ? (
+                <i className="fas fa-exclamation" />
+              ) : (
+                <img
+                  src={transferDisabled ? transferDisabledImage : transferGif}
+                  alt="fold"
+                />
+              )}
             </button>
           )}
           <div
@@ -646,8 +650,10 @@ function App() {
                     )}
                   isSearchable={false}
                   isDisabled={rightSelectDisabled}
-                  components={{ 
-                    DropdownIndicator: rightSelectDisabled ? DisabledDropdownIndicator : DropdownIndicator,
+                  components={{
+                    DropdownIndicator: rightSelectDisabled
+                      ? DisabledDropdownIndicator
+                      : DropdownIndicator,
                   }}
                   maxMenuHeight={rightSelectHeight}
                 />
@@ -805,7 +811,12 @@ function App() {
           </div>
         </>
       )}
-      <a className="Footer" href="https://connext.network/" target="_blank" rel="noopener noreferrer">
+      <a
+        className="Footer"
+        href="https://connext.network/"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
         Made with <i className="fas fa-heart Heart-Icon"></i> by Connext
       </a>
     </div>
