@@ -109,8 +109,9 @@ export async function collateralize(
     Object.values(clients).map(async client => {
       const token = tokens[client.chainId];
       const tx = await client.requestCollateral(token.tokenAddress);
+      console.log(`Sent collateralization tx: ${tx.hash}`);
       await client.ethProvider.waitForTransaction(tx.hash);
-      await client.waitFor(EventNames.UNINSTALL_EVENT, 10_000);
+      console.log(`Transaction mined: ${tx.hash}`);
     })
   )
 }
