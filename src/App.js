@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { constants, utils } from "ethers";
+import { utils } from "ethers";
 import Select from "react-select";
 
 import loadingGif from "./images/loading.gif";
@@ -249,6 +249,7 @@ function App() {
   // select initially active mint and send tokens
   useEffect(() => {
     if (activeMintTokenIndex === null && mintTokens.length > 0) {
+      console.warn('AAAAAAAAAAAAAAAAAAAAAAAAAA', mintTokens);
       const existingIndex = mintTokens.findIndex(
         (t) => t.balance > 0 && t.tokenName !== "MOON"
       );
@@ -327,9 +328,9 @@ function App() {
     sendStatus === Status.IN_PROGRESS;
   const transferDisabled =
     activeMintToken === null ||
-    activeSendToken === null || // no tokens selected
+    activeSendToken === null ||
     transferStatus === Status.IN_PROGRESS ||
-    transferStatus === Status.SUCCESS || // transfer occurring or occurred
+    transferStatus === Status.SUCCESS ||
     mintStatus === Status.IN_PROGRESS || // minting occurring
     sendStatus === Status.IN_PROGRESS || // sending occurring
     (activeMintToken.balance <= MINIMUM_BALANCE &&
@@ -601,21 +602,13 @@ function App() {
               }}
               disabled={transferDisabled}
             >
-              {transferStatus === Status.SUCCESS
-                ? "SUCCESS!"
+            {
+              transferStatus === Status.SUCCESS
+                ? <>SUCCESS! <i className="fas fa-check" /></>
                 : transferStatus === Status.ERROR
-                ? "ERROR"
-                : "FOLD"}
-              {transferStatus === Status.SUCCESS ? (
-                <i className="fas fa-check" />
-              ) : transferStatus === Status.ERROR ? (
-                <i className="fas fa-exclamation" />
-              ) : (
-                <img
-                  src={transferDisabled ? transferDisabledImage : transferGif}
-                  alt="fold"
-                />
-              )}
+                ? <>ERROR <i className="fas fa-exclamation" /></>
+                : <>FOLD <img src={transferDisabled ? transferDisabledImage : transferGif} alt="fold" /></>
+            }
             </button>
           )}
           <div
