@@ -190,7 +190,7 @@ function App() {
           rightCardRef.current ? rightCardRef.current.clientHeight : 0
         );
         setCollateralizing(true);
-        await collateralize(clients, TOKENS);
+        await collateralize(_clients, TOKENS);
         setCollateralizing(false);
       } catch (e) {
         console.error(e.message);
