@@ -172,13 +172,13 @@ function App() {
 
     async function init() {
       try {
+        setLoadingMessage(`Initializating channels...`);
         const { clients: _clients, balances: _balances } = await initClients(
           TOKENS,
           onMintSucceeded,
           onTransferSucceeded,
           onWithdrawSucceeded,
           onBalanceRefresh,
-          setLoadingMessage
         );
         setClients(_clients);
         setBalances(_balances);

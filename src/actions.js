@@ -18,12 +18,10 @@ export async function initClients(
   onTransferSucceeded,
   onWithdrawSucceeded,
   onBalanceRefresh,
-  setLoadingMessage
 ) {
   const clientsAndBalances = await Promise.all(
     Object.values(tokens).map(async (token) => {
       try {
-        setLoadingMessage(`Creating client for ${token.name}...`);
         console.log(
           `Creating client for token ${JSON.stringify({
             name: token.name,
