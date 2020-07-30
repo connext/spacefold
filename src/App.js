@@ -172,7 +172,7 @@ function App() {
 
     async function init() {
       try {
-        const { clients, balances } = await initClients(
+        const { clients: _clients, balances: _balances } = await initClients(
           TOKENS,
           onMintSucceeded,
           onTransferSucceeded,
@@ -180,8 +180,8 @@ function App() {
           onBalanceRefresh,
           setLoadingMessage
         );
-        setClients(clients);
-        setBalances(balances);
+        setClients(_clients);
+        setBalances(_balances);
         setInitializing(false);
         setLeftSelectHeight(
           leftCardRef.current ? leftCardRef.current.clientHeight : 0
