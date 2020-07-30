@@ -19,7 +19,7 @@ import skaleBackground from "./images/skaleBackground.png";
 import xDaiBackground from "./images/xDaiBackground.png";
 import maticBackground from "./images/maticBackground.png";
 
-import { initClients, mint, transfer, send } from "./actions";
+import { initClients, mint, transfer, send, collateralize } from "./actions";
 
 import "./App.css";
 
@@ -139,6 +139,7 @@ function App() {
   const [sendTransactionURL, setSendTransactionURL] = useState(null);
   const [transferStatus, setTransferStatus] = useState(Status.READY);
   const [initializing, setInitializing] = useState(true);
+  const [collateralizing, setCollateralizing] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState("");
   const [leftSelectHeight, setLeftSelectHeight] = useState(0);
   const [rightSelectHeight, setRightSelectHeight] = useState(0);
@@ -188,6 +189,9 @@ function App() {
         setRightSelectHeight(
           rightCardRef.current ? rightCardRef.current.clientHeight : 0
         );
+        setCollateralizing(true);
+        await collateralize(clients, TOKENS);
+        setCollateralizing(false);
       } catch (e) {
         console.error(e.message);
       }
@@ -474,7 +478,7 @@ function App() {
                         setMintStatus(Status.ERROR);
                       }
                     }}
-                    disabled={mintStatus === Status.IN_PROGRESS}
+                    disabled={collateralizing && mintStatus === Status.IN_PROGRESS}
                   >
                     {mintStatus === Status.IN_PROGRESS ? (
                       <>

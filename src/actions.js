@@ -1,5 +1,6 @@
 import { utils } from "ethers";
 import * as connext from "@connext/client";
+import { EventNames} from "@connext/types"
 import { ColorfulLogger, stringify } from "@connext/utils";
 import { getLocalStore } from "@connext/store";
 import axios from "axios";
@@ -53,15 +54,13 @@ export async function initClients(
           } with balance: ${freeBalance[client.signerAddress]}`
         );
 
-        client.requestCollateral(token.tokenAddress);
-
         const refreshBalances = async (client) => {
           const token = tokens[client.chainId];
           const channel = await client.getFreeBalance(token.tokenAddress);
           onBalanceRefresh(client.chainId, channel[client.signerAddress]);
           return channel[client.signerAddress];
         };
-
+      
         client.on("CONDITIONAL_TRANSFER_CREATED_EVENT", async (msg) => {
           const updated = await refreshBalances(client);
           console.log("Transfer created, updated balances", updated);
@@ -101,6 +100,19 @@ export async function initClients(
     return b;
   }, {});
   return { clients, balances };
+}
+
+export async function collateralize(
+  clients,
+  tokens,
+) {
+  await Promise.all(
+    clients.map(async (client) => {
+      const token = tokens[client.chainId];
+      await client.requestCollateral(token.tokenAddress);
+      await client.waitFor(EventNames.UNINSTALL_EVENT, 10_000);
+    })
+  )
 }
 
 export async function mint(mintToken, clients, tweetUrl) {
