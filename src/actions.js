@@ -1,6 +1,5 @@
 import { utils } from "ethers";
 import * as connext from "@connext/client";
-import { EventNames} from "@connext/types"
 import { ColorfulLogger, stringify } from "@connext/utils";
 import { getLocalStore } from "@connext/store";
 import axios from "axios";
@@ -10,7 +9,7 @@ import { getWallet } from "./wallet";
 const dotenv = require("dotenv");
 dotenv.config();
 
-const nodeUrl = "https://node.spacefold.io/";
+const nodeUrl = "https://node.spacefold.io";
 
 export async function initClients(
   tokens,
@@ -18,6 +17,7 @@ export async function initClients(
   onTransferSucceeded,
   onWithdrawSucceeded,
   onBalanceRefresh,
+  onWithdrawFailed
 ) {
   const clientsAndBalances = await Promise.all(
     Object.values(tokens).map(async (token) => {
@@ -58,21 +58,30 @@ export async function initClients(
           onBalanceRefresh(client.chainId, channel[client.signerAddress]);
           return channel[client.signerAddress];
         };
-      
+
         client.on("CONDITIONAL_TRANSFER_CREATED_EVENT", async (msg) => {
           const updated = await refreshBalances(client);
           console.log("Transfer created, updated balances", updated);
-          onMintSucceeded();
         });
         client.on("CONDITIONAL_TRANSFER_UNLOCKED_EVENT", async (msg) => {
           const updated = await refreshBalances(client);
           console.log("Transfer unlocked, updated balances", updated);
-          onTransferSucceeded();
+          if (msg.recipient === client.publicIdentifier) {
+            onMintSucceeded();
+          } else {
+            onTransferSucceeded();
+          }
         });
         client.on("WITHDRAWAL_CONFIRMED_EVENT", async (msg) => {
           const updated = await refreshBalances(client);
           console.log("Withdrawal completed, updated balances", updated);
           onWithdrawSucceeded();
+        });
+        client.on("WITHDRAWAL_FAILED_EVENT", async (msg) => {
+          console.error("WITHDRAWAL_FAILED_EVENT: ", msg);
+          const updated = await refreshBalances(client);
+          console.error("Withdrawal failed, updated balances", updated);
+          onWithdrawFailed();
         });
 
         return { client, freeBalance };
@@ -100,20 +109,17 @@ export async function initClients(
   return { clients, balances };
 }
 
-export async function collateralize(
-  clients,
-  tokens,
-) {
-  console.log(clients)
+export async function collateralize(clients, tokens) {
+  console.log(clients);
   await Promise.all(
-    Object.values(clients).map(async client => {
+    Object.values(clients).map(async (client) => {
       const token = tokens[client.chainId];
       const tx = await client.requestCollateral(token.tokenAddress);
       console.log(`Sent collateralization tx: ${tx.hash}`);
       await client.ethProvider.waitForTransaction(tx.hash);
       console.log(`Transaction mined: ${tx.hash}`);
     })
-  )
+  );
 }
 
 export async function mint(mintToken, clients, tweetUrl) {

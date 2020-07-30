@@ -68,30 +68,30 @@ const TOKENS = {
     ethProviderUrl: `https://kovan.infura.io/v3/${process.env.REACT_APP_INFURA_ID}`,
     blockchainExplorerURL: "https://kovan.etherscan.io/tx/{TRANSACTION_HASH}",
   },
-  61: {
-    tokenName: "TOKEN",
-    tokenIcon: ethIcon,
-    tokenBackground: ethBackground,
-    tokenAddress: "0xf502A7897a49A9daFa5542203746Bad6C6E86c11",
-    chainId: 61,
-    name: "ETC",
-    color: "#01C853",
-    ethProviderUrl: `https://www.ethercluster.com/etc`,
-    blockchainExplorerURL:
-      "https://blockscout.com/etc/mainnet/tx/{TRANSACTION_HASH}/token_transfers",
-  },
-  // 100: {
-  //   tokenName: "xBRICKS",
-  //   tokenIcon: brickIcon,
-  //   tokenBackground: xDaiBackground,
+  // 61: {
+  //   tokenName: "TOKEN",
+  //   tokenIcon: ethIcon,
+  //   tokenBackground: ethBackground,
   //   tokenAddress: "0xf502A7897a49A9daFa5542203746Bad6C6E86c11",
-  //   chainId: 100,
-  //   name: "xDAI",
+  //   chainId: 61,
+  //   name: "ETC",
   //   color: "#01C853",
-  //   ethProviderUrl: `https://xdai.poanetwork.dev`,
+  //   ethProviderUrl: `https://www.ethercluster.com/etc`,
   //   blockchainExplorerURL:
-  //     "https://blockscout.com/poa/xdai/tx/{TRANSACTION_HASH}/token_transfers",
+  //     "https://blockscout.com/etc/mainnet/tx/{TRANSACTION_HASH}/token_transfers",
   // },
+  100: {
+    tokenName: "xBRICKS",
+    tokenIcon: brickIcon,
+    tokenBackground: xDaiBackground,
+    tokenAddress: "0xf502A7897a49A9daFa5542203746Bad6C6E86c11",
+    chainId: 100,
+    name: "xDAI",
+    color: "#01C853",
+    ethProviderUrl: `https://xdai.poanetwork.dev`,
+    blockchainExplorerURL:
+      "https://blockscout.com/poa/xdai/tx/{TRANSACTION_HASH}/token_transfers",
+  },
   80001: {
     tokenName: "mTOKEN",
     tokenIcon: ethIcon,
@@ -104,17 +104,17 @@ const TOKENS = {
     blockchainExplorerURL:
       "https://mumbai-explorer.matic.today/tx/{TRANSACTION_HASH}/token_transfers",
   },
-  // 346750: {
-  //   tokenName: "sTOKEN",
-  //   tokenIcon: ethIcon,
-  //   tokenBackground: skaleBackground,
-  //   tokenAddress: "0xf502A7897a49A9daFa5542203746Bad6C6E86c11",
-  //   chainId: 346750,
-  //   name: "SKALE",
-  //   color: "#000000",
-  //   ethProviderUrl: `https://dev-testnet-v1-1.skalelabs.com`,
-  //   blockchainExplorerURL: null,
-  // },
+  346750: {
+    tokenName: "sTOKEN",
+    tokenIcon: ethIcon,
+    tokenBackground: skaleBackground,
+    tokenAddress: "0xf502A7897a49A9daFa5542203746Bad6C6E86c11",
+    chainId: 346750,
+    name: "SKALE",
+    color: "#000000",
+    ethProviderUrl: `https://dev-testnet-v1-1.skalelabs.com`,
+    blockchainExplorerURL: null,
+  },
 };
 
 const getTweetURL = (publicIdentifier, chainName, tokenName) =>
@@ -163,6 +163,10 @@ function App() {
       setShowSendInput(false);
     }
 
+    function onWithdrawFailed() {
+      setSendStatus(Status.ERROR);
+    }
+
     function onBalanceRefresh(chainId, newBalance) {
       setBalances((prevBalances) => ({
         ...prevBalances,
@@ -179,6 +183,7 @@ function App() {
           onTransferSucceeded,
           onWithdrawSucceeded,
           onBalanceRefresh,
+          onWithdrawFailed
         );
         setClients(clients);
         setBalances(balances);
@@ -252,7 +257,6 @@ function App() {
   // select initially active mint and send tokens
   useEffect(() => {
     if (activeMintTokenIndex === null && mintTokens.length > 0) {
-      console.warn('AAAAAAAAAAAAAAAAAAAAAAAAAA', mintTokens);
       const existingIndex = mintTokens.findIndex(
         (t) => t.balance > 0 && t.tokenName !== "MOON"
       );
@@ -477,7 +481,9 @@ function App() {
                         setMintStatus(Status.ERROR);
                       }
                     }}
-                    disabled={collateralizing && mintStatus === Status.IN_PROGRESS}
+                    disabled={
+                      collateralizing && mintStatus === Status.IN_PROGRESS
+                    }
                   >
                     {mintStatus === Status.IN_PROGRESS ? (
                       <>
@@ -605,13 +611,23 @@ function App() {
               }}
               disabled={transferDisabled}
             >
-            {
-              transferStatus === Status.SUCCESS
-                ? <>SUCCESS! <i className="fas fa-check" /></>
-                : transferStatus === Status.ERROR
-                ? <>ERROR <i className="fas fa-exclamation" /></>
-                : <>FOLD <img src={transferDisabled ? transferDisabledImage : transferGif} alt="fold" /></>
-            }
+              {transferStatus === Status.SUCCESS ? (
+                <>
+                  SUCCESS! <i className="fas fa-check" />
+                </>
+              ) : transferStatus === Status.ERROR ? (
+                <>
+                  ERROR <i className="fas fa-exclamation" />
+                </>
+              ) : (
+                <>
+                  FOLD{" "}
+                  <img
+                    src={transferDisabled ? transferDisabledImage : transferGif}
+                    alt="fold"
+                  />
+                </>
+              )}
             </button>
           )}
           <div
