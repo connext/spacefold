@@ -12,7 +12,7 @@ import ellipsisGif from "./images/ellipsis.gif";
 import ethIcon from "./images/eth.png";
 import moonIcon from "./images/moon.png";
 import brickIcon from "./images/brick.png";
-import ethBackground from "./images/ethBackground.png";
+import optimismBackground from "./images/optimismBackground.png";
 import rinkebyBackground from "./images/rinkebyBackground.png";
 import brickBackground from "./images/brickBackground.png";
 import skaleBackground from "./images/skaleBackground.png";
@@ -104,15 +104,26 @@ const TOKENS = {
     blockchainExplorerURL:
       "https://mumbai-explorer.matic.today/tx/{TRANSACTION_HASH}/token_transfers",
   },
-  346750: {
-    tokenName: "sTOKEN",
-    tokenIcon: ethIcon,
-    tokenBackground: skaleBackground,
-    tokenAddress: "0xf502A7897a49A9daFa5542203746Bad6C6E86c11",
-    chainId: 346750,
-    name: "SKALE",
-    color: "#000000",
-    ethProviderUrl: `https://dev-testnet-v1-1.skalelabs.com`,
+  // 346750: {
+  //   tokenName: "sTOKEN",
+  //   tokenIcon: ethIcon,
+  //   tokenBackground: skaleBackground,
+  //   tokenAddress: "0xf502A7897a49A9daFa5542203746Bad6C6E86c11",
+  //   chainId: 346750,
+  //   name: "SKALE",
+  //   color: "#000000",
+  //   ethProviderUrl: `https://dev-testnet-v1-1.skalelabs.com`,
+  //   blockchainExplorerURL: null,
+  // },
+  108: {
+    tokenName: "oTOKEN",
+    tokenIcon: brickIcon, // FIXME: ovm token icon
+    tokenBackground: optimismBackground,
+    tokenAddress: "0x9313b03453730D296EC4A62b6f3Fc758A9D1d199",
+    chainId: 108,
+    name: "OVM",
+    color: "#D72E20", // FIXME: better background color
+    ethProviderUrl: `https://connext.optimism.io`,
     blockchainExplorerURL: null,
   },
 };
