@@ -171,6 +171,7 @@ function App() {
 
     function onWithdrawSucceeded() {
       setSendStatus(Status.SUCCESS);
+      setTimeout(() => setSendStatus(Status.READY), 2000);
       setShowSendInput(false);
     }
 
