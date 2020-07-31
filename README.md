@@ -85,10 +85,17 @@ The spacefold demo is pretty simple to run:
 ```bash
 git clone git@github.com:connext/spacefold.git
 cd spacefold
+```
+By default, the demo will point to a Connext node that we're hosting at https://node.spacefold.io.
+
+You'll need a few environment variables to start the demo.
+1. `REACT_APP_FAUCET_URL=https://nir7je4y8a.execute-api.us-east-1.amazonaws.com/Prod` -- you can use our hosted faucet if you're pointing at the default node.
+2. `REACT_APP_INFURA_ID` -- you'll need to provide your own infura/alchemy/JSONrpcUrl to use the Kovan and Rinkeby chains.
+
+Then,
+```
 yarn start
 ```
-
-By default, the demo will point to a Connext node that we're hosting at https://node.spacefold.io.
 
 ### Running your own Connext Node on Multiple Chains
 
