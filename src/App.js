@@ -187,7 +187,7 @@ function App() {
 
     async function init() {
       try {
-        setLoadingMessage(`Initializating channels...`);
+        setLoadingMessage(`Initializing channels...`);
         const { clients, balances } = await initClients(
           TOKENS,
           onMintSucceeded,
@@ -533,7 +533,7 @@ function App() {
                         <p
                           style={{
                             visibility:
-                              transferStatus === Status.SUCCESS &&
+                              (transferStatus === Status.SUCCESS || mintStatus === Status.SUCCESS) &&
                               activeMintToken.balance !==
                                 activeMintToken.oldBalance
                                 ? "visible"
@@ -548,9 +548,11 @@ function App() {
                             activeMintToken.balance - activeMintToken.oldBalance
                           )}
                           &nbsp;
-                          {activeMintToken.balance > activeMintToken.oldBalance
-                            ? "minted"
-                            : "folded"}
+                          {
+                            mintStatus === Status.SUCCESS
+                              ? "minted"
+                              : "folded"
+                          }
                         </p>
                       </div>
                     </div>
@@ -695,7 +697,7 @@ function App() {
                       <p
                         style={{
                           visibility:
-                            transferStatus === Status.SUCCESS &&
+                            (transferStatus === Status.SUCCESS || sendStatus === Status.SUCCESS) &&
                             activeSendToken.balance !==
                               activeSendToken.oldBalance
                               ? "visible"
@@ -709,7 +711,12 @@ function App() {
                         {Math.abs(
                           activeSendToken.balance - activeSendToken.oldBalance
                         )}
-                        &nbsp;sent
+                        &nbsp;
+                        {
+                          sendStatus === Status.SUCCESS
+                            ? "sent"
+                            : "folded"
+                        }
                       </p>
                     </div>
                   </div>
@@ -812,7 +819,7 @@ function App() {
                         <i className="fas fa-check" /> Sent!
                       </>
                     ) : (
-                      "Send"
+                      "Send onchain"
                     )}
                   </button>
                 )}
