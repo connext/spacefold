@@ -162,6 +162,7 @@ function App() {
       setMintStatus(Status.SUCCESS);
       setTimeout(() => setMintStatus(Status.READY), 2000);
       setShowTweetInput(false);
+      setSendTransactionURL(null); //reset send transaction url after successful mint
     }
 
     function onTransferSucceeded() {
