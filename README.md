@@ -42,7 +42,7 @@ Spacefold demonstrates how Connext can be used to build an **internet-of-l2-chai
 
 4. [Demo Implementation Details](https://github.com/connext/spacefold/blob/master/README.md#demo-implementation-details)
 
-5. [Trust Assumptions, and Other Considerations](https://github.com/connext/spacefold/blob/master/README.md#trust-assumptions-and-considerations)
+5. [Trust Assumptions and Other Considerations](https://github.com/connext/spacefold/blob/master/README.md#trust-assumptions-and-considerations)
 
 ## Compatibility with Other Chains
 
