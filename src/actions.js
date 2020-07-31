@@ -145,9 +145,7 @@ export async function mint(mintToken, clients, tweetUrl) {
     console.log(`Faucet response: ${JSON.stringify(res)}`);
   } catch (e) {
     throw new Error(
-      `Minting failed: ${
-        e.response ? JSON.stringify(e.response.data || {}) : e.message
-      }`
+      `Minting failed: ${e.response ? e.response.data?.message : e.message}`
     );
   }
 }
