@@ -116,8 +116,8 @@ const TOKENS = {
   //   blockchainExplorerURL: null,
   // },
   108: {
-    tokenName: "oTOKEN",
-    tokenIcon: ethIcon,
+    tokenName: "oMOON",
+    tokenIcon: moonIcon,
     tokenBackground: optimismBackground,
     tokenAddress: "0x9313b03453730D296EC4A62b6f3Fc758A9D1d199",
     chainId: 108,
@@ -547,7 +547,8 @@ function App() {
                         <p
                           style={{
                             visibility:
-                              (transferStatus === Status.SUCCESS || mintStatus === Status.SUCCESS) &&
+                              (transferStatus === Status.SUCCESS ||
+                                mintStatus === Status.SUCCESS) &&
                               activeMintToken.balance !==
                                 activeMintToken.oldBalance
                                 ? "visible"
@@ -562,11 +563,7 @@ function App() {
                             activeMintToken.balance - activeMintToken.oldBalance
                           )}
                           &nbsp;
-                          {
-                            mintStatus === Status.SUCCESS
-                              ? "minted"
-                              : "folded"
-                          }
+                          {mintStatus === Status.SUCCESS ? "minted" : "folded"}
                         </p>
                       </div>
                     </div>
@@ -715,7 +712,8 @@ function App() {
                       <p
                         style={{
                           visibility:
-                            (transferStatus === Status.SUCCESS || sendStatus === Status.SUCCESS) &&
+                            (transferStatus === Status.SUCCESS ||
+                              sendStatus === Status.SUCCESS) &&
                             activeSendToken.balance !==
                               activeSendToken.oldBalance
                               ? "visible"
@@ -730,11 +728,7 @@ function App() {
                           activeSendToken.balance - activeSendToken.oldBalance
                         )}
                         &nbsp;
-                        {
-                          sendStatus === Status.SUCCESS
-                            ? "sent"
-                            : "folded"
-                        }
+                        {sendStatus === Status.SUCCESS ? "sent" : "folded"}
                       </p>
                     </div>
                   </div>
