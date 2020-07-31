@@ -1,4 +1,4 @@
-![alt text](https://github.com/connext/spacefold/blob/master/public/spacefoldlogopurple.png?raw=true)
+![alt text](https://github.com/connext/spacefold/blob/master/public/SpacefoldLogoPurple.png?raw=true)
 
 # Spacefold
 
