@@ -14,11 +14,11 @@
 
 Great question! It doesn't and it's not supposed to.
 
-[Connext](https://connext.network) is the protocol for programmable p2p micropayments. Connext lets users make unbreakable commitments to each other using _state channels_ - these commitments are effectively free to create and send, but must be backed by funds locked up on (any) chain. Unlike other scalability solutions to Ethereum, we're not a consensus system (a blockchain, rollup, etc.), but a point-to-point communication network that enables extremely high volume, private, ultra-cheap transfers (and other more complex commitments) baked directly into existing web paradigms like HTTP requests. We do this specific activity in a way that is cheaper, simpler, and has much better UX than anything else that is out there.
+[Connext](https://connext.network) is the protocol for programmable p2p micropayments. Connext lets users make unbreakable commitments to each other using _state channels_ - these commitments are effectively free to create and send, but must be backed by funds locked up on (any) chain. Unlike other scalability solutions to Ethereum, we're not a consensus system (a blockchain, rollup, etc.), but a point-to-point communication network that enables extremely high volume, private, ultra-cheap transfers (and other more complex commitments) baked directly into existing web paradigms like HTTP requests.
 
 One consequence of the above is that all actions taken within Connext are private to each user. This means that, while we can enable a high volume of Reddit Community Point _transfers_ at low cost, meeting Reddits requirements of scalably minting/burning their points can't be done in a way where subreddit users can actively monitor and interact with each others' balances. Those balances would be necessarily private.
 
-The reality is that every solution has its tradeoffs. Rather than building a custom independent submission, we decided to explore mitigating these tradeoffs by combining different existing solutions to make something even better. The biggest vector for improvement we see is the usability and interoperability of new scale-by-more-chains-based approaches like rollups/plasma/sidechains/sharding.
+The reality is that every solution has its tradeoffs. Rather than building a custom independent submission, we decided to experiment with mitigating these tradeoffs by combining different existing solutions to make something even better. The biggest vector for improvement we see is the usability and interoperability of new scale-by-more-chains-based approaches like rollups/plasma/sidechains/sharding.
 
 Spacefold demonstrates how Connext can be used to build an **internet-of-l2-chains/shards**. Users can instantly and seamlessly transfer value between chains/shards, and eventually even make atomic cross-chain contract calls. Most importantly, this can happen in a way where users _dont need to know what chain/rollup/shard they are on to begin with_.
 
@@ -56,8 +56,8 @@ To help with parsing out which solutions can and can't work with Connext, we've 
 | :-------: | :----------------: | :--------------: | :----------------: | :--------------: | --------------------------------------------------------------------------------------------------------------------- | ------- |
 |   Matic   |    Plasma chain    |        ✔️        |         ✔️         |        ✔️        |                                                                                                                       | 😍      |
 | Optimism  |        ORU         |        ✔️        |         ✔️         |        ✔️        |                                                                                                                       | 😍      |
-|   SKALE   | Elastic Sidechains |        ✔️        |         ✔️         |   Coming soon    |                                                                                                                       | 😍      |
 |   xDai    |   PoS Sidechain    |        ✔️        |         ✔️         |        ✔️        |                                                                                                                       | 😍      |
+|   SKALE   | Elastic Sidechains |        ✔️        |         ✔️         |   Coming soon    |                                                                                                                       | 😍      |
 | Arbitrum  |        ORU         |        ✔️        |         ✔️         |   Coming soon    |                                                                                                                       | 😍      |
 |    OMG    |    Plasma chain    |        ✔️        |         🤷         |                  | No confirmation from OMG team yet - we're assuming based on most plasma constructions                                 | 🙂      |
 |  Hubble   |        ORU         | Can be supported |                    |                  |                                                                                                                       | 🙂      |
@@ -162,7 +162,9 @@ For the purposes of the demo, we've made some simplifying assumptions:
 
 3. Throughout the demo, we use a dummy ERC20 token with a 1:1 swap rate. We considered using Eth for some chains, but decided against it because then we would need to get lots of liquidity in order to mint to users.
 
-4. There's a LOT more functionality that Connext enables. Even if you're using Connext primarily to bridge between chains, it can be **highly** cost effective to also use it to further reduce the costs of transfers of tokens like Community points. You can also do more complex constructions such as bounties, or token-proportional content investing. We've left these things out of the demo to specifically highlight the cross-chain functionality.
+4. We decided against showing mainnet in the demo -- at the time of writing, mainnet gas fees are at 62 gwei. While this code can definitely be run on mainnet, we thought that the it would be annoying for users who just want to understand how it works to have to wait several minutes for a faucet transaction.
+
+5. There's a LOT more functionality that Connext enables. Even if you're using Connext primarily to bridge between chains, it can be **highly** cost effective to also use it to further reduce the costs of transfers of tokens like Community points. You can also do more complex constructions such as bounties, or token-proportional content investing. We've left these things out of the demo to specifically highlight the cross-chain functionality.
 
 ## Trust Assumptions and Considerations
 
