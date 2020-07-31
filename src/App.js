@@ -144,11 +144,14 @@ function App() {
   const [tweetUrl, setTweetUrl] = useState("");
   const [showTweetInput, setShowTweetInput] = useState(false);
   const [mintStatus, setMintStatus] = useState(Status.READY);
+  const [mintErrorMessage, setMintErrorMessage] = useState('');
   const [sendAddress, setSendAddress] = useState("");
   const [showSendInput, setShowSendInput] = useState(false);
   const [sendStatus, setSendStatus] = useState(Status.READY);
+  const [sendErrorMessage, setSendErrorMessage] = useState('');
   const [sendTransactionURL, setSendTransactionURL] = useState(null);
   const [transferStatus, setTransferStatus] = useState(Status.READY);
+  const [transferErrorMessage, setTransferErrorMessage] = useState('');
   const [initializing, setInitializing] = useState(true);
   const [collateralizing, setCollateralizing] = useState(true);
   const [loadingMessage, setLoadingMessage] = useState("");
@@ -301,7 +304,8 @@ function App() {
     activeMintTokenIndex === null ? null : mintTokens[activeMintTokenIndex];
   const activeSendToken =
     activeSendTokenIndex === null ? null : sendTokens[activeSendTokenIndex];
-
+  const tokensWereAlreadyMinted = mintTokens.some((t) => t.balance > 0) ||
+                     sendTokens.some((t) => t.balance > 0);
   const controlStyles = {
     padding: "0 56px",
     background: "#DEEBFF",
@@ -351,8 +355,8 @@ function App() {
     activeSendToken === null ||
     transferStatus === Status.IN_PROGRESS ||
     transferStatus === Status.SUCCESS ||
-    mintStatus === Status.IN_PROGRESS || // minting occurring
-    sendStatus === Status.IN_PROGRESS || // sending occurring
+    mintStatus === Status.IN_PROGRESS ||
+    sendStatus === Status.IN_PROGRESS ||
     (activeMintToken.balance <= MINIMUM_BALANCE &&
       activeSendToken.balance <= MINIMUM_BALANCE); // not enough tokens to transfer, in either direction
   const transferDirection =
@@ -411,6 +415,7 @@ function App() {
                     );
                     setActiveMintTokenIndex(newTokenIndex);
                     setMintStatus(Status.READY);
+                    setMintErrorMessage('');
                   }}
                   styles={selectStyles}
                   options={mintTokens
@@ -458,6 +463,7 @@ function App() {
                         "width=600,height=600"
                       );
                       setMintStatus(Status.READY);
+                      setMintErrorMessage('');
                     }}
                   >
                     Tweet Now!
@@ -471,12 +477,9 @@ function App() {
                   />
                   <div style={{ paddingBottom: "10px" }} />
                   {mintStatus === Status.ERROR && (
-                    <>
-                      <span style={{ color: "red" }}>
-                        Error minting tokens!
-                      </span>
-                      <div style={{ paddingBottom: "10px" }} />
-                    </>
+                    <div style={{ paddingBottom: "10px", color: "red" }}>
+                      Error: {mintErrorMessage}
+                    </div>
                   )}
                   <button
                     type="button"
@@ -487,11 +490,15 @@ function App() {
                     }
                     onClick={async () => {
                       setMintStatus(Status.IN_PROGRESS);
+                      setMintErrorMessage('');
+                      setSendErrorMessage('');
+                      setTransferErrorMessage('');
                       try {
                         await mint(activeMintToken, clients, tweetUrl);
                       } catch (e) {
-                        console.error(e.message);
                         setMintStatus(Status.ERROR);
+                        setMintErrorMessage(e.message);
+                        console.error(e.message);
                       }
                     }}
                     disabled={
@@ -500,7 +507,7 @@ function App() {
                   >
                     {mintStatus === Status.IN_PROGRESS ? (
                       <>
-                        <img src={spinningGearGif} alt="gear" /> Minting{" "}
+                        <img src={spinningGearGif} alt="gear" /> Minting&nbsp;
                         <img
                           className="Ellipsis-Gif"
                           src={ellipsisGif}
@@ -574,8 +581,7 @@ function App() {
                     disabled={
                       mintStatus === Status.IN_PROGRESS ||
                       transferStatus === Status.IN_PROGRESS ||
-                      mintTokens.some((t) => t.balance > 0) ||
-                      sendTokens.some((t) => t.balance > 0)
+                      tokensWereAlreadyMinted
                     }
                   >
                     {mintStatus === Status.SUCCESS ? (
@@ -591,7 +597,7 @@ function App() {
             </div>
           </div>
           {transferStatus === Status.IN_PROGRESS ? (
-            <div className="Transferring-Circle">
+            <div className="Transferring-Circle" title={{transferErrorMessage}}>
               <img src={loadingGif} alt="transferring" />
             </div>
           ) : (
@@ -608,6 +614,9 @@ function App() {
               }`}
               onClick={async () => {
                 setTransferStatus(Status.IN_PROGRESS);
+                setMintErrorMessage('');
+                setSendErrorMessage('');
+                setTransferErrorMessage('');
                 try {
                   await transfer(
                     transferDirection === "right"
@@ -621,6 +630,7 @@ function App() {
                   );
                 } catch (e) {
                   setTransferStatus(Status.ERROR);
+                  setTransferErrorMessage(e.message);
                   setTimeout(() => setTransferStatus(Status.READY), 2000);
                 }
               }}
@@ -666,6 +676,7 @@ function App() {
                     );
                     setActiveSendTokenIndex(newTokenIndex);
                     setSendStatus(Status.READY);
+                    setSendErrorMessage('');
                   }}
                   styles={selectStyles}
                   options={sendTokens
@@ -744,10 +755,9 @@ function App() {
                     />
                     <div style={{ paddingBottom: "10px" }} />
                     {sendStatus === Status.ERROR && (
-                      <>
-                        <span style={{ color: "red" }}>Error sending :(</span>
-                        <div style={{ paddingBottom: "10px" }} />
-                      </>
+                      <div style={{ paddingBottom: "10px", color: "red" }}>
+                        Error: {sendErrorMessage}
+                      </div>
                     )}
                     <button
                       type="button"
@@ -758,6 +768,9 @@ function App() {
                       }
                       onClick={async () => {
                         setSendStatus(Status.IN_PROGRESS);
+                        setMintErrorMessage('');
+                        setSendErrorMessage('');
+                        setTransferErrorMessage('');
                         try {
                           const transactionHash = await send(
                             activeSendToken,
@@ -777,6 +790,7 @@ function App() {
                         } catch (e) {
                           console.error(e.message);
                           setSendStatus(Status.ERROR);
+                          setSendErrorMessage(e.message);
                         }
                       }}
                       disabled={
@@ -786,7 +800,7 @@ function App() {
                     >
                       {sendStatus === Status.IN_PROGRESS ? (
                         <>
-                          <img src={spinningGearGif} alt="gear" /> Sending{" "}
+                          <img src={spinningGearGif} alt="gear" /> Sending&nbsp;
                           <img
                             className="Ellipsis-Gif"
                             src={ellipsisGif}

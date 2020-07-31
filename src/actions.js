@@ -87,7 +87,7 @@ export async function initClients(
         return { client, freeBalance };
       } catch (e) {
         throw new Error(
-          `Failed to create client on ${token.chainId}. Error: ${e.message}`
+          `Failed to create client on ${token.chainId}: ${e.message}`
         );
       }
     })
@@ -143,7 +143,7 @@ export async function mint(mintToken, clients, tweetUrl) {
     console.log(`Faucet response: ${JSON.stringify(res)}`);
   } catch (e) {
     throw new Error(
-      `Error minting tokens: ${
+      `Minting failed: ${
         e.response ? JSON.stringify(e.response.data || {}) : e.message
       }`
     );
@@ -168,7 +168,7 @@ export async function transfer(fromToken, toToken, clients, balances) {
     const res = await fromClient.transfer(params);
     console.log(`Transfer complete: ${stringify(res, true, 0)}`);
   } catch (e) {
-    throw new Error(`Error folding: ${e.stack}`);
+    throw new Error(`Folding failed: ${e.stack}`);
   }
 }
 
@@ -185,6 +185,6 @@ export async function send(sendToken, sendAddress, clients) {
     console.log(`Withdraw response: ${JSON.stringify(res)}`);
     return res.transaction.hash;
   } catch (e) {
-    throw new Error(`Error sending tokens: ${e.stack}`);
+    throw new Error(`Sending failed: ${e.stack}`);
   }
 }
