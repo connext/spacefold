@@ -20,7 +20,7 @@ One consequence of the above is that all actions taken within Connext are privat
 
 The reality is that every solution has its tradeoffs. Rather than building a custom independent submission, we decided to explore mitigating these tradeoffs by combining different existing solutions to make something even better. The biggest vector for improvement we see is the usability and interoperability of new scale-by-more-chains-based approaches like rollups/plasma/sidechains/sharding.
 
-Spacefold demonstrates how Connext can be used to build an **internet-of-l2-chains/shards**. Users can instantly and seamlessly transfer value between chains/shards, and eventually even make atomic cross-chain contract calls. Most importantly, this can happen in a way where users *dont need to know what chain/rollup/shard they are on to begin with*.
+Spacefold demonstrates how Connext can be used to build an **internet-of-l2-chains/shards**. Users can instantly and seamlessly transfer value between chains/shards, and eventually even make atomic cross-chain contract calls. Most importantly, this can happen in a way where users _dont need to know what chain/rollup/shard they are on to begin with_.
 
 ## Table of Contents
 
@@ -52,19 +52,19 @@ While the above is true, in the ideal case (to avoid custom work), it's best for
 
 To help with parsing out which solutions can and can't work with Connext, we've created a compatiblity table. **Note** this table is still a WIP while we get more information from teams. If you feel as though anything here was misrepresented, please submit an issue -- we're happy to amend!
 
-|    Name   |        Type        |  EVM Compatible  | Supports `Create2` | Included in demo | Notes | Verdict |
-|:---------:|:------------------:|:----------------:|:------------------:|:----------------:|-------|---------|
-|   Matic   |    Plasma chain    |         ✔️        |          ✔️         |         ✔️        |       |    😍    |
-|  Optimism |         ORU        |         ✔️        |          ✔️         |         ✔️        |       |    😍    |
-|   SKALE   | Elastic Sidechains |         ✔️        |          ✔️         |         Coming soon        |       |    😍    |
-|    xDai   |    PoS Sidechain   |         ✔️        |          ✔️         |         ✔️        |       |    😍    |
-|  Arbitrum |         ORU        |         ✔️        |          ✔️         |          Coming soon        |       |    😍    |
-|    OMG    |    Plasma chain    |         ✔️        |          🤷         |                  |  No confirmation from OMG team yet - we're assuming based on most plasma constructions    |    🙂     |
-|   Hubble  |         ORU        | Can be supported |                    |                  |       |     🙂    |
-|    Fuel   |         ORU        |  Planned for v2  |                    |                  |    While not currently supported, the Fuel team expressed interest in building support potentially earlier than their v2   |    🙂     |
-| Starkware |        zkRU        |         ❌        |                    |                  |    No confirmation from team yet, we're assuming based on current zkRU limitations   |    🤷/☹️     |
-|  Loopring |        zkRU        |         ❌        |                    |                  |    No confirmation from team yet, we're assuming based on current zkRU limitations  |    🤷/☹️    |
-|  zkSync |        zkRU        |         ❌        |                    |                  |    No confirmation from team yet, we're assuming based on current zkRU limitations  |    🤷/☹️     |
+|   Name    |        Type        |  EVM Compatible  | Supports `Create2` | Included in demo | Notes                                                                                                                 | Verdict |
+| :-------: | :----------------: | :--------------: | :----------------: | :--------------: | --------------------------------------------------------------------------------------------------------------------- | ------- |
+|   Matic   |    Plasma chain    |        ✔️        |         ✔️         |        ✔️        |                                                                                                                       | 😍      |
+| Optimism  |        ORU         |        ✔️        |         ✔️         |        ✔️        |                                                                                                                       | 😍      |
+|   SKALE   | Elastic Sidechains |        ✔️        |         ✔️         |   Coming soon    |                                                                                                                       | 😍      |
+|   xDai    |   PoS Sidechain    |        ✔️        |         ✔️         |        ✔️        |                                                                                                                       | 😍      |
+| Arbitrum  |        ORU         |        ✔️        |         ✔️         |   Coming soon    |                                                                                                                       | 😍      |
+|    OMG    |    Plasma chain    |        ✔️        |         🤷         |                  | No confirmation from OMG team yet - we're assuming based on most plasma constructions                                 | 🙂      |
+|  Hubble   |        ORU         | Can be supported |                    |                  |                                                                                                                       | 🙂      |
+|   Fuel    |        ORU         |  Planned for v2  |                    |                  | While not currently supported, the Fuel team expressed interest in building support potentially earlier than their v2 | 🙂      |
+| Starkware |        zkRU        |        ❌        |                    |                  | No confirmation from team yet, we're assuming based on current zkRU limitations                                       | 🤷/☹️   |
+| Loopring  |        zkRU        |        ❌        |                    |                  | No confirmation from team yet, we're assuming based on current zkRU limitations                                       | 🤷/☹️   |
+|  zkSync   |        zkRU        |        ❌        |                    |                  | No confirmation from team yet, we're assuming based on current zkRU limitations                                       | 🤷/☹️   |
 
 ## Run it Yourself
 
@@ -76,13 +76,16 @@ The spacefold demo is pretty simple to run:
 git clone git@github.com:connext/spacefold.git
 cd spacefold
 ```
+
 By default, the demo will point to a Connext node that we're hosting at https://node.spacefold.io.
 
 You'll need a few environment variables to start the demo.
+
 1. `REACT_APP_FAUCET_URL=https://nir7je4y8a.execute-api.us-east-1.amazonaws.com/Prod` -- you can use our hosted faucet if you're pointing at the default node.
 2. `REACT_APP_INFURA_ID` -- you'll need to provide your own infura/alchemy/JSONrpcUrl to use the Kovan and Rinkeby chains.
 
 Then,
+
 ```
 yarn install && yarn start
 ```
@@ -97,9 +100,10 @@ cd indra
 make # this will take a while
 make start
 ```
+
 Note: you will need to have `docker` and `jq` installed already. If you run into trouble, there's more information about interacting with indra here. // TODO -- link
 
-By default, this local node will spin up on two local testnet chains with IDs `1337` and `1338`. 
+By default, this local node will spin up on two local testnet chains with IDs `1337` and `1338`.
 
 If you would like to test out a local indra node with a remote chain (or multiple chains) by following the steps in [this guide](https://github.com/connext/indra/blob/staging/docs/src/how-to/integrate-chain.md).
 
@@ -111,12 +115,12 @@ While running a local node is easy, this will not work with this repository with
 
 ### A Quick Background on Connext
 
-Connext is a network of *state channels*. The core concept behind a channel is very simple:
-- Suppose you're paying your friend Bob for a metered service at the rate of $1 every minute.
-- It would be silly to broadcast every transaction to the blockchain, you would incur lots of fees. At the same time, it also doesn't make sense to pay up front or pay at the end, as that would introduce new trust assumptions.
-- Instead, what you can do is send your funds to a 2/2 multisig controlled by you and Bob. Then, rather than sending onchain transactions, you can send Bob ever updating signatures which give Bob *the ability* to withdraw up to a certain amount from the multisig.
-- Because Bob *can* get his funds at any time using his unbreakable commitment from you, you complete a new payment to him every time you send a new signature.
+Connext is a network of _state channels_. The core concept behind a channel is very simple:
 
+- Suppose you're paying your friend Bob for a metered service at the rate of \$1 every minute.
+- It would be silly to broadcast every transaction to the blockchain, you would incur lots of fees. At the same time, it also doesn't make sense to pay up front or pay at the end, as that would introduce new trust assumptions.
+- Instead, what you can do is send your funds to a 2/2 multisig controlled by you and Bob. Then, rather than sending onchain transactions, you can send Bob ever updating signatures which give Bob _the ability_ to withdraw up to a certain amount from the multisig.
+- Because Bob _can_ get his funds at any time using his unbreakable commitment from you, you complete a new payment to him every time you send a new signature.
 
 ![alt text](https://github.com/connext/spacefold/blob/master/public/BasicChannel.png?raw=true)
 
@@ -124,9 +128,10 @@ Connext extends this concept in a couple of ways ways:
 
 1. Updates within the channel can have any arbitrary conditionality to them. This means you could make your payments conditional upon Bob providing a proof of his work, or based on some real world event, or even based on the outcome of a chess game.
 
-2. More importantly: the above paradigm requires you to deploy a new multisig with each new person you transact with. Using the conditionality described above, Connext instead lets you use your channel with Bob to atomically interact with anyone that Bob also has a channel with. For instance, you pay Bob $1, who pays Charlie $0.9999 (Bob takes a microfee), who pays Danielle $0.9998 (Charlie takes a microfee).
+2. More importantly: the above paradigm requires you to deploy a new multisig with each new person you transact with. Using the conditionality described above, Connext instead lets you use your channel with Bob to atomically interact with anyone that Bob also has a channel with. For instance, you pay Bob $1, who pays Charlie $0.9999 (Bob takes a microfee), who pays Danielle \$0.9998 (Charlie takes a microfee).
 
 There's a lot more information available publicly on state channels, here are some great resources:
+
 - [State channels for babies](https://medium.com/connext/state-channels-for-babies-c39a8001d9af)
 - [Counterfactual for dummies](https://medium.com/blockchannel/counterfactual-for-dummies-part-1-8ff164f78540)
 - [EthHub](https://docs.ethhub.io/ethereum-roadmap/layer-2-scaling/state-channels/)
@@ -135,14 +140,13 @@ There's a lot more information available publicly on state channels, here are so
 
 One big hurdle that we encountered when building our network was the difficulty of managing interactions that could be on different chains or different currencies. This is why, in addition to the above we extend basic channels in another way:
 
-Because of the fact that channels are simple primitives and what links them together is *offchain* communication, it's possible to transact to Danielle regardless of where Bob and Charlie's channels are or what currency they're using. This means you can pay Bob on Ethereum in Eth, who pays Charlie on Matic in MATIC, who pays Danielle on Arbitrum in aDai, who in turn calls the Uniswap contract running on Optimism on your behalf. This is best shown via the following diagram:
-
+Because of the fact that channels are simple primitives and what links them together is _offchain_ communication, it's possible to transact to Danielle regardless of where Bob and Charlie's channels are or what currency they're using. This means you can pay Bob on Ethereum in Eth, who pays Charlie on Matic in MATIC, who pays Danielle on Arbitrum in aDai, who in turn calls the Uniswap contract running on Optimism on your behalf. This is best shown via the following diagram:
 
 ![alt text](https://github.com/connext/spacefold/blob/master/public/Crosschain.png?raw=true)
 
 ### How Does it Scale?
 
-What you're effectively doing above is freezing funds on an existing ledger and committing to peers that you will pay them out of those funds (sort of like the Gas Station Network, but no one actually *needs* to submit the transactions to chain unless they want to).
+What you're effectively doing above is freezing funds on an existing ledger and committing to peers that you will pay them out of those funds (sort of like the Gas Station Network, but no one actually _needs_ to submit the transactions to chain unless they want to).
 
 This means that some specific types of activities (anything that is point-to-point and doesn't require global consensus), you are now entirely unconstrained by the limitations of blockchains. Updates in state channels can happen as fast as HTTP messages because... well, they can literally be HTTP messages.
 
@@ -163,24 +167,27 @@ For the purposes of the demo, we've made some simplifying assumptions:
 ## Trust Assumptions and Considerations
 
 ### Trust Vectors
-Connext is *entirely* noncustodial for users. No matter what happens, users are always able to withdraw their balance to whatever chain(s) they are actively participating in.
+
+Connext is _entirely_ noncustodial for users. No matter what happens, users are always able to withdraw their balance to whatever chain(s) they are actively participating in.
 
 This comes with a couple of caveats, however:
 
-1. First, users need to hold their latest offchain state to withdraw with. This is typically referred to as the "data availability problem" for solutions like state channels and plasma (as contrasted to solutions that post data to chain -- i.e. rollups). In practice, we've found that this is actually not as big of a problem for users as people think it is, particularly if users are utilizing authenticated sessions. This data storage can also be easily decentralized and outsourced to remote backup providers to ensure user funds remain secure. 
+1. First, users need to hold their latest offchain state to withdraw with. This is typically referred to as the "data availability problem" for solutions like state channels and plasma (as contrasted to solutions that post data to chain -- i.e. rollups). In practice, we've found that this is actually not as big of a problem for users as people think it is, particularly if users are utilizing authenticated sessions. This data storage can also be easily decentralized and outsourced to remote backup providers to ensure user funds remain secure.
 
 2. Second, users need to monitor the chain to respond to any potential disputes. This is a similar pattern to what users have to do for plasma and optimistic rollup chains. Similar to those approaches, monitoring the chain can be outsourced to third parties who do it as a service (typically referred to as Watchtowers). This service can even be provided in a way where the watchtower is economically incentivized to behave correctly.
 
 In return for these caveats, channels give unparalleled UX. Unless all communication has broken down and you're actively in dispute, getting into and out of a channel is a single onchain transaction, which can also be **entirely gas abstracted** (as is the case with Connext). You can also onboard users to channels in sticky ways -- for instance, we support referral codes that implementers can create (or users can generate for each other) which create/fund a channel.
 
 ### Censorship
-Because state channel networks are *not consensus systems* but are instead structurally similar to TCP/IP, the potential exists for censorship by intermediary routers.
+
+Because state channel networks are _not consensus systems_ but are instead structurally similar to TCP/IP, the potential exists for censorship by intermediary routers.
 
 This is true in the current implementation of Connext which features a hub-and-spoke pattern over many single nodes. In the current construction, one "full node" provider connects to many users (running fully validating, but browser-compatible light nodes) and acts as the primary router.
 
 Our eventual goal is to move towards a pattern where routing nodes also all connect to each other. Then, censoring transactions becomes much much much tougher. Transfers can be routed over TOR using VPNs and pass through many routers before reaching a destination. They can also be broken up into many smaller transfers/updates which are all atomically routed over many different paths, exactly like how TCP works.
 
 ### Liquidity
+
 Effectively what you're doing with Connext is doing many many tiny swaps between linked channels when you route a transfer or make an update. These swaps require collateral to happen trustlessly. This means that routing nodes in Connext are also liquidity providers earning fees for their service.
 
-There's a lot of misinformation about the *amount* and *extent* to which liquidity is needed within channel networks. The reality is that it's very very hard to judge exactly how much, but at the network gets more connected and transaction volume increases, you start to see more and more transactions flowing in both directions within a routing channel. For each transfer, the node earns fees multiplicatively against the locked up collateral. From internal rough calculations made by some of our users the ROI generated here is *more than enough* to offset liquidity costs and competitive with existing DeFi returns.
+There's a lot of misinformation about the _amount_ and _extent_ to which liquidity is needed within channel networks. The reality is that it's very very hard to judge exactly how much, but at the network gets more connected and transaction volume increases, you start to see more and more transactions flowing in both directions within a routing channel. For each transfer, the node earns fees multiplicatively against the locked up collateral. From internal rough calculations made by some of our users the ROI generated here is _more than enough_ to offset liquidity costs and competitive with existing DeFi returns.
