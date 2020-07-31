@@ -18,7 +18,7 @@ Great question! It doesn't and it's not supposed to.
 
 One consequence of the above is that all actions taken within Connext are private to each user. This means that, while we can enable a high volume of Reddit Community Point _transfers_ at low cost, meeting Reddits requirements of scalably minting/burning their points can't be done in a way where subreddit users can actively monitor and interact with each others' balances. Those balances would be necessarily private.
 
-The reality is that every solution has its tradeoffs. Rather than buiding a custom independent submission, we decided to explore mitigating these tradeoffs by combining different existing solutions to make something even better. The biggest vector for improvement we see is the usability and interoperability of new scale-by-more-chains-based approaches like rollups/plasma/sidechains/sharding.
+The reality is that every solution has its tradeoffs. Rather than building a custom independent submission, we decided to explore mitigating these tradeoffs by combining different existing solutions to make something even better. The biggest vector for improvement we see is the usability and interoperability of new scale-by-more-chains-based approaches like rollups/plasma/sidechains/sharding.
 
 Spacefold demonstrates how Connext can be used to build an **internet-of-l2-chains/shards**. Users can instantly and seamlessly transfer value between chains/shards, and eventually even make atomic cross-chain contract calls. Most importantly, this can happen in a way where users *dont need to know what chain/rollup/shard they are on to begin with*.
 
@@ -32,7 +32,7 @@ Spacefold demonstrates how Connext can be used to build an **internet-of-l2-chai
 
    b. [Running your own Connext Node on Multiple Chains](https://github.com/connext/spacefold/blob/master/README.md#running-your-own-connext-node-on-multiple-chains)
 
-3. [How does it work?](https://github.com/connext/spacefold/blob/master/README.md#how-does-it-work)
+3. [How Does it Work?](https://github.com/connext/spacefold/blob/master/README.md#how-does-it-work)
 
    a. [Background on Connext](https://github.com/connext/spacefold/blob/master/README.md#a-quick-background-on-connext)
 
@@ -135,14 +135,14 @@ There's a lot more information available publicly on state channels, here are so
 
 One big hurdle that we encountered when building our network was the difficulty of managing interactions that could be on different chains or different currencies. This is why, in addition to the above we extend basic channels in another way:
 
-Because of the fact that channels are simple primitives and what links them together is *offchain* communitcation, it's possible to transact to Danielle regardless of where Bob and Charlie's channels are or what currency they're using. This means you can pay Bob on Ethereum in Eth, who pays Charlie on Matic in MATIC, who pays Danielle on Arbitrum in aDai, who in turn calls the Uniswap contract running on Optimism on your behalf. This is best shown via the following diagram:
+Because of the fact that channels are simple primitives and what links them together is *offchain* communication, it's possible to transact to Danielle regardless of where Bob and Charlie's channels are or what currency they're using. This means you can pay Bob on Ethereum in Eth, who pays Charlie on Matic in MATIC, who pays Danielle on Arbitrum in aDai, who in turn calls the Uniswap contract running on Optimism on your behalf. This is best shown via the following diagram:
 
 
 ![alt text](https://github.com/connext/spacefold/blob/master/public/Crosschain.png?raw=true)
 
 ### How Does it Scale?
 
-What you're effectively doing above is freezing funds on an existing ledger and commiting to peers that you will pay them out of those funds (sort of like the Gas Station Network, but no one actually *needs* to submit the transactions to chain unless they want to).
+What you're effectively doing above is freezing funds on an existing ledger and committing to peers that you will pay them out of those funds (sort of like the Gas Station Network, but no one actually *needs* to submit the transactions to chain unless they want to).
 
 This means that some specific types of activities (anything that is point-to-point and doesn't require global consensus), you are now entirely unconstrained by the limitations of blockchains. Updates in state channels can happen as fast as HTTP messages because... well, they can literally be HTTP messages.
 
