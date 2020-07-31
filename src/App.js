@@ -599,7 +599,7 @@ function App() {
             </div>
           </div>
           {transferStatus === Status.IN_PROGRESS ? (
-            <div className="Transferring-Circle" title={{transferErrorMessage}}>
+            <div className="Transferring-Circle">
               <img src={loadingGif} alt="transferring" />
             </div>
           ) : (
@@ -614,6 +614,7 @@ function App() {
                   ? " Transfer-Error"
                   : ""
               }`}
+              title={transferErrorMessage}
               onClick={async () => {
                 setTransferStatus(Status.IN_PROGRESS);
                 setMintErrorMessage('');
