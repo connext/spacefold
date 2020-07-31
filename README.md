@@ -6,11 +6,9 @@
 
 ### Quick Resources
 
-You can read more about how to use Spacefold in our announcement post. //TODO
-
-Found a bug, want to learn more, or just say hello? [Join us in our discord](https://discord.gg/raNmNb5)!
-
-Learn more about Connext through [our docs](https://docs.connext.network), and by checking out [our monorepo](https://github.com/connext/indra).
+- You can read more about how to use Spacefold in our announcement post. //TODO
+- Found a bug, want to learn more, or just say hello? [Join us in our discord](https://discord.gg/raNmNb5)!
+- Learn more about Connext through [our docs](https://docs.connext.network), and by checking out [our monorepo](https://github.com/connext/indra).
 
 ### Introduction: "Hold up, how does this meet the Reddit requirements outlined above"?
 
@@ -60,9 +58,21 @@ In general, Connext can support any chain/l2/shard/rollup system that supports t
 
 While the above is true, in the ideal case (to avoid custom work), it's best for Connext to work with Ethereum-like systems (that run the EVM and support Solidity). Running Connext on anything else would likely require lots of custom work.
 
-To help with parsing out which solutions can and can't work with Connext, we've created an easy-to-parse compatiblity chart: //TODO
+To help with parsing out which solutions can and can't work with Connext, we've created an easy-to-parse compatiblity table:
 
-Spacefold demonstrates the following out-of-the-box integrations with several chains and scalability solutions (in no particular order):
+|    Name   |        Type        |  EVM Compatible  | Supports `Create2` | Included in demo | Notes | Verdict |
+|:---------:|:------------------:|:----------------:|:------------------:|:----------------:|-------|---------|
+|   Matic   |    Plasma chain    |         ✔️        |          ✔️         |         ✔️        |       |    😍    |
+|  Optimism |         ORU        |         ✔️        |          ✔️         |         ✔️        |       |    😍    |
+|   SKALE   | Elastic Sidechains |         ✔️        |          ✔️         |         ✔️        |       |    😍    |
+|    xDai   |    PoS Sidechain   |         ✔️        |          ✔️         |         ✔️        |       |    😍    |
+|  Arbitrum |         ORU        |         ✔️        |          ✔️         |                  |       |    😍    |
+|    OMG    |    Plasma chain    |         ✔️        |          🤷         |                  |  No confirmation from OMG team yet - we're assuming based on most plasma constructions    |    🙂     |
+|   Hubble  |         ORU        | Can be supported |                    |                  |       |     🙂    |
+|    Fuel   |         ORU        |  Planned for v2  |                    |                  |    While not currently supported, the Fuel team expressed interest in building support potentially earlier than their v2   |    🙂     |
+| Starkware |        zkRU        |         ❌        |                    |                  |    No confirmation from team yet, we're assuming based on current zkRU limitations   |    🤷/☹️     |
+|  Loopring |        zkRU        |         ❌        |                    |                  |    No confirmation from team yet, we're assuming based on current zkRU limitations  |    🤷/☹️    |
+|  zkSync |        zkRU        |         ❌        |                    |                  |    No confirmation from team yet, we're assuming based on current zkRU limitations  |    🤷/☹️     |
 
 ### L2/Scalability Chains
 
