@@ -103,7 +103,7 @@ make start
 ```
 If you run into trouble, there's more info here. //TODO
 
-By default, this local node will spin up on a single testnet chain. You can point it at a remote chain (or multiple chains) by following the steps in this guide.
+By default, this local node will spin up on a single testnet chain. You can point it at a remote chain (or multiple chains) by following the steps in [this guide](https://github.com/connext/indra/blob/staging/docs/src/how-to/integrate-chain.md).
 
 Lastly, your node can be deployed to a production environment by following [this guide](https://docs.connext.network/en/latest/how-to/deploy-indra.html).
 
