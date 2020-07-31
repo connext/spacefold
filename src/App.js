@@ -94,7 +94,7 @@ const TOKENS = {
   },
   80001: {
     tokenName: "mTOKEN",
-    tokenIcon: ethIcon,
+    tokenIcon: moonIcon,
     tokenBackground: maticBackground,
     tokenAddress: "0xf502A7897a49A9daFa5542203746Bad6C6E86c11",
     chainId: 80001,
@@ -121,7 +121,7 @@ const TOKENS = {
     tokenBackground: optimismBackground,
     tokenAddress: "0x9313b03453730D296EC4A62b6f3Fc758A9D1d199",
     chainId: 108,
-    name: "OVM",
+    name: "Optimism",
     color: "#F50025",
     ethProviderUrl: `https://connext.optimism.io`,
     blockchainExplorerURL: null,
@@ -144,14 +144,14 @@ function App() {
   const [tweetUrl, setTweetUrl] = useState("");
   const [showTweetInput, setShowTweetInput] = useState(false);
   const [mintStatus, setMintStatus] = useState(Status.READY);
-  const [mintErrorMessage, setMintErrorMessage] = useState('');
+  const [mintErrorMessage, setMintErrorMessage] = useState("");
   const [sendAddress, setSendAddress] = useState("");
   const [showSendInput, setShowSendInput] = useState(false);
   const [sendStatus, setSendStatus] = useState(Status.READY);
-  const [sendErrorMessage, setSendErrorMessage] = useState('');
+  const [sendErrorMessage, setSendErrorMessage] = useState("");
   const [sendTransactionURL, setSendTransactionURL] = useState(null);
   const [transferStatus, setTransferStatus] = useState(Status.READY);
-  const [transferErrorMessage, setTransferErrorMessage] = useState('');
+  const [transferErrorMessage, setTransferErrorMessage] = useState("");
   const [initializing, setInitializing] = useState(true);
   const [collateralizing, setCollateralizing] = useState(true);
   const [loadingMessage, setLoadingMessage] = useState("");
@@ -303,14 +303,21 @@ function App() {
     }
   }, [sendTokens, activeSendTokenIndex]);
 
-  const activeMintToken = activeMintTokenIndex === null ?
-    (mintTokens.length > 0 ? mintTokens[0] : null) :
-    mintTokens[activeMintTokenIndex];
-  const activeSendToken = activeSendTokenIndex === null ?
-    (mintTokens.length > 1 ? mintTokens[1] : null) :
-    sendTokens[activeSendTokenIndex];
-  const tokensWereAlreadyMinted = mintTokens.some((t) => t.balance > 0) ||
-                     sendTokens.some((t) => t.balance > 0);
+  const activeMintToken =
+    activeMintTokenIndex === null
+      ? mintTokens.length > 0
+        ? mintTokens[0]
+        : null
+      : mintTokens[activeMintTokenIndex];
+  const activeSendToken =
+    activeSendTokenIndex === null
+      ? mintTokens.length > 1
+        ? mintTokens[1]
+        : null
+      : sendTokens[activeSendTokenIndex];
+  const tokensWereAlreadyMinted =
+    mintTokens.some((t) => t.balance > 0) ||
+    sendTokens.some((t) => t.balance > 0);
   const controlStyles = {
     padding: "0 56px",
     background: "#DEEBFF",
@@ -420,7 +427,7 @@ function App() {
                     );
                     setActiveMintTokenIndex(newTokenIndex);
                     setMintStatus(Status.READY);
-                    setMintErrorMessage('');
+                    setMintErrorMessage("");
                   }}
                   styles={selectStyles}
                   options={mintTokens
@@ -468,7 +475,7 @@ function App() {
                         "width=600,height=600"
                       );
                       setMintStatus(Status.READY);
-                      setMintErrorMessage('');
+                      setMintErrorMessage("");
                     }}
                   >
                     Tweet Now!
@@ -495,9 +502,9 @@ function App() {
                     }
                     onClick={async () => {
                       setMintStatus(Status.IN_PROGRESS);
-                      setMintErrorMessage('');
-                      setSendErrorMessage('');
-                      setTransferErrorMessage('');
+                      setMintErrorMessage("");
+                      setSendErrorMessage("");
+                      setTransferErrorMessage("");
                       try {
                         await mint(activeMintToken, clients, tweetUrl);
                       } catch (e) {
@@ -618,9 +625,9 @@ function App() {
                 title={transferErrorMessage}
                 onClick={async () => {
                   setTransferStatus(Status.IN_PROGRESS);
-                  setMintErrorMessage('');
-                  setSendErrorMessage('');
-                  setTransferErrorMessage('');
+                  setMintErrorMessage("");
+                  setSendErrorMessage("");
+                  setTransferErrorMessage("");
                   try {
                     await transfer(
                       transferDirection === "right"
@@ -652,7 +659,9 @@ function App() {
                   <>
                     FOLD{" "}
                     <img
-                      src={transferDisabled ? transferDisabledImage : transferGif}
+                      src={
+                        transferDisabled ? transferDisabledImage : transferGif
+                      }
                       alt="fold"
                     />
                   </>
@@ -681,7 +690,7 @@ function App() {
                     );
                     setActiveSendTokenIndex(newTokenIndex);
                     setSendStatus(Status.READY);
-                    setSendErrorMessage('');
+                    setSendErrorMessage("");
                   }}
                   styles={selectStyles}
                   options={sendTokens
@@ -770,9 +779,9 @@ function App() {
                       }
                       onClick={async () => {
                         setSendStatus(Status.IN_PROGRESS);
-                        setMintErrorMessage('');
-                        setSendErrorMessage('');
-                        setTransferErrorMessage('');
+                        setMintErrorMessage("");
+                        setSendErrorMessage("");
+                        setTransferErrorMessage("");
                         try {
                           const transactionHash = await send(
                             activeSendToken,
