@@ -84,7 +84,7 @@ You'll need a few environment variables to start the demo.
 
 Then,
 ```
-yarn start
+yarn install && yarn start
 ```
 
 ### Running your own Connext Node on Multiple Chains
@@ -94,14 +94,18 @@ Running your own Connext node locally is also pretty easy!
 ```bash
 git clone git@github.com:connext/indra.git
 cd indra
-npm i
+make # this will take a while
 make start
 ```
-If you run into trouble, there's more info here. //TODO
+Note: you will need to have `docker` and `jq` installed already. If you run into trouble, there's more information about interacting with indra here. // TODO -- link
 
-By default, this local node will spin up on a single testnet chain. You can point it at a remote chain (or multiple chains) by following the steps in [this guide](https://github.com/connext/indra/blob/staging/docs/src/how-to/integrate-chain.md).
+By default, this local node will spin up on two local testnet chains with IDs `1337` and `1338`. 
+
+If you would like to test out a local indra node with a remote chain (or multiple chains) by following the steps in [this guide](https://github.com/connext/indra/blob/staging/docs/src/how-to/integrate-chain.md).
 
 Lastly, your node can be deployed to a production environment by following [this guide](https://docs.connext.network/en/latest/how-to/deploy-indra.html).
+
+While running a local node is easy, this will not work with this repository without also setting up a local faucet. If you are interested in doing this, please [contact us](https://discord.gg/raNmNb5) for the full process.
 
 ## How does it work?
 
