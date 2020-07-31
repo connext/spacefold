@@ -272,6 +272,9 @@ function App() {
 
   // select initially active mint and send tokens
   useEffect(() => {
+    if (initializing) {
+      return; // balances aren't fully up to date yet, don't show anything
+    }
     if (activeMintTokenIndex === null && mintTokens.length > 0) {
       const existingIndex = mintTokens.findIndex(
         (t) => t.balance > 0 && t.tokenName !== "MOON"
@@ -300,10 +303,12 @@ function App() {
     }
   }, [sendTokens, activeSendTokenIndex]);
 
-  const activeMintToken =
-    activeMintTokenIndex === null ? null : mintTokens[activeMintTokenIndex];
-  const activeSendToken =
-    activeSendTokenIndex === null ? null : sendTokens[activeSendTokenIndex];
+  const activeMintToken = activeMintTokenIndex === null ?
+    (mintTokens.length > 0 ? mintTokens[0] : null) :
+    mintTokens[activeMintTokenIndex];
+  const activeSendToken = activeSendTokenIndex === null ?
+    (mintTokens.length > 1 ? mintTokens[1] : null) :
+    sendTokens[activeSendTokenIndex];
   const tokensWereAlreadyMinted = mintTokens.some((t) => t.balance > 0) ||
                      sendTokens.some((t) => t.balance > 0);
   const controlStyles = {
