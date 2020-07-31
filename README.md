@@ -66,9 +66,9 @@ To help with parsing out which solutions can and can't work with Connext, we've 
 |:---------:|:------------------:|:----------------:|:------------------:|:----------------:|-------|---------|
 |   Matic   |    Plasma chain    |         ✔️        |          ✔️         |         ✔️        |       |    😍    |
 |  Optimism |         ORU        |         ✔️        |          ✔️         |         ✔️        |       |    😍    |
-|   SKALE   | Elastic Sidechains |         ✔️        |          ✔️         |         ✔️        |       |    😍    |
+|   SKALE   | Elastic Sidechains |         ✔️        |          ✔️         |         Coming soon        |       |    😍    |
 |    xDai   |    PoS Sidechain   |         ✔️        |          ✔️         |         ✔️        |       |    😍    |
-|  Arbitrum |         ORU        |         ✔️        |          ✔️         |                  |       |    😍    |
+|  Arbitrum |         ORU        |         ✔️        |          ✔️         |          Coming soon        |       |    😍    |
 |    OMG    |    Plasma chain    |         ✔️        |          🤷         |                  |  No confirmation from OMG team yet - we're assuming based on most plasma constructions    |    🙂     |
 |   Hubble  |         ORU        | Can be supported |                    |                  |       |     🙂    |
 |    Fuel   |         ORU        |  Planned for v2  |                    |                  |    While not currently supported, the Fuel team expressed interest in building support potentially earlier than their v2   |    🙂     |
