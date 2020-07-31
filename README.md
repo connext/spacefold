@@ -139,7 +139,7 @@ Because of the fact that channels are simple primitives and what links them toge
 
 What you're effectively doing above is freezing funds on an existing ledger and commiting to peers that you will pay them out of those funds (sort of like the Gas Station Network, but no one actually *needs* to submit the transactions to chain unless they want to).
 
-Because of the above, for some specific types of activities (anything that is point-to-point and doesn't require global consensus), you are now entirely unconstrained by the limitations of blockchains. Updates in state channels can happen as fast as HTTP messages because... well, they can literally be HTTP messages.
+This means that some specific types of activities (anything that is point-to-point and doesn't require global consensus), you are now entirely unconstrained by the limitations of blockchains. Updates in state channels can happen as fast as HTTP messages because... well, they can literally be HTTP messages.
 
 There are of course some limitations, however, which are discussed later in this readme.
 
