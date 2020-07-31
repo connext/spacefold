@@ -26,21 +26,23 @@ Spacefold demonstrates how Connext can be used to build an **internet-of-l2-chai
 
 ## Table of Contents
 
-1. Compatibility with Other Chains
+1. [Compatibility with Other Chains](https://github.com/connext/spacefold/blob/master/README.md#compatibility-with-other-chains)
 
-2. Running it Yourself
+2. [Running it Yourself](https://github.com/connext/spacefold/blob/master/README.md#run-it-yourself)
 
-   a. Setting Up the Demo Locally
+   a. [Setting Up the Demo Locally](https://github.com/connext/spacefold/blob/master/README.md#running-the-spacefold-demo-locally)
 
-   b. Running your own Connext Node on Multiple Chains
+   b. [Running your own Connext Node on Multiple Chains](https://github.com/connext/spacefold/blob/master/README.md#running-your-own-connext-node-on-multiple-chains)
 
-3. How does it work?
+3. [How does it work?](https://github.com/connext/spacefold/blob/master/README.md#how-does-it-work)
 
-   a. Background on Connext
+   a. [Background on Connext](https://github.com/connext/spacefold/blob/master/README.md#a-quick-background-on-connext)
 
-   b. Cross-chain transfers with Connext
+   b. [Cross-chain Transfers with Connext](https://github.com/connext/spacefold/blob/master/README.md#cross-chain-transfers-with-connext)
 
-4. Demo Implementation Details
+   c. [How Does it Scale?](https://github.com/connext/spacefold/blob/master/README.md#how-does-it-scale)
+
+4. [Demo Implementation Details](https://github.com/connext/spacefold/blob/master/README.md#demo-implementation-details)
 
    a.
 
