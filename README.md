@@ -4,6 +4,8 @@
 
 [Spacefold](https://spacefold.io) is a demo and reference implementation of instant cross-evm-chain communication using Connext! Spacefold was built as part of [The Great Reddit Scaling Bake-Off](https://www.reddit.com/r/ethereum/comments/hbjx25/the_great_reddit_scaling_bakeoff/) in July 2020.
 
+Here's [our official submission to the /r/ethereum subreddit](https://www.reddit.com/r/ethereum/comments/i1eooc/spacefold_connexts_submission_to_the_great_reddit/)!
+
 ### Quick Resources
 
 - You can read more about how to use Spacefold in [our announcement post](https://medium.com/connext/introducing-spacefold-d1c227a29d3).
