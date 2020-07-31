@@ -119,8 +119,7 @@ npm i
 make start
 ```
 
-By default, this local node will spin up on a single testnet chain. You can point it at a remote chain (or multiple chains) by following the steps in this guide.
-//TODO
+By default, this local node will spin up on a single testnet chain. You can point it at a remote chain (or multiple chains) by following the steps in [this guide](https://github.com/connext/indra#launch-indra-in-developer-mode).
 
 Lastly, your node can be deployed to a production environment by following [this guide](https://docs.connext.network/en/latest/how-to/deploy-indra.html).
 
