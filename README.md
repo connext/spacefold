@@ -113,6 +113,7 @@ Connext is a network of *state channels*. The core concept behind a channel is v
 - Instead, what you can do is send your funds to a 2/2 multisig controlled by you and Bob. Then, rather than sending onchain transactions, you can send Bob ever updating signatures which give Bob *the ability* to withdraw up to a certain amount from the multisig.
 - Because Bob *can* get his funds at any time using his unbreakable commitment from you, you complete a new payment to him every time you send a new signature.
 
+
 ![alt text](https://github.com/connext/spacefold/blob/master/public/BasicChannel.png?raw=true)
 
 Connext extends this concept in a couple of ways ways:
@@ -131,6 +132,7 @@ There's a lot more information available publicly on state channels, here are so
 One big hurdle that we encountered when building our network was the difficulty of managing interactions that could be on different chains or different currencies. This is why, in addition to the above we extend basic channels in another way:
 
 Because of the fact that channels are simple primitives and what links them together is *offchain* communitcation, it's possible to transact to Danielle regardless of where Bob and Charlie's channels are or what currency they're using. This means you can pay Bob on Ethereum in Eth, who pays Charlie on Matic in MATIC, who pays Danielle on Arbitrum in aDai, who in turn calls the Uniswap contract running on Optimism on your behalf. This is best shown via the following diagram:
+
 
 ![alt text](https://github.com/connext/spacefold/blob/master/public/Crosschain.png?raw=true)
 
