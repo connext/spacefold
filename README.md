@@ -44,12 +44,6 @@ Spacefold demonstrates how Connext can be used to build an **internet-of-l2-chai
 
 4. [Demo Implementation Details](https://github.com/connext/spacefold/blob/master/README.md#demo-implementation-details)
 
-   a.
-
-   b. Minting via a Faucet
-
-   c. Functionality Limitations
-
 5. Security, Trust Assumptions, and Other Considerations
 
 6. FAQ
@@ -123,7 +117,7 @@ Connext is a network of *state channels*. The core concept behind a channel is v
 - Instead, what you can do is send your funds to a 2/2 multisig controlled by you and Bob. Then, rather than sending onchain transactions, you can send Bob ever updating signatures which give Bob *the ability* to withdraw up to a certain amount from the multisig.
 - Because Bob *can* get his funds at any time using his unbreakable commitment from you, you complete a new payment to him every time you send a new signature.
 
-// TODO diagram
+![alt text](https://github.com/connext/spacefold/blob/master/public/BasicChannel.png?raw=true)
 
 Connext extends this concept in a couple of ways ways:
 
@@ -151,3 +145,38 @@ This means that some specific types of activities (anything that is point-to-poi
 There are of course some limitations, however, which are discussed later in this readme.
 
 ## Demo Implementation Details
+
+For the purposes of the demo, we've made some simplifying assumptions:
+
+1. We mint for users using a faucet instead of letting them deposit their own assets. We found that the user experience of getting assets to different chains to test folding with was really poor and took away from the substance of the demo. If spacefold existed as a standalone production app, it would be much easier for users to get value to these other l2s in the first place. 🤔
+
+2. For Optimism, we're using a temporary testnet chain hosted by the team themselves. At the moment, a public testnet does not exist.
+
+3. Throughout the demo, we use a dummy ERC20 token with a 1:1 swap rate. We considered using Eth for some chains, but decided against it because then we would need to get lots of liquidity in order to mint to users.
+
+4. There's a LOT more functionality that Connext enables. Even if you're using Connext primarily to bridge between chains, it can be **highly** cost effective to also use it to further reduce the costs of transfers of tokens like Community points. You can also do more complex constructions such as bounties, or token-proportional content investing. We've left these things out of the demo to specifically highlight the cross-chain functionality.
+
+## Trust Assumptions and Considerations
+
+### Trust Vectors
+Connext is *entirely* noncustodial for users. No matter what happens, users are always able to withdraw their balance to whatever chain(s) they are actively participating in.
+
+This comes with a couple of caveats, however:
+
+1. First, users need to hold their latest offchain state to withdraw with. This is typically referred to as the "data availability problem" for solutions like state channels and plasma (as contrasted to solutions that post data to chain -- i.e. rollups). In practice, we've found that this is actually not as big of a problem for users as people think it is, particularly if users are utilizing authenticated sessions. This data storage can also be easily decentralized and outsourced to remote backup providers to ensure user funds remain secure. 
+
+2. Second, users need to monitor the chain to respond to any potential disputes. This is a similar pattern to what users have to do for plasma and optimistic rollup chains. Similar to those approaches, monitoring the chain can be outsourced to third parties who do it as a service (typically referred to as Watchtowers). This service can even be provided in a way where the watchtower is economically incentivized to behave correctly.
+
+In return for these caveats, channels give unparalleled UX. Unless all communication has broken down and you're actively in dispute, getting into and out of a channel is a single onchain transaction, which can also be **entirely gas abstracted** (as is the case with Connext). You can also onboard users to channels in sticky ways -- for instance, we support referral codes that implementers can create (or users can generate for each other) which create/fund a channel.
+
+### Censorship
+Because state channel networks are *not consensus systems* but are instead structurally similar to TCP/IP, the potential exists for censorship by intermediary routers.
+
+This is true in the current implementation of Connext which features a hub-and-spoke pattern over many single nodes. In the current construction, one "full node" provider connects to many users (running fully validating, but browser-compatible light nodes) and acts as the primary router.
+
+Our eventual goal is to move towards a pattern where routing nodes also all connect to each other. Then, censoring transactions becomes much much much tougher. Transfers can be routed over TOR using VPNs and pass through many routers before reaching a destination. They can also be broken up into many smaller transfers/updates which are all atomically routed over many different paths, exactly like how TCP works.
+
+### Liquidity
+Effectively what you're doing with Connext is doing many many tiny swaps between linked channels when you route a transfer or make an update. These swaps require collateral to happen trustlessly. This means that routing nodes in Connext are also liquidity providers earning fees for their service.
+
+There's a lot of misinformation about the *amount* and *extent* to which liquidity is needed within channel networks. The reality is that it's very very hard to judge exactly how much, but at the network gets more connected and transaction volume increases, you start to see more and more transactions flowing in both directions within a routing channel. For each transfer, the node earns fees multiplicatively against the locked up collateral. From internal rough calculations made by some of our users the ROI generated here is *more than enough* to offset liquidity costs and competitive with existing DeFi returns.
