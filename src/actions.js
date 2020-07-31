@@ -110,7 +110,6 @@ export async function initClients(
 }
 
 export async function collateralize(clients, tokens) {
-  console.log(clients);
   await Promise.all(
     Object.values(clients).map(async (client) => {
       const token = tokens[client.chainId];

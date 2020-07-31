@@ -398,7 +398,7 @@ function App() {
         </a>
       </div>
       {activeMintToken !== null && activeSendToken !== null && (
-        <>
+        <div className="Main-Content">
           <div
             className="Token Token-Left"
             style={{
@@ -598,66 +598,68 @@ function App() {
               )}
             </div>
           </div>
-          {transferStatus === Status.IN_PROGRESS ? (
-            <div className="Transferring-Circle">
-              <img src={loadingGif} alt="transferring" />
-            </div>
-          ) : (
-            <button
-              type="button"
-              className={`Swap-Button${
-                transferDirection === "right" ? "" : " Flip-Image"
-              }${
-                transferStatus === Status.SUCCESS
-                  ? " Transfer-Success"
-                  : transferStatus === Status.ERROR
-                  ? " Transfer-Error"
-                  : ""
-              }`}
-              title={transferErrorMessage}
-              onClick={async () => {
-                setTransferStatus(Status.IN_PROGRESS);
-                setMintErrorMessage('');
-                setSendErrorMessage('');
-                setTransferErrorMessage('');
-                try {
-                  await transfer(
-                    transferDirection === "right"
-                      ? activeMintToken
-                      : activeSendToken,
-                    transferDirection === "left"
-                      ? activeMintToken
-                      : activeSendToken,
-                    clients,
-                    balances
-                  );
-                } catch (e) {
-                  setTransferStatus(Status.ERROR);
-                  setTransferErrorMessage(e.message);
-                  setTimeout(() => setTransferStatus(Status.READY), 2000);
-                }
-              }}
-              disabled={transferDisabled}
-            >
-              {transferStatus === Status.SUCCESS ? (
-                <>
-                  SUCCESS! <i className="fas fa-check" />
-                </>
-              ) : transferStatus === Status.ERROR ? (
-                <>
-                  ERROR <i className="fas fa-exclamation" />
-                </>
-              ) : (
-                <>
-                  FOLD{" "}
-                  <img
-                    src={transferDisabled ? transferDisabledImage : transferGif}
-                    alt="fold"
-                  />
-                </>
-              )}
-            </button>
-          )}
+          <div className="Middle-Button-Container">
+            {transferStatus === Status.IN_PROGRESS ? (
+              <div className="Transferring-Circle">
+                <img src={loadingGif} alt="transferring" />
+              </div>
+            ) : (
+              <button
+                type="button"
+                className={`Swap-Button${
+                  transferDirection === "right" ? "" : " Flip-Image"
+                }${
+                  transferStatus === Status.SUCCESS
+                    ? " Transfer-Success"
+                    : transferStatus === Status.ERROR
+                    ? " Transfer-Error"
+                    : ""
+                }`}
+                title={transferErrorMessage}
+                onClick={async () => {
+                  setTransferStatus(Status.IN_PROGRESS);
+                  setMintErrorMessage('');
+                  setSendErrorMessage('');
+                  setTransferErrorMessage('');
+                  try {
+                    await transfer(
+                      transferDirection === "right"
+                        ? activeMintToken
+                        : activeSendToken,
+                      transferDirection === "left"
+                        ? activeMintToken
+                        : activeSendToken,
+                      clients,
+                      balances
+                    );
+                  } catch (e) {
+                    setTransferStatus(Status.ERROR);
+                    setTransferErrorMessage(e.message);
+                    setTimeout(() => setTransferStatus(Status.READY), 2000);
+                  }
+                }}
+                disabled={transferDisabled}
+              >
+                {transferStatus === Status.SUCCESS ? (
+                  <>
+                    SUCCESS! <i className="fas fa-check" />
+                  </>
+                ) : transferStatus === Status.ERROR ? (
+                  <>
+                    ERROR <i className="fas fa-exclamation" />
+                  </>
+                ) : (
+                  <>
+                    FOLD{" "}
+                    <img
+                      src={transferDisabled ? transferDisabledImage : transferGif}
+                      alt="fold"
+                    />
+                  </>
+                )}
+              </button>
+            )}
+          </div>
           <div
             className="Token Token-Right"
             style={{
@@ -855,7 +857,7 @@ function App() {
               </div>
             </div>
           </div>
-        </>
+        </div>
       )}
       <a
         className="Footer"

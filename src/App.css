@@ -49,6 +49,13 @@
   vertical-align: middle;
 }
 
+.Main-Content {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+}
+
 .Token {
   flex: 1;
   display: flex;
@@ -286,10 +293,16 @@
   margin-top: 15px;
 }
 
+.Middle-Button-Container {
+  width: 0;
+  overflow: visible;
+  z-index: 1;
+  position: relative;
+}
+
 .Swap-Button {
   position: absolute;
   top: 50%;
-  left: 50%;
   transform: translate(-50%, -50%);
   display: flex;
   flex-direction: column;
@@ -322,7 +335,6 @@
 .Transferring-Circle {
   position: absolute;
   top: 50%;
-  left: 50%;
   transform: translate(-50%, -50%);
   height: 112px;
   width: 112px;
@@ -373,9 +385,6 @@
 }
 
 @media screen and (max-width: 768px) {
-  .App {
-    flex-direction: column;
-  }
   .More-Buttons {
     justify-content: center;
   }
@@ -388,8 +397,16 @@
     padding: 10px;
     margin: 0;
   }
+  .Main-Content {
+    flex-direction: column;
+  }
   .Token-Left {
     padding-top: 120px;
+    padding-bottom: 60px;
+  }
+  .Token-Right {
+    padding-top: 60px;
+    padding-bottom: 60px;
   }
   .Card {
     width: calc(100% - 48px - 102px);
@@ -408,15 +425,22 @@
   .Token-Balance {
     margin: 0;
   }
+  .Middle-Button-Container {
+    width: auto;
+    height: 0;
+  }
   .Swap-Button {
     width: 96px;
     height: 96px;
     font-size: 14px;
-    top: calc(50% + 60px);
+    top: 0;
+    left: 50%;
   }
   .Transferring-Circle {
     width: 96px;
     height: 96px;
+    top: 0;
+    left: 50%;
   }
   .Footer {
     font-size: 12px;
