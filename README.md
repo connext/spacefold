@@ -22,8 +22,6 @@ The reality is that every solution has its tradeoffs. Rather than buiding a cust
 
 Spacefold demonstrates how Connext can be used to build an **internet-of-l2-chains/shards**. Users can instantly and seamlessly transfer value between chains/shards, and eventually even make atomic cross-chain contract calls. Most importantly, this can happen in a way where users *dont need to know what chain/rollup/shard they are on to begin with*.
 
-//TODO show diagram of cross chain
-
 ## Table of Contents
 
 1. [Compatibility with Other Chains](https://github.com/connext/spacefold/blob/master/README.md#compatibility-with-other-chains)
@@ -133,6 +131,8 @@ There's a lot more information available publicly on state channels, here are so
 One big hurdle that we encountered when building our network was the difficulty of managing interactions that could be on different chains or different currencies. This is why, in addition to the above we extend basic channels in another way:
 
 Because of the fact that channels are simple primitives and what links them together is *offchain* communitcation, it's possible to transact to Danielle regardless of where Bob and Charlie's channels are or what currency they're using. This means you can pay Bob on Ethereum in Eth, who pays Charlie on Matic in MATIC, who pays Danielle on Arbitrum in aDai, who in turn calls the Uniswap contract running on Optimism on your behalf. This is best shown via the following diagram:
+
+![alt text](https://github.com/connext/spacefold/blob/master/public/Crosschain.png?raw=true)
 
 ### How Does it Scale?
 
