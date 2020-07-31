@@ -58,7 +58,7 @@ In general, Connext can support any chain/l2/shard/rollup system that supports t
 
 While the above is true, in the ideal case (to avoid custom work), it's best for Connext to work with Ethereum-like systems (that run the EVM and support Solidity). Running Connext on anything else would likely require lots of custom work.
 
-To help with parsing out which solutions can and can't work with Connext, we've created an easy-to-parse compatiblity table:
+To help with parsing out which solutions can and can't work with Connext, we've created a compatiblity table. **Note** this table is still a WIP while we get more information from teams. If you feel as though anything here was misrepresented, please submit an issue -- we're happy to amend!
 
 |    Name   |        Type        |  EVM Compatible  | Supports `Create2` | Included in demo | Notes | Verdict |
 |:---------:|:------------------:|:----------------:|:------------------:|:----------------:|-------|---------|
@@ -73,36 +73,6 @@ To help with parsing out which solutions can and can't work with Connext, we've 
 | Starkware |        zkRU        |         ❌        |                    |                  |    No confirmation from team yet, we're assuming based on current zkRU limitations   |    🤷/☹️     |
 |  Loopring |        zkRU        |         ❌        |                    |                  |    No confirmation from team yet, we're assuming based on current zkRU limitations  |    🤷/☹️    |
 |  zkSync |        zkRU        |         ❌        |                    |                  |    No confirmation from team yet, we're assuming based on current zkRU limitations  |    🤷/☹️     |
-
-### L2/Scalability Chains
-
-**[Matic Public Testnet](https://matic.network/)**
-
-- ChainId: `80001`
-- Type: Plasma chain
-- Reddit Submission: https://www.reddit.com/r/ethereum/comments/i07h1g/matic_networks_great_reddit_scaling_bakeoff/
-
-**[xDai Mainnet](https://www.xdaichain.com/)**
-
-- ChainId: `100`
-- Website:
-- Type: PoS sidechain
-- Reddit Submission: https://www.reddit.com/r/ethereum/comments/i0ruv8/xdai_stable_chain_and_splunk_great_reddit_scaling/
-
-**[Optimism Hosted Testnet](https://optimism.io/)**
-
-- ChainId: `108`
-- Type: Optimistic rollup
-
-### Other Chains
-
-**[Rinkeby (Ethereum testnet)](https://www.rinkeby.io/#stats)**
-
-- ChainId: `4`
-
-**Kovan (Ethereum testnet)**
-
-- ChainId: `42`
 
 ## 2. Run it Yourself
 
