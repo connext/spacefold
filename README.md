@@ -101,7 +101,7 @@ make # this will take a while
 make start
 ```
 
-Note: you will need to have `docker` and `jq` installed already. If you run into trouble, there's more information about interacting with indra here. // TODO -- link
+Note: you will need to have `docker` and `jq` installed already. If you run into trouble, [there's more information about interacting with indra here](https://github.com/connext/indra#launch-indra-in-developer-mode).
 
 By default, this local node will spin up on two local testnet chains with IDs `1337` and `1338`.
 
