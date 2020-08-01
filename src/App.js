@@ -397,7 +397,7 @@ function App() {
           <i className="fab fa-discord Discord-Icon"></i> Chat
         </a>
         <a
-          href="https://connext.network/"
+          href="https://medium.com/connext/introducing-spacefold-d1c227a29d3"
           target="_blank"
           rel="noopener noreferrer"
         >
