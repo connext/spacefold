@@ -1158,56 +1158,56 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
-"@connext/apps@7.0.3-alpha.0":
-  version "7.0.3-alpha.0"
-  resolved "https://registry.yarnpkg.com/@connext/apps/-/apps-7.0.3-alpha.0.tgz#cb5de37e0444b2b48d1c233848422bbcbe7ed99e"
-  integrity sha512-CK5sUBtKODwPIcteYEYYxzsEGjkhByXT80YCwztc9k7h9NosxT3UOfElbg5I1oy134bF/stvsBdQnnqx8dY8wA==
+"@connext/apps@7.2.0":
+  version "7.2.0"
+  resolved "https://registry.yarnpkg.com/@connext/apps/-/apps-7.2.0.tgz#9f01272c1958f8a668cf3393eb4ffd4ec3d52b33"
+  integrity sha512-OonrKkZeQj0ztkZetHnBDD9XSslsvx0xa4xtHr3ZgvqvshtlAJ/XHFubxijH+tgwr7XMB60ZG6p2s0JKqL3elA==
 
-"@connext/cf-core@7.0.3-alpha.0":
-  version "7.0.3-alpha.0"
-  resolved "https://registry.yarnpkg.com/@connext/cf-core/-/cf-core-7.0.3-alpha.0.tgz#e444788d201b9451aff4f06c8bc7a42221eeeaca"
-  integrity sha512-zaCWzxurmIJGK1gJ5joAink2va6GaVR2YKVAQmgFH/dMsIyd4vQrorWsDjwypFHmNf4AzAvjipdFp/kO7DdxLw==
+"@connext/cf-core@7.2.0":
+  version "7.2.0"
+  resolved "https://registry.yarnpkg.com/@connext/cf-core/-/cf-core-7.2.0.tgz#4e245b04c9101c8f878b253548f367613fa765f6"
+  integrity sha512-wpXP4f6aEB354iqrElpQeEN2CFsHMkE+4CsYWIvlgu9j8nJyF6MTAUhq4s+AwxXYUDTrSsIShAVaU0my2DY8CQ==
   dependencies:
     "@connext/contracts" "3.4.1"
     "@connext/pure-evm-wasm" "0.1.4"
-    "@connext/types" "7.0.3-alpha.0"
-    "@connext/utils" "7.0.3-alpha.0"
+    "@connext/types" "7.2.0"
+    "@connext/utils" "7.2.0"
     "@openzeppelin/contracts" "3.0.2"
     async-mutex "0.2.4"
-    ethers "5.0.5"
+    ethers "5.0.8"
     eventemitter3 "4.0.4"
     memoizee "0.4.14"
-    p-queue "6.5.0"
-    uuid "8.2.0"
+    p-queue "6.6.0"
+    uuid "8.3.0"
 
-"@connext/channel-provider@7.0.3-alpha.0":
-  version "7.0.3-alpha.0"
-  resolved "https://registry.yarnpkg.com/@connext/channel-provider/-/channel-provider-7.0.3-alpha.0.tgz#6dca2984155e9c63920e333f6ffceb501e9b7af8"
-  integrity sha512-1+Ur5rsZ75X+8BPl/g16NyN+glMch+lYcQdymSAEegkSiAofhdVhZxaQeiUaTb6cwoD8gnMi8mQ6YrOPr4p8SA==
+"@connext/channel-provider@7.2.0":
+  version "7.2.0"
+  resolved "https://registry.yarnpkg.com/@connext/channel-provider/-/channel-provider-7.2.0.tgz#0e9d2246ed21c5df70bdb9f9bb1b76c97547a4a5"
+  integrity sha512-dk747HKDhHq1tmnW6PZ0QFpUe/WukzpEIvwrzsbgm09Fu8mc/bu7cQqu1qEiwnlZ3C9VwrjaZm33R4Mx5+Lysg==
   dependencies:
-    "@connext/types" "7.0.3-alpha.0"
+    "@connext/types" "7.2.0"
     eventemitter3 "4.0.4"
 
-"@connext/client@7.0.3-alpha.0":
-  version "7.0.3-alpha.0"
-  resolved "https://registry.yarnpkg.com/@connext/client/-/client-7.0.3-alpha.0.tgz#0d13e0debef1c1f0e056371e0b82fdd60eb7cea0"
-  integrity sha512-MWbCxGqCUohOiWq+o8gbOsASFnVdFzWW5aGXjNCpeSZ/OfyBQcQU+TfV6ffoGPCpip29Bzu8dXkLoUW+DEYdRw==
+"@connext/client@7.2.0":
+  version "7.2.0"
+  resolved "https://registry.yarnpkg.com/@connext/client/-/client-7.2.0.tgz#a8d1cb27d595157ff362743ff57d447fd31ce1ff"
+  integrity sha512-pMKFP+zzJFWTUe3JP3Msa8sDTcSi09W7xJBIg7HLSnRq5SUNSlaDG/xPHV38+dEjiENLCnDyUFur749K90R0Fw==
   dependencies:
-    "@connext/apps" "7.0.3-alpha.0"
-    "@connext/cf-core" "7.0.3-alpha.0"
-    "@connext/channel-provider" "7.0.3-alpha.0"
+    "@connext/apps" "7.2.0"
+    "@connext/cf-core" "7.2.0"
+    "@connext/channel-provider" "7.2.0"
     "@connext/contracts" "3.4.1"
-    "@connext/messaging" "7.0.3-alpha.0"
-    "@connext/store" "7.0.3-alpha.0"
-    "@connext/types" "7.0.3-alpha.0"
-    "@connext/utils" "7.0.3-alpha.0"
+    "@connext/messaging" "7.2.0"
+    "@connext/store" "7.2.0"
+    "@connext/types" "7.2.0"
+    "@connext/utils" "7.2.0"
     axios "0.19.2"
     core-js "3.6.5"
-    ethers "5.0.5"
-    evt "1.7.13"
-    regenerator-runtime "0.13.5"
+    ethers "5.0.8"
+    evt "1.8.4"
+    regenerator-runtime "0.13.7"
     ts-natsutil "1.1.1"
-    uuid "8.2.0"
+    uuid "8.3.0"
 
 "@connext/contracts@3.4.1":
   version "3.4.1"
@@ -1223,13 +1223,13 @@
     keccak "3.0.1"
     yargs "15.4.1"
 
-"@connext/messaging@7.0.3-alpha.0":
-  version "7.0.3-alpha.0"
-  resolved "https://registry.yarnpkg.com/@connext/messaging/-/messaging-7.0.3-alpha.0.tgz#0fb36a91e7cba225da988119c63671c8cddbd243"
-  integrity sha512-EEZvucLGrjtTw5m4cFqK5upfGrtgjz7QeH4rtCJ072H8lOcw9QI3mgr2ATVQqOLnHXzRZbED+Yy+xOUaOSXf9A==
+"@connext/messaging@7.2.0":
+  version "7.2.0"
+  resolved "https://registry.yarnpkg.com/@connext/messaging/-/messaging-7.2.0.tgz#9a749510266fb7dd60ebceacbbd27197bec8a7d1"
+  integrity sha512-c82IbLI9HPWPuHaqgKB23Yv68C4iFHtOobXxny94Pgaq9VPvPJQQlcuZoBV/PnZcspYmXX/M8M3ZT806nAMuMQ==
   dependencies:
-    "@connext/types" "7.0.3-alpha.0"
-    "@connext/utils" "7.0.3-alpha.0"
+    "@connext/types" "7.2.0"
+    "@connext/utils" "7.2.0"
     ts-natsutil "1.1.1"
 
 "@connext/pure-evm-wasm@0.1.4":
@@ -1237,21 +1237,21 @@
   resolved "https://registry.yarnpkg.com/@connext/pure-evm-wasm/-/pure-evm-wasm-0.1.4.tgz#5cdca4463aaa649ea7740ebbe67ed05b8443ad0e"
   integrity sha512-BeNU9oH83vXKpnFEltr5D82nfmbd26uX/gp0jMR58H5FCGnXlZS/XyoU4yXsxytVU4wc56fQwirE0xYNiqs3vw==
 
-"@connext/store@7.0.3-alpha.0":
-  version "7.0.3-alpha.0"
-  resolved "https://registry.yarnpkg.com/@connext/store/-/store-7.0.3-alpha.0.tgz#31439131d1b5b9c9d914964c917bb08526044bcb"
-  integrity sha512-GTc9aP+NBhVGIZG+HllX1RnBNG6+oay2xcV1Po3CJPOMuFRheHeecQENYnhunEXGn4ROGZcYDis2ZxwplQpQ2g==
+"@connext/store@7.2.0":
+  version "7.2.0"
+  resolved "https://registry.yarnpkg.com/@connext/store/-/store-7.2.0.tgz#37014b0ec8d8bb5d639b891fa59c02fd0215d71d"
+  integrity sha512-0emoE5sOx7SWWq9tLgqA7ktBWdxFogNWCNl2sRtBqDql8CVltbu9tj95Br+V3CYRxIgFPDGb4NzoSaPCzjCbjw==
   dependencies:
     "@connext/contracts" "3.4.1"
-    "@connext/types" "7.0.3-alpha.0"
-    "@connext/utils" "7.0.3-alpha.0"
+    "@connext/types" "7.2.0"
+    "@connext/utils" "7.2.0"
     localStorage "1.0.4"
     p-waterfall "2.1.0"
     pg "8.3.0"
     pg-hstore "2.3.3"
-    sequelize "6.3.3"
+    sequelize "6.3.4"
     sqlite3 "5.0.0"
-    uuid "8.2.0"
+    uuid "8.3.0"
 
 "@connext/types@7.0.0-alpha.20":
   version "7.0.0-alpha.20"
@@ -1263,15 +1263,15 @@
     evt "1.7.13"
     sequelize "6.3.1"
 
-"@connext/types@7.0.3-alpha.0":
-  version "7.0.3-alpha.0"
-  resolved "https://registry.yarnpkg.com/@connext/types/-/types-7.0.3-alpha.0.tgz#5d68a961345a81db8762b9ef62e45a784548bdd2"
-  integrity sha512-bbSG6qdJ7s2i8IkIdS6tf38YNMH7ZpYNWRAaV4Z4Zrfpg9wNumdTkPm6r0kriEfY84IO7XDg9RuO1jwsTgFyhg==
+"@connext/types@7.2.0":
+  version "7.2.0"
+  resolved "https://registry.yarnpkg.com/@connext/types/-/types-7.2.0.tgz#98a666415b63b0a9c22e0cd125b696ddba5bfaf2"
+  integrity sha512-SgHRhai1s6k5R8YohLjVxT9i+oqfKrNHhzqv1hSuQAfVGVJK0efFtzj8yvYyyYyDlcg3y7kKWncBIiP2eVqIxw==
   dependencies:
-    ethers "5.0.5"
+    ethers "5.0.8"
     eventemitter3 "4.0.4"
-    evt "1.7.13"
-    sequelize "6.3.3"
+    evt "1.8.4"
+    sequelize "6.3.4"
 
 "@connext/utils@7.0.0-alpha.20":
   version "7.0.0-alpha.20"
@@ -1284,16 +1284,16 @@
     eccrypto-js "4.5.4"
     evt "1.7.13"
 
-"@connext/utils@7.0.3-alpha.0":
-  version "7.0.3-alpha.0"
-  resolved "https://registry.yarnpkg.com/@connext/utils/-/utils-7.0.3-alpha.0.tgz#9b2161eb77beddcc265d6f4386758b9421afd8eb"
-  integrity sha512-59WwWR9+JT5O8kw2RbLMgD1rm/lHg3BKDHqxvhHik3SsMuEno854q/MQw1WbU3BH3GowO2Q7l2tMwcV7Me+JJw==
+"@connext/utils@7.2.0":
+  version "7.2.0"
+  resolved "https://registry.yarnpkg.com/@connext/utils/-/utils-7.2.0.tgz#2c49d36da27956cd40230b199e21860715c5d446"
+  integrity sha512-cxv548lIr+4dCFuEkWtdHwoTdyWgbIiKZvRWA43txCvJ2ZFGvNXybiOzLb4lRuOnu2urfIDhbHRBmZ7uKPXvnA==
   dependencies:
-    "@connext/types" "7.0.3-alpha.0"
+    "@connext/types" "7.2.0"
     axios "0.19.2"
     bs58check "2.1.2"
     eccrypto-js "4.5.4"
-    evt "1.7.13"
+    evt "1.8.4"
 
 "@csstools/convert-colors@^1.4.0":
   version "1.4.0"
@@ -5684,6 +5684,42 @@ ethers@5.0.5:
     "@ethersproject/web" "^5.0.0"
     "@ethersproject/wordlists" "^5.0.0"
 
+ethers@5.0.8:
+  version "5.0.8"
+  resolved "https://registry.yarnpkg.com/ethers/-/ethers-5.0.8.tgz#c13d0fdf5e66db8085e2036d3309ed2f8a17ed89"
+  integrity sha512-of/rPgJ7E3yyBADUv5A7Gtkd7EB8ta/T9NS5CCG9tj9cifnXcI3KIdYQ7d8AS+9vm38pR1g6S5I+Q/mRnlQZlg==
+  dependencies:
+    "@ethersproject/abi" "^5.0.0"
+    "@ethersproject/abstract-provider" "^5.0.0"
+    "@ethersproject/abstract-signer" "^5.0.0"
+    "@ethersproject/address" "^5.0.0"
+    "@ethersproject/base64" "^5.0.0"
+    "@ethersproject/basex" "^5.0.0"
+    "@ethersproject/bignumber" "^5.0.0"
+    "@ethersproject/bytes" "^5.0.0"
+    "@ethersproject/constants" "^5.0.0"
+    "@ethersproject/contracts" "^5.0.0"
+    "@ethersproject/hash" "^5.0.0"
+    "@ethersproject/hdnode" "^5.0.0"
+    "@ethersproject/json-wallets" "^5.0.0"
+    "@ethersproject/keccak256" "^5.0.0"
+    "@ethersproject/logger" "^5.0.0"
+    "@ethersproject/networks" "^5.0.0"
+    "@ethersproject/pbkdf2" "^5.0.0"
+    "@ethersproject/properties" "^5.0.0"
+    "@ethersproject/providers" "^5.0.0"
+    "@ethersproject/random" "^5.0.0"
+    "@ethersproject/rlp" "^5.0.0"
+    "@ethersproject/sha2" "^5.0.0"
+    "@ethersproject/signing-key" "^5.0.0"
+    "@ethersproject/solidity" "^5.0.0"
+    "@ethersproject/strings" "^5.0.0"
+    "@ethersproject/transactions" "^5.0.0"
+    "@ethersproject/units" "^5.0.0"
+    "@ethersproject/wallet" "^5.0.0"
+    "@ethersproject/web" "^5.0.0"
+    "@ethersproject/wordlists" "^5.0.0"
+
 ethers@^5.0.7:
   version "5.0.7"
   resolved "https://registry.yarnpkg.com/ethers/-/ethers-5.0.7.tgz#41c3d774e0a57bfde12b0198885789fb41a14976"
@@ -5772,6 +5808,14 @@ evt@1.7.13:
   dependencies:
     minimal-polyfills "^2.1.2"
     run-exclusive "^2.2.7"
+
+evt@1.8.4:
+  version "1.8.4"
+  resolved "https://registry.yarnpkg.com/evt/-/evt-1.8.4.tgz#7a69239cb5c723a4d25d21189043f210e74f03eb"
+  integrity sha512-PXQyq6/NwG4t2jOxAwkHmHoQniUMEAVUF8jhZrGxk0axyBwZkk1+/RVKx0vmBtNizOIOCFR/rBLrXvHG2qhbxg==
+  dependencies:
+    minimal-polyfills "^2.1.3"
+    run-exclusive "^2.2.9"
 
 exec-sh@^0.3.2:
   version "0.3.4"
@@ -9017,6 +9061,11 @@ minimal-polyfills@^2.1.2, minimal-polyfills@^2.1.3:
   resolved "https://registry.yarnpkg.com/minimal-polyfills/-/minimal-polyfills-2.1.3.tgz#de39bd2cbd18a549b60b6594f1dec602256a5798"
   integrity sha512-gEbwv2dEvvrGys/hhWdZy+/BGkKAKqzxfmVqmF1Jl9OlD0tK9hEFLJ2tCXOuOtz2qiDMQO2Ke1jYB2s5uCj2Xw==
 
+minimal-polyfills@^2.1.4:
+  version "2.1.4"
+  resolved "https://registry.yarnpkg.com/minimal-polyfills/-/minimal-polyfills-2.1.4.tgz#208d32410666dc8bcccee088646d52397b2be296"
+  integrity sha512-X4hfRfqGz+9f92hOy0kw4URE9TZEkmLDonLVXKETulK2Vjoo6ovBmVJkSGAgQX2fNIG3xZ9pW4V7+TWCQa8zFw==
+
 minimalistic-assert@^1.0.0, minimalistic-assert@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/minimalistic-assert/-/minimalistic-assert-1.0.1.tgz#2e194de044626d4a10e7f7fbc00ce73e83e4d5c7"
@@ -9859,10 +9908,10 @@ p-map@^3.0.0:
   dependencies:
     aggregate-error "^3.0.0"
 
-p-queue@6.5.0:
-  version "6.5.0"
-  resolved "https://registry.yarnpkg.com/p-queue/-/p-queue-6.5.0.tgz#40d6bafdd3bb0c8eaa03e0649ba6fa3ce7249947"
-  integrity sha512-FLaTTD9Am6TeDfNuN0d+INeyVJoICoBS+OVP5K1S84v4w51LN3nRkCT+WC7xLBepV2s+N4LibM7Ys7xcSc0+1A==
+p-queue@6.6.0:
+  version "6.6.0"
+  resolved "https://registry.yarnpkg.com/p-queue/-/p-queue-6.6.0.tgz#263f2b73add4cefca81d8d6b2696ee74b326de2f"
+  integrity sha512-zPHXPNy9jZsiym0PpJjvnHQysx1fSd/QdaNVwiDRLU2KFChD6h9CkCB6b8i3U8lBwJyA+mHgNZCzcy77glUssQ==
   dependencies:
     eventemitter3 "^4.0.4"
     p-timeout "^3.1.0"
@@ -11524,20 +11573,15 @@ regenerate@^1.4.0:
   resolved "https://registry.yarnpkg.com/regenerate/-/regenerate-1.4.1.tgz#cad92ad8e6b591773485fbe05a485caf4f457e6f"
   integrity sha512-j2+C8+NtXQgEKWk49MMP5P/u2GhnahTtVkRIHr5R5lVRlbKvmQ+oS+A5aLKWp2ma5VkT8sh6v+v4hbH0YHR66A==
 
-regenerator-runtime@0.13.5:
-  version "0.13.5"
-  resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.13.5.tgz#d878a1d094b4306d10b9096484b33ebd55e26697"
-  integrity sha512-ZS5w8CpKFinUzOwW3c83oPeVXoNsrLsaCoLtJvAClH135j/R77RuymhiSErhm2lKcwSCIpmvIWSbDkIfAqKQlA==
+regenerator-runtime@0.13.7, regenerator-runtime@^0.13.3, regenerator-runtime@^0.13.4:
+  version "0.13.7"
+  resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.13.7.tgz#cac2dacc8a1ea675feaabaeb8ae833898ae46f55"
+  integrity sha512-a54FxoJDIr27pgf7IgeQGxmqUNYrcV338lf/6gH456HZ/PhX+5BcwHXG9ajESmwe6WRO0tAzRUrRmNONWgkrew==
 
 regenerator-runtime@^0.11.0:
   version "0.11.1"
   resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.11.1.tgz#be05ad7f9bf7d22e056f9726cee5017fbf19e2e9"
   integrity sha512-MguG95oij0fC3QV3URf4V2SDYGJhJnJGqvIIgdECeODCT98wSWDAJ94SSuVpYQUoTcGUIL6L4yNB7j1DFFHSBg==
-
-regenerator-runtime@^0.13.3, regenerator-runtime@^0.13.4:
-  version "0.13.7"
-  resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.13.7.tgz#cac2dacc8a1ea675feaabaeb8ae833898ae46f55"
-  integrity sha512-a54FxoJDIr27pgf7IgeQGxmqUNYrcV338lf/6gH456HZ/PhX+5BcwHXG9ajESmwe6WRO0tAzRUrRmNONWgkrew==
 
 regenerator-transform@^0.14.2:
   version "0.14.5"
@@ -11857,6 +11901,13 @@ run-exclusive@^2.2.7:
   dependencies:
     minimal-polyfills "^2.1.3"
 
+run-exclusive@^2.2.9:
+  version "2.2.13"
+  resolved "https://registry.yarnpkg.com/run-exclusive/-/run-exclusive-2.2.13.tgz#778421aa10684fa6e8925a1e944fa3ab255589cf"
+  integrity sha512-88PHMS2WjLYSY2MjFvnq1QG5yTbWg+ePPwgY7UQF4gP2ALx2i3brwGyDs7fN7UMEuiLIJ0SMTQxpA42Vi07qtA==
+  dependencies:
+    minimal-polyfills "^2.1.4"
+
 run-queue@^1.0.0, run-queue@^1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/run-queue/-/run-queue-1.0.3.tgz#e848396f057d223f24386924618e25694161ec47"
@@ -12097,10 +12148,10 @@ sequelize@6.3.1:
     validator "^10.11.0"
     wkx "^0.5.0"
 
-sequelize@6.3.3:
-  version "6.3.3"
-  resolved "https://registry.yarnpkg.com/sequelize/-/sequelize-6.3.3.tgz#930ab26f9e928d9bf2fe1fe477b428a092fef063"
-  integrity sha512-WO/b1ehjSFKlBCHzwZoaPhoW3WyXXy9x74yPrOP8NpE67wzbv0dIucDO4a+THLVyl3lnv3nFMZdJRdkUgb/ZAw==
+sequelize@6.3.4:
+  version "6.3.4"
+  resolved "https://registry.yarnpkg.com/sequelize/-/sequelize-6.3.4.tgz#dd6f4801ba5e4d7a6f845a5ad3e616f24453694f"
+  integrity sha512-W6Y96N5QHTgEz5Q37v2GYbKufSXaw0b3v4rCLTPbcCMfIG0MHI42Ozp7IwiyV9bdNkfFEdY7XP8R6lWrWg4hUw==
   dependencies:
     debug "^4.1.1"
     dottie "^2.0.0"
@@ -13449,12 +13500,7 @@ uuid@3.4.0, uuid@^3.0.1, uuid@^3.3.2:
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.4.0.tgz#b23e4358afa8a202fe7a100af1f5f883f02007ee"
   integrity sha512-HjSDRw6gZE5JMggctHBcjVak08+KEVhSIiDzFnT9S9aegmp85S/bReBVTb4QTFaRNptJ9kuYaNhnbNEOkbKb/A==
 
-uuid@8.2.0:
-  version "8.2.0"
-  resolved "https://registry.yarnpkg.com/uuid/-/uuid-8.2.0.tgz#cb10dd6b118e2dada7d0cd9730ba7417c93d920e"
-  integrity sha512-CYpGiFTUrmI6OBMkAdjSDM0k5h8SkkiTP4WAjQgDgNB1S3Ou9VBEvr6q0Kv2H1mMk7IWfxYGpMH5sd5AvcIV2Q==
-
-uuid@^8.1.0:
+uuid@8.3.0, uuid@^8.1.0:
   version "8.3.0"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-8.3.0.tgz#ab738085ca22dc9a8c92725e459b1d507df5d6ea"
   integrity sha512-fX6Z5o4m6XsXBdli9g7DtWgAx+osMsRRZFKma1mIUsLCz6vRvv+pz5VNbyu9UEDzpMWulZfvpgb/cmDXVulYFQ==

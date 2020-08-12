@@ -1,11 +1,11 @@
 {
-  "name": "connext-demo",
+  "name": "spacefold",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@connext/client": "7.0.3-alpha.0",
-    "@connext/store": "7.0.3-alpha.0",
-    "@connext/utils": "7.0.3-alpha.0",
+    "@connext/client": "7.2.0",
+    "@connext/store": "7.2.0",
+    "@connext/utils": "7.2.0",
     "@testing-library/jest-dom": "^5.11.2",
     "@testing-library/react": "^10.4.7",
     "@testing-library/user-event": "^12.0.17",

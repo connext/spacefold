@@ -156,8 +156,9 @@ export async function transfer(fromToken, toToken, clients, balances) {
 
   try {
     const params = {
-      assetId: fromToken.tokenAddress,
       amount: utils.parseEther(balances[fromToken.chainId]),
+      assetId: fromToken.tokenAddress,
+      conditionType: ConditionalTransferTypes.OnlineTransfer,
       recipient: toClient.publicIdentifier,
       meta: {
         receiverAssetId: toToken.tokenAddress,
@@ -165,7 +166,7 @@ export async function transfer(fromToken, toToken, clients, balances) {
       },
     };
     console.log(`Transferring with params ${stringify(params, true, 0)}`);
-    const res = await fromClient.transfer(params);
+    const res = await fromClient.conditionalTransfer(params);
     console.log(`Transfer complete: ${stringify(res, true, 0)}`);
   } catch (e) {
     throw new Error(`Folding failed: ${e.stack}`);
