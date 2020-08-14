@@ -158,7 +158,7 @@ export async function transfer(fromToken, toToken, clients, balances) {
     const params = {
       amount: utils.parseEther(balances[fromToken.chainId]),
       assetId: fromToken.tokenAddress,
-      conditionType: ConditionalTransferTypes.OnlineTransfer,
+      conditionType: "OnlineLinkedTransferApp",
       recipient: toClient.publicIdentifier,
       meta: {
         receiverAssetId: toToken.tokenAddress,
