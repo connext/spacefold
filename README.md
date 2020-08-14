@@ -162,7 +162,7 @@ For the purposes of the demo, we've made some simplifying assumptions:
 
 2. For Optimism, we're using a temporary testnet chain hosted by the team themselves. At the moment, a public testnet does not exist.
 
-3. Throughout the demo, we use a dummy ERC20 token with a 1:1 swap rate. We considered using Eth for some chains, but decided against it because then we would need to get lots of liquidity in order to mint to users.
+3. Throughout the demo, we use a dummy ERC20 token with a 1:1 swap rate. We considered using Eth for some chains, but decided against it because then we would need to do lots of social verification in a short time to get Eth liquidity and our team only has so many twitter accounts.
 
 4. We decided against showing mainnet in the demo -- at the time of writing, mainnet gas fees are at 62 gwei. While this code can definitely be run on mainnet, we thought that the it would be annoying for users who just want to understand how it works to have to wait several minutes for a faucet transaction.
 
