@@ -8,9 +8,9 @@ Here's [our official submission to the /r/ethereum subreddit](https://www.reddit
 
 ### Quick Resources
 
-- You can read more about how to use Spacefold in [our announcement post](https://medium.com/connext/introducing-spacefold-d1c227a29d3).
+- You can read more about how to use Spacefold in [our announcement post](https://medium.com/connext/introducing-spacefold-d1c227a29d3)
 - Found a bug, want to learn more, or just say hello? [Join us in our discord](https://discord.gg/raNmNb5)!
-- Learn more about Connext through [our docs](https://docs.connext.network), and by checking out [our monorepo](https://github.com/connext/indra).
+- Learn more about Connext through [our docs](https://docs.connext.network), and by checking out [our monorepo](https://github.com/connext/indra)
 
 ### Introduction: "Hold up, how does this meet the Reddit requirements outlined above"?
 
