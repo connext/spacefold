@@ -115,17 +115,17 @@ const TOKENS = {
   //   ethProviderUrl: `https://dev-testnet-v1-1.skalelabs.com`,
   //   blockchainExplorerURL: null,
   // },
-  108: {
-    tokenName: "oMOON",
-    tokenIcon: moonIcon,
-    tokenBackground: optimismBackground,
-    tokenAddress: "0x9313b03453730D296EC4A62b6f3Fc758A9D1d199",
-    chainId: 108,
-    name: "Optimism",
-    color: "#F50025",
-    ethProviderUrl: `https://connext.optimism.io`,
-    blockchainExplorerURL: null,
-  },
+  // 108: {
+  //   tokenName: "oMOON",
+  //   tokenIcon: moonIcon,
+  //   tokenBackground: optimismBackground,
+  //   tokenAddress: "0x9313b03453730D296EC4A62b6f3Fc758A9D1d199",
+  //   chainId: 108,
+  //   name: "Optimism",
+  //   color: "#F50025",
+  //   ethProviderUrl: `https://connext.optimism.io`,
+  //   blockchainExplorerURL: null,
+  // },
 };
 
 const getTweetURL = (publicIdentifier, chainName, tokenName) =>
