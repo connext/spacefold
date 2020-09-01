@@ -128,7 +128,7 @@ const TOKENS = {
   // },
 };
 
-const LOCAL_STORAGE_VERSION = 1;
+const LOCAL_STORAGE_VERSION = "1";
 if (
   !window.localStorage.getItem("VERSION") ||
   window.localStorage.getItem("VERSION") !== LOCAL_STORAGE_VERSION
