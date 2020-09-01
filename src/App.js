@@ -128,6 +128,16 @@ const TOKENS = {
   // },
 };
 
+const LOCAL_STORAGE_VERSION = 1;
+if (
+  !window.localStorage.getItem("VERSION") ||
+  window.localStorage.getItem("VERSION") !== LOCAL_STORAGE_VERSION
+) {
+  window.localStorage.clear();
+  window.localStorage.setItem("VERSION", LOCAL_STORAGE_VERSION);
+  window.location.reload();
+}
+
 const getTweetURL = (publicIdentifier, chainName, tokenName) =>
   "https://twitter.com/intent/tweet?text=" +
   encodeURIComponent(
