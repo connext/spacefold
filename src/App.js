@@ -650,6 +650,7 @@ function App() {
                       balances
                     );
                   } catch (e) {
+                    console.error("Error folding: ", e);
                     setTransferStatus(Status.ERROR);
                     setTransferErrorMessage(e.message);
                     setTimeout(() => setTransferStatus(Status.READY), 2000);
