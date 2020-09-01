@@ -1,6 +1,6 @@
 import { utils } from "ethers";
 import * as connext from "@connext/client";
-import { ColorfulLogger, stringify } from "@connext/utils";
+import { ColorfulLogger, stringify, getRandomBytes32 } from "@connext/utils";
 import { getLocalStore } from "@connext/store";
 import axios from "axios";
 
@@ -160,6 +160,8 @@ export async function transfer(fromToken, toToken, clients, balances) {
       assetId: fromToken.tokenAddress,
       conditionType: "OnlineLinkedTransferApp",
       recipient: toClient.publicIdentifier,
+      preImage: getRandomBytes32(),
+      paymentId: getRandomBytes32(),
       meta: {
         receiverAssetId: toToken.tokenAddress,
         receiverChainId: toToken.chainId,
