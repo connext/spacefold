@@ -80,30 +80,30 @@ const TOKENS = {
   //   blockchainExplorerURL:
   //     "https://blockscout.com/etc/mainnet/tx/{TRANSACTION_HASH}/token_transfers",
   // },
-  100: {
-    tokenName: "xBRICKS",
-    tokenIcon: brickIcon,
-    tokenBackground: xDaiBackground,
-    tokenAddress: "0xf502A7897a49A9daFa5542203746Bad6C6E86c11",
-    chainId: 100,
-    name: "xDAI",
-    color: "#01C853",
-    ethProviderUrl: `https://xdai.poanetwork.dev`,
-    blockchainExplorerURL:
-      "https://blockscout.com/poa/xdai/tx/{TRANSACTION_HASH}/token_transfers",
-  },
-  80001: {
-    tokenName: "mTOKEN",
-    tokenIcon: moonIcon,
-    tokenBackground: maticBackground,
-    tokenAddress: "0xf502A7897a49A9daFa5542203746Bad6C6E86c11",
-    chainId: 80001,
-    name: "Matic",
-    color: "#2b6def",
-    ethProviderUrl: `https://rpc-mumbai.matic.today`,
-    blockchainExplorerURL:
-      "https://mumbai-explorer.matic.today/tx/{TRANSACTION_HASH}/token_transfers",
-  },
+  // 100: {
+  //   tokenName: "xBRICKS",
+  //   tokenIcon: brickIcon,
+  //   tokenBackground: xDaiBackground,
+  //   tokenAddress: "0xf502A7897a49A9daFa5542203746Bad6C6E86c11",
+  //   chainId: 100,
+  //   name: "xDAI",
+  //   color: "#01C853",
+  //   ethProviderUrl: `https://xdai.poanetwork.dev`,
+  //   blockchainExplorerURL:
+  //     "https://blockscout.com/poa/xdai/tx/{TRANSACTION_HASH}/token_transfers",
+  // },
+  // 80001: {
+  //   tokenName: "mTOKEN",
+  //   tokenIcon: moonIcon,
+  //   tokenBackground: maticBackground,
+  //   tokenAddress: "0xf502A7897a49A9daFa5542203746Bad6C6E86c11",
+  //   chainId: 80001,
+  //   name: "Matic",
+  //   color: "#2b6def",
+  //   ethProviderUrl: `https://rpc-mumbai.matic.today`,
+  //   blockchainExplorerURL:
+  //     "https://mumbai-explorer.matic.today/tx/{TRANSACTION_HASH}/token_transfers",
+  // },
   // 346750: {
   //   tokenName: "sTOKEN",
   //   tokenIcon: ethIcon,
@@ -202,7 +202,11 @@ function App() {
 
     async function init() {
       try {
-        setLoadingMessage(`Initializing channels...`);
+        setLoadingMessage(
+          `Spacefold is undergoing an upgrade! Join our Discord for updates!`
+        );
+        // disable app while upgrading
+        return;
         const { clients, balances } = await initClients(
           TOKENS,
           onMintSucceeded,

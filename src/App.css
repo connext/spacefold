@@ -13,13 +13,13 @@
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  z-index: 900;
+  z-index: 1000;
 }
 
 .More-Buttons a {
   background-color: #ffffff;
   border-radius: 10px;
-  color: #7D17EA;
+  color: #7d17ea;
   border: none;
   font-size: 16px;
   font-weight: 600;
@@ -67,7 +67,7 @@
 }
 
 .Card-Header {
-  background-color: #DEEBFF;
+  background-color: #deebff;
 }
 
 .Card-Body {
@@ -130,7 +130,7 @@
 }
 .Token-Balance-Change {
   font-size: 12px;
-  color: #7D17EA;
+  color: #7d17ea;
   margin: 0;
 }
 
@@ -189,12 +189,12 @@
 .Identifier {
   font-size: 12px;
   word-break: break-word;
-  color: #788E99;
+  color: #788e99;
   margin: 0 0 12px 0;
 }
 
 .Action {
-  color: #7D17EA;
+  color: #7d17ea;
   font-size: 18px;
   margin-bottom: 12px;
 }
@@ -203,8 +203,8 @@
   padding: 8px;
   margin-bottom: 12px;
   border: none;
-  background: #F4F5F7;
-  border-bottom: 1px solid #202E66;
+  background: #f4f5f7;
+  border-bottom: 1px solid #202e66;
 }
 
 .Cancel {
@@ -215,7 +215,7 @@
 }
 
 .Mint-Button {
-  background-color: #7D17EA;
+  background-color: #7d17ea;
   color: white;
   font-size: 16px;
   font-weight: 600;
@@ -223,27 +223,31 @@
   padding: 12px 32px;
 }
 
-.Mint-Button:disabled, .Send-Button:disabled {
-  background: #B8C4D5;
+.Mint-Button:disabled,
+.Send-Button:disabled {
+  background: #b8c4d5;
   cursor: not-allowed;
 }
-.Minting-Button:disabled, .Sending-Button:disabled {
+.Minting-Button:disabled,
+.Sending-Button:disabled {
   cursor: not-allowed;
 }
 
-.Minting-Button, .Sending-Button {
+.Minting-Button,
+.Sending-Button {
   color: white;
   font-size: 16px;
   font-weight: 600;
   border-radius: 16px;
   padding: 12px 32px;
-  background-color: #FCA311;
+  background-color: #fca311;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.Minting-Button img, .Sending-Button img {
+.Minting-Button img,
+.Sending-Button img {
   height: 18px;
   margin: 0 4px;
 }
@@ -255,10 +259,10 @@
 }
 
 .Mint-Success {
-  background-color: #FCA311;
+  background-color: #fca311;
 }
 .Mint-Success:disabled {
-  background-color: #FCA311;
+  background-color: #fca311;
 }
 
 .Mint-Success i {
@@ -267,7 +271,7 @@
 }
 
 .Send-Button {
-  background-color: #7D17EA;
+  background-color: #7d17ea;
   color: #ffffff;
   font-size: 16px;
   font-weight: 600;
@@ -276,10 +280,10 @@
 }
 
 .Send-Success {
-  background-color: #FCA311;
+  background-color: #fca311;
 }
 .Send-Success:disabled {
-  background-color: #FCA311;
+  background-color: #fca311;
 }
 
 .Send-Success i {
@@ -316,7 +320,7 @@
   text-align: center;
   line-height: 20px;
   font-size: 16px;
-  background-color: #7D17EA;
+  background-color: #7d17ea;
   color: #ffffff;
   z-index: 900;
   -webkit-box-shadow: 0px 0px 30px rgba(95, 111, 119, 0.5);
@@ -326,7 +330,7 @@
 
 .Swap-Button:disabled {
   cursor: not-allowed;
-  background-color: #B8C4D5;
+  background-color: #b8c4d5;
 }
 
 .Swap-Button img {
@@ -340,7 +344,7 @@
   height: 112px;
   width: 112px;
   border-radius: 64px;
-  background-color: #FCD116;
+  background-color: #fcd116;
   overflow: hidden;
 }
 
@@ -354,11 +358,11 @@
 }
 
 .Transfer-Success {
-  background-color: #FCD116;
-  color: #2602AB;
+  background-color: #fcd116;
+  color: #2602ab;
 }
 .Transfer-Success:disabled {
-  background-color: #FCD116;
+  background-color: #fcd116;
 }
 
 .Transfer-Error {
@@ -372,7 +376,7 @@
   position: fixed;
   bottom: 0;
   width: 100%;
-  background-color: #DEEBFF;
+  background-color: #deebff;
   text-decoration: none;
   font-size: 16px;
   padding: 12px 0;
@@ -382,7 +386,7 @@
 }
 
 .Heart-Icon {
-  color: #7D17EA;
+  color: #7d17ea;
 }
 
 @media screen and (max-width: 768px) {
@@ -453,7 +457,43 @@ button {
   outline: none;
 }
 
-@keyframes fadeOut { 0% { opacity: 1; visibility: visible; }  100% { opacity: 0; visibility: hidden; }} 
-@-moz-keyframes fadeOut { 0% { opacity: 1; visibility: visible; }  100% { opacity: 0; visibility: hidden; }} 
-@-webkit-keyframes fadeOut { 0% { opacity: 1; visibility: visible; }  100% { opacity: 0; visibility: hidden; }} 
-@-ms-keyframes fadeOut { 0% { opacity: 1; visibility: visible; } 100% { opacity: 0; visibility: hidden; }} 
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+    visibility: visible;
+  }
+  100% {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+@-moz-keyframes fadeOut {
+  0% {
+    opacity: 1;
+    visibility: visible;
+  }
+  100% {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+@-webkit-keyframes fadeOut {
+  0% {
+    opacity: 1;
+    visibility: visible;
+  }
+  100% {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+@-ms-keyframes fadeOut {
+  0% {
+    opacity: 1;
+    visibility: visible;
+  }
+  100% {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
