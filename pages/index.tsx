@@ -1,134 +1,12 @@
+import Head from 'next/head'
+import Loading from "../components/Loading";
 import React, { useState, useEffect, useRef } from "react";
 import { utils } from "ethers";
 import Select from "react-select";
 
-import loadingGif from "./images/loading.gif";
-import transferDisabledImage from "./images/transferDisabled.png";
-import transferGif from "./images/transfer.gif";
-import dropdownDisabledImage from "./images/dropdownDisabled.png";
-import dropdownGif from "./images/dropdown.gif";
-import spinningGearGif from "./images/spinningGear.gif";
-import ellipsisGif from "./images/ellipsis.gif";
-import ethIcon from "./images/eth.png";
-import moonIcon from "./images/moon.png";
-import brickIcon from "./images/brick.png";
-import optimismBackground from "./images/optimismBackground.png";
-import rinkebyBackground from "./images/rinkebyBackground.png";
-import brickBackground from "./images/brickBackground.png";
-import skaleBackground from "./images/skaleBackground.png";
-import xDaiBackground from "./images/xDaiBackground.png";
-import maticBackground from "./images/maticBackground.png";
-
 import { initClients, mint, transfer, send, collateralize } from "./actions";
+import {TOKENS, IMAGE_PATH, LOCAL_STORAGE_VERSION, STATUS, MINIMUM_BALANCE} from "../constants";
 
-import "./App.css";
-
-import Loading from "./components/Loading";
-
-const MINIMUM_BALANCE = 0.001;
-
-const Status = {
-  READY: 0,
-  IN_PROGRESS: 1,
-  ERROR: 2,
-  SUCCESS: 3,
-};
-
-const TOKENS = {
-  4: {
-    tokenName: "MOON",
-    tokenIcon: moonIcon,
-    tokenBackground: rinkebyBackground,
-    tokenAddress: "0x50C94BeCAd95bEe21aF226dc799365Ee6B134459",
-    chainId: 4,
-    name: "Rinkeby",
-    color: "#EFC45C",
-    ethProviderUrl: `https://rinkeby.infura.io/v3/${process.env.REACT_APP_INFURA_ID}`,
-    blockchainExplorerURL: "https://rinkeby.etherscan.io/tx/{TRANSACTION_HASH}",
-  },
-  // 5: {
-  //   tokenName: "ETH",
-  //   tokenIcon: ethIcon,
-  //   tokenBackground: ethBackground,
-  //   tokenAddress: constants.AddressZero,
-  //   chainId: 5,
-  //   name: "Goerli",
-  //   color: "#0091F2",
-  //   ethProviderUrl: `https://goerli.infura.io/v3/${process.env.REACT_APP_INFURA_ID}`,
-  //   blockchainExplorerURL: "https://goerli.etherscan.io/tx/{TRANSACTION_HASH}",
-  // },
-  42: {
-    tokenName: "BRICK",
-    tokenIcon: brickIcon,
-    tokenBackground: brickBackground,
-    tokenAddress: "0x4d4deb65DBC13dE6811095baba7064B41A72D9Db",
-    chainId: 42,
-    name: "Kovan",
-    color: "#5b32a2",
-    ethProviderUrl: `https://kovan.infura.io/v3/${process.env.REACT_APP_INFURA_ID}`,
-    blockchainExplorerURL: "https://kovan.etherscan.io/tx/{TRANSACTION_HASH}",
-  },
-  // 61: {
-  //   tokenName: "TOKEN",
-  //   tokenIcon: ethIcon,
-  //   tokenBackground: ethBackground,
-  //   tokenAddress: "0xf502A7897a49A9daFa5542203746Bad6C6E86c11",
-  //   chainId: 61,
-  //   name: "ETC",
-  //   color: "#01C853",
-  //   ethProviderUrl: `https://www.ethercluster.com/etc`,
-  //   blockchainExplorerURL:
-  //     "https://blockscout.com/etc/mainnet/tx/{TRANSACTION_HASH}/token_transfers",
-  // },
-  // 100: {
-  //   tokenName: "xBRICKS",
-  //   tokenIcon: brickIcon,
-  //   tokenBackground: xDaiBackground,
-  //   tokenAddress: "0xf502A7897a49A9daFa5542203746Bad6C6E86c11",
-  //   chainId: 100,
-  //   name: "xDAI",
-  //   color: "#01C853",
-  //   ethProviderUrl: `https://xdai.poanetwork.dev`,
-  //   blockchainExplorerURL:
-  //     "https://blockscout.com/poa/xdai/tx/{TRANSACTION_HASH}/token_transfers",
-  // },
-  // 80001: {
-  //   tokenName: "mTOKEN",
-  //   tokenIcon: moonIcon,
-  //   tokenBackground: maticBackground,
-  //   tokenAddress: "0xf502A7897a49A9daFa5542203746Bad6C6E86c11",
-  //   chainId: 80001,
-  //   name: "Matic",
-  //   color: "#2b6def",
-  //   ethProviderUrl: `https://rpc-mumbai.matic.today`,
-  //   blockchainExplorerURL:
-  //     "https://mumbai-explorer.matic.today/tx/{TRANSACTION_HASH}/token_transfers",
-  // },
-  // 346750: {
-  //   tokenName: "sTOKEN",
-  //   tokenIcon: ethIcon,
-  //   tokenBackground: skaleBackground,
-  //   tokenAddress: "0xf502A7897a49A9daFa5542203746Bad6C6E86c11",
-  //   chainId: 16,
-  //   name: "SKALE",
-  //   color: "#000000",
-  //   ethProviderUrl: `https://dev-testnet-v1-1.skalelabs.com`,
-  //   blockchainExplorerURL: null,
-  // },
-  // 108: {
-  //   tokenName: "oMOON",
-  //   tokenIcon: moonIcon,
-  //   tokenBackground: optimismBackground,
-  //   tokenAddress: "0x9313b03453730D296EC4A62b6f3Fc758A9D1d199",
-  //   chainId: 108,
-  //   name: "Optimism",
-  //   color: "#F50025",
-  //   ethProviderUrl: `https://connext.optimism.io`,
-  //   blockchainExplorerURL: null,
-  // },
-};
-
-const LOCAL_STORAGE_VERSION = "1";
 if (
   !window.localStorage.getItem("VERSION") ||
   window.localStorage.getItem("VERSION") !== LOCAL_STORAGE_VERSION
@@ -144,7 +22,7 @@ const getTweetURL = (publicIdentifier, chainName, tokenName) =>
     `Minting ${tokenName} tokens for channel ${publicIdentifier} https://spacefold.io on ${chainName}! By @ConnextNetwork`
   );
 
-function App() {
+export default function Home() {
   const [clients, setClients] = useState({});
   const [balances, setBalances] = useState({});
   const [mintTokens, setMintTokens] = useState([]);
@@ -153,14 +31,14 @@ function App() {
   const [activeSendTokenIndex, setActiveSendTokenIndex] = useState(null);
   const [tweetUrl, setTweetUrl] = useState("");
   const [showTweetInput, setShowTweetInput] = useState(false);
-  const [mintStatus, setMintStatus] = useState(Status.READY);
+  const [mintStatus, setMintStatus] = useState(STATUS.READY);
   const [mintErrorMessage, setMintErrorMessage] = useState("");
   const [sendAddress, setSendAddress] = useState("");
   const [showSendInput, setShowSendInput] = useState(false);
-  const [sendStatus, setSendStatus] = useState(Status.READY);
+  const [sendStatus, setSendStatus] = useState(STATUS.READY);
   const [sendErrorMessage, setSendErrorMessage] = useState("");
   const [sendTransactionURL, setSendTransactionURL] = useState(null);
-  const [transferStatus, setTransferStatus] = useState(Status.READY);
+  const [transferStatus, setTransferStatus] = useState(STATUS.READY);
   const [transferErrorMessage, setTransferErrorMessage] = useState("");
   const [initializing, setInitializing] = useState(true);
   const [collateralizing, setCollateralizing] = useState(true);
@@ -172,25 +50,25 @@ function App() {
 
   useEffect(() => {
     function onMintSucceeded() {
-      setMintStatus(Status.SUCCESS);
-      setTimeout(() => setMintStatus(Status.READY), 2000);
+      setMintStatus(STATUS.SUCCESS);
+      setTimeout(() => setMintStatus(STATUS.READY), 2000);
       setShowTweetInput(false);
       setSendTransactionURL(null); //reset send transaction url after successful mint
     }
 
     function onTransferSucceeded() {
-      setTransferStatus(Status.SUCCESS);
-      setTimeout(() => setTransferStatus(Status.READY), 2000);
+      setTransferStatus(STATUS.SUCCESS);
+      setTimeout(() => setTransferStatus(STATUS.READY), 2000);
     }
 
     function onWithdrawSucceeded() {
-      setSendStatus(Status.SUCCESS);
-      setTimeout(() => setSendStatus(Status.READY), 2000);
+      setSendStatus(STATUS.SUCCESS);
+      setTimeout(() => setSendStatus(STATUS.READY), 2000);
       setShowSendInput(false);
     }
 
     function onWithdrawFailed() {
-      setSendStatus(Status.ERROR);
+      setSendStatus(STATUS.ERROR);
     }
 
     function onBalanceRefresh(chainId, newBalance) {
@@ -361,20 +239,20 @@ function App() {
   };
   const leftSelectDisabled =
     activeMintToken === null ||
-    transferStatus === Status.IN_PROGRESS ||
-    mintStatus === Status.IN_PROGRESS ||
+    transferStatus === STATUS.IN_PROGRESS ||
+    mintStatus === STATUS.IN_PROGRESS ||
     activeMintToken.balance > 0;
   const rightSelectDisabled =
     activeSendToken === null ||
-    transferStatus === Status.IN_PROGRESS ||
-    sendStatus === Status.IN_PROGRESS;
+    transferStatus === STATUS.IN_PROGRESS ||
+    sendStatus === STATUS.IN_PROGRESS;
   const transferDisabled =
     activeMintToken === null ||
     activeSendToken === null ||
-    transferStatus === Status.IN_PROGRESS ||
-    transferStatus === Status.SUCCESS ||
-    mintStatus === Status.IN_PROGRESS ||
-    sendStatus === Status.IN_PROGRESS ||
+    transferStatus === STATUS.IN_PROGRESS ||
+    transferStatus === STATUS.SUCCESS ||
+    mintStatus === STATUS.IN_PROGRESS ||
+    sendStatus === STATUS.IN_PROGRESS ||
     (activeMintToken.balance <= MINIMUM_BALANCE &&
       activeSendToken.balance <= MINIMUM_BALANCE); // not enough tokens to transfer, in either direction
   const transferDirection =
@@ -432,7 +310,7 @@ function App() {
                       (t) => t.chainId === option.value
                     );
                     setActiveMintTokenIndex(newTokenIndex);
-                    setMintStatus(Status.READY);
+                    setMintStatus(STATUS.READY);
                     setMintErrorMessage("");
                   }}
                   styles={selectStyles}
@@ -480,7 +358,7 @@ function App() {
                         "popup",
                         "width=600,height=600"
                       );
-                      setMintStatus(Status.READY);
+                      setMintStatus(STATUS.READY);
                       setMintErrorMessage("");
                     }}
                   >
@@ -494,7 +372,7 @@ function App() {
                     onChange={(event) => setTweetUrl(event.target.value)}
                   />
                   <div style={{ paddingBottom: "10px" }} />
-                  {mintStatus === Status.ERROR && (
+                  {mintStatus === STATUS.ERROR && (
                     <div style={{ paddingBottom: "10px", color: "red" }}>
                       Error: {mintErrorMessage}
                     </div>
@@ -502,33 +380,33 @@ function App() {
                   <button
                     type="button"
                     className={
-                      mintStatus === Status.IN_PROGRESS
+                      mintStatus === STATUS.IN_PROGRESS
                         ? "Minting-Button"
                         : "Mint-Button"
                     }
                     onClick={async () => {
-                      setMintStatus(Status.IN_PROGRESS);
+                      setMintStatus(STATUS.IN_PROGRESS);
                       setMintErrorMessage("");
                       setSendErrorMessage("");
                       setTransferErrorMessage("");
                       try {
                         await mint(activeMintToken, clients, tweetUrl);
                       } catch (e) {
-                        setMintStatus(Status.ERROR);
+                        setMintStatus(STATUS.ERROR);
                         setMintErrorMessage(e.message);
                         console.error(e.message);
                       }
                     }}
                     disabled={
-                      collateralizing && mintStatus === Status.IN_PROGRESS
+                      collateralizing && mintStatus === STATUS.IN_PROGRESS
                     }
                   >
-                    {mintStatus === Status.IN_PROGRESS ? (
+                    {mintStatus === STATUS.IN_PROGRESS ? (
                       <>
-                        <img src={spinningGearGif} alt="gear" /> Minting&nbsp;
+                        <img src={IMAGE_PATH.gifs.spinningGear} alt="gear" /> Minting&nbsp;
                         <img
                           className="Ellipsis-Gif"
-                          src={ellipsisGif}
+                          src={IMAGE_PATH.gifs.ellipsis}
                           alt="ellipsis"
                         />
                       </>
@@ -536,7 +414,7 @@ function App() {
                       "Confirm Mint"
                     )}
                   </button>
-                  {mintStatus !== Status.IN_PROGRESS && (
+                  {mintStatus !== STATUS.IN_PROGRESS && (
                     <p
                       className="Cancel"
                       onClick={() => setShowTweetInput(false)}
@@ -560,8 +438,8 @@ function App() {
                         <p
                           style={{
                             visibility:
-                              (transferStatus === Status.SUCCESS ||
-                                mintStatus === Status.SUCCESS) &&
+                              (transferStatus === STATUS.SUCCESS ||
+                                mintStatus === STATUS.SUCCESS) &&
                               activeMintToken.balance !==
                                 activeMintToken.oldBalance
                                 ? "visible"
@@ -576,7 +454,7 @@ function App() {
                             activeMintToken.balance - activeMintToken.oldBalance
                           )}
                           &nbsp;
-                          {mintStatus === Status.SUCCESS ? "minted" : "folded"}
+                          {mintStatus === STATUS.SUCCESS ? "minted" : "folded"}
                         </p>
                       </div>
                     </div>
@@ -590,16 +468,16 @@ function App() {
                   <button
                     type="button"
                     className={`Mint-Button ${
-                      mintStatus === Status.SUCCESS ? "Mint-Success" : ""
+                      mintStatus === STATUS.SUCCESS ? "Mint-Success" : ""
                     }`}
                     onClick={() => setShowTweetInput(!showTweetInput)}
                     disabled={
-                      mintStatus === Status.IN_PROGRESS ||
-                      transferStatus === Status.IN_PROGRESS ||
+                      mintStatus === STATUS.IN_PROGRESS ||
+                      transferStatus === STATUS.IN_PROGRESS ||
                       tokensWereAlreadyMinted
                     }
                   >
-                    {mintStatus === Status.SUCCESS ? (
+                    {mintStatus === STATUS.SUCCESS ? (
                       <>
                         <i className="fas fa-check" /> Minted!
                       </>
@@ -612,9 +490,9 @@ function App() {
             </div>
           </div>
           <div className="Middle-Button-Container">
-            {transferStatus === Status.IN_PROGRESS ? (
+            {transferStatus === STATUS.IN_PROGRESS ? (
               <div className="Transferring-Circle">
-                <img src={loadingGif} alt="transferring" />
+                <img src={IMAGE_PATH.gifs.loading} alt="transferring" />
               </div>
             ) : (
               <button
@@ -622,15 +500,15 @@ function App() {
                 className={`Swap-Button${
                   transferDirection === "right" ? "" : " Flip-Image"
                 }${
-                  transferStatus === Status.SUCCESS
+                  transferStatus === STATUS.SUCCESS
                     ? " Transfer-Success"
-                    : transferStatus === Status.ERROR
+                    : transferStatus === STATUS.ERROR
                     ? " Transfer-Error"
                     : ""
                 }`}
                 title={transferErrorMessage}
                 onClick={async () => {
-                  setTransferStatus(Status.IN_PROGRESS);
+                  setTransferStatus(STATUS.IN_PROGRESS);
                   setMintErrorMessage("");
                   setSendErrorMessage("");
                   setTransferErrorMessage("");
@@ -647,18 +525,18 @@ function App() {
                     );
                   } catch (e) {
                     console.error("Error folding: ", e);
-                    setTransferStatus(Status.ERROR);
+                    setTransferStatus(STATUS.ERROR);
                     setTransferErrorMessage(e.message);
-                    setTimeout(() => setTransferStatus(Status.READY), 2000);
+                    setTimeout(() => setTransferStatus(STATUS.READY), 2000);
                   }
                 }}
                 disabled={transferDisabled}
               >
-                {transferStatus === Status.SUCCESS ? (
+                {transferStatus === STATUS.SUCCESS ? (
                   <>
                     SUCCESS! <i className="fas fa-check" />
                   </>
-                ) : transferStatus === Status.ERROR ? (
+                ) : transferStatus === STATUS.ERROR ? (
                   <>
                     ERROR <i className="fas fa-exclamation" />
                   </>
@@ -666,8 +544,7 @@ function App() {
                   <>
                     FOLD{" "}
                     <img
-                      src={
-                        transferDisabled ? transferDisabledImage : transferGif
+                      src={` ${transferDisabled} ? ${IMAGE_PATH.status.transferDisabled} : ${IMAGE_PATH.gifs.transfer}`
                       }
                       alt="fold"
                     />
@@ -696,7 +573,7 @@ function App() {
                       (t) => t.chainId === option.value
                     );
                     setActiveSendTokenIndex(newTokenIndex);
-                    setSendStatus(Status.READY);
+                    setSendStatus(STATUS.READY);
                     setSendErrorMessage("");
                   }}
                   styles={selectStyles}
@@ -731,8 +608,8 @@ function App() {
                       <p
                         style={{
                           visibility:
-                            (transferStatus === Status.SUCCESS ||
-                              sendStatus === Status.SUCCESS) &&
+                            (transferStatus === STATUS.SUCCESS ||
+                              sendStatus === STATUS.SUCCESS) &&
                             activeSendToken.balance !==
                               activeSendToken.oldBalance
                               ? "visible"
@@ -747,7 +624,7 @@ function App() {
                           activeSendToken.balance - activeSendToken.oldBalance
                         )}
                         &nbsp;
-                        {sendStatus === Status.SUCCESS ? "sent" : "folded"}
+                        {sendStatus === STATUS.SUCCESS ? "sent" : "folded"}
                       </p>
                     </div>
                   </div>
@@ -772,7 +649,7 @@ function App() {
                       onChange={(event) => setSendAddress(event.target.value)}
                     />
                     <div style={{ paddingBottom: "10px" }} />
-                    {sendStatus === Status.ERROR && (
+                    {sendStatus === STATUS.ERROR && (
                       <div style={{ paddingBottom: "10px", color: "red" }}>
                         Error: {sendErrorMessage}
                       </div>
@@ -780,12 +657,12 @@ function App() {
                     <button
                       type="button"
                       className={
-                        sendStatus === Status.IN_PROGRESS
+                        sendStatus === STATUS.IN_PROGRESS
                           ? "Sending-Button"
                           : "Send-Button"
                       }
                       onClick={async () => {
-                        setSendStatus(Status.IN_PROGRESS);
+                        setSendStatus(STATUS.IN_PROGRESS);
                         setMintErrorMessage("");
                         setSendErrorMessage("");
                         setTransferErrorMessage("");
@@ -807,21 +684,21 @@ function App() {
                           }
                         } catch (e) {
                           console.error(e.message);
-                          setSendStatus(Status.ERROR);
+                          setSendStatus(STATUS.ERROR);
                           setSendErrorMessage(e.message);
                         }
                       }}
                       disabled={
-                        sendStatus === Status.IN_PROGRESS ||
+                        sendStatus === STATUS.IN_PROGRESS ||
                         activeSendToken.balance < MINIMUM_BALANCE
                       }
                     >
-                      {sendStatus === Status.IN_PROGRESS ? (
+                      {sendStatus === STATUS.IN_PROGRESS ? (
                         <>
-                          <img src={spinningGearGif} alt="gear" /> Sending&nbsp;
+                          <img src={IMAGE_PATH.gifs.spinningGear} alt="gear" /> Sending&nbsp;
                           <img
                             className="Ellipsis-Gif"
-                            src={ellipsisGif}
+                            src={IMAGE_PATH.gifs.ellipsis}
                             alt="ellipsis"
                           />
                         </>
@@ -840,15 +717,15 @@ function App() {
                   <button
                     type="button"
                     className={`Send-Button ${
-                      sendStatus === Status.SUCCESS ? "Send-Success" : ""
+                      sendStatus === STATUS.SUCCESS ? "Send-Success" : ""
                     }`}
                     disabled={
-                      sendStatus === Status.SUCCESS ||
+                      sendStatus === STATUS.SUCCESS ||
                       activeSendToken.balance < MINIMUM_BALANCE
                     }
                     onClick={() => setShowSendInput(!showSendInput)}
                   >
-                    {sendStatus === Status.SUCCESS ? (
+                    {sendStatus === STATUS.SUCCESS ? (
                       <>
                         <i className="fas fa-check" /> Sent!
                       </>
@@ -895,7 +772,7 @@ const DropdownIndicator = ({ selectProps }) => {
           ? "Dropdown-Indicator Dropdown-Indicator-Open"
           : "Dropdown-Indicator"
       }
-      src={dropdownGif}
+      src={IMAGE_PATH.gifs.dropdown}
       alt="dropdownIndicator"
     />
   );
@@ -909,10 +786,8 @@ const DisabledDropdownIndicator = ({ selectProps }) => {
           ? "Dropdown-Indicator Dropdown-Indicator-Open"
           : "Dropdown-Indicator"
       }
-      src={dropdownDisabledImage}
+      src={IMAGE_PATH.status.dropdownDisabled}
       alt="dropdownIndicator"
     />
   );
 };
-
-export default App;
