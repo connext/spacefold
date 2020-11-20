@@ -202,11 +202,7 @@ function App() {
 
     async function init() {
       try {
-        setLoadingMessage(
-          `Spacefold is undergoing an upgrade! Join our Discord for updates!`
-        );
         // disable app while upgrading
-        return;
         const { clients, balances } = await initClients(
           TOKENS,
           onMintSucceeded,
@@ -218,12 +214,8 @@ function App() {
         setClients(clients);
         setBalances(balances);
         setInitializing(false);
-        setLeftSelectHeight(
-          leftCardRef.current ? leftCardRef.current.clientHeight : 0
-        );
-        setRightSelectHeight(
-          rightCardRef.current ? rightCardRef.current.clientHeight : 0
-        );
+        setLeftSelectHeight(leftCardRef.current?.clientHeight ?? 0);
+        setRightSelectHeight(rightCardRef.current?.clientHeight ?? 0);
         await collateralize(clients, TOKENS);
         setCollateralizing(false);
       } catch (e) {
