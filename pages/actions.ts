@@ -6,8 +6,8 @@ import axios from "axios";
 
 import { getWallet } from "./wallet";
 
-const dotenv = require("dotenv");
-dotenv.config();
+// const dotenv = require("dotenv");
+// dotenv.config();
 
 const nodeUrl = "https://node.spacefold.io";
 
