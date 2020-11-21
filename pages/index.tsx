@@ -1,19 +1,27 @@
-import Head from 'next/head'
+import Head from "next/head";
 import Loading from "../components/Loading";
 import React, { useState, useEffect, useRef } from "react";
 import { utils } from "ethers";
 import Select from "react-select";
 
 import { initClients, mint, transfer, send, collateralize } from "./actions";
-import {TOKENS, IMAGE_PATH, LOCAL_STORAGE_VERSION, STATUS, MINIMUM_BALANCE} from "../constants";
+import {
+  TOKENS,
+  IMAGE_PATH,
+  LOCAL_STORAGE_VERSION,
+  STATUS,
+  MINIMUM_BALANCE,
+} from "../constants";
 
-if (
-  !window.localStorage.getItem("VERSION") ||
-  window.localStorage.getItem("VERSION") !== LOCAL_STORAGE_VERSION
-) {
-  window.localStorage.clear();
-  window.localStorage.setItem("VERSION", LOCAL_STORAGE_VERSION);
-  window.location.reload();
+if (typeof window !== "undefined") {
+  if (
+    !window.localStorage.getItem("VERSION") ||
+    window.localStorage.getItem("VERSION") !== LOCAL_STORAGE_VERSION
+  ) {
+    window.localStorage.clear();
+    window.localStorage.setItem("VERSION", LOCAL_STORAGE_VERSION);
+    window.location.reload();
+  }
 }
 
 const getTweetURL = (publicIdentifier, chainName, tokenName) =>
@@ -403,7 +411,8 @@ export default function Home() {
                   >
                     {mintStatus === STATUS.IN_PROGRESS ? (
                       <>
-                        <img src={IMAGE_PATH.gifs.spinningGear} alt="gear" /> Minting&nbsp;
+                        <img src={IMAGE_PATH.gifs.spinningGear} alt="gear" />{" "}
+                        Minting&nbsp;
                         <img
                           className="Ellipsis-Gif"
                           src={IMAGE_PATH.gifs.ellipsis}
@@ -544,8 +553,7 @@ export default function Home() {
                   <>
                     FOLD{" "}
                     <img
-                      src={` ${transferDisabled} ? ${IMAGE_PATH.status.transferDisabled} : ${IMAGE_PATH.gifs.transfer}`
-                      }
+                      src={` ${transferDisabled} ? ${IMAGE_PATH.status.transferDisabled} : ${IMAGE_PATH.gifs.transfer}`}
                       alt="fold"
                     />
                   </>
@@ -695,7 +703,8 @@ export default function Home() {
                     >
                       {sendStatus === STATUS.IN_PROGRESS ? (
                         <>
-                          <img src={IMAGE_PATH.gifs.spinningGear} alt="gear" /> Sending&nbsp;
+                          <img src={IMAGE_PATH.gifs.spinningGear} alt="gear" />{" "}
+                          Sending&nbsp;
                           <img
                             className="Ellipsis-Gif"
                             src={IMAGE_PATH.gifs.ellipsis}
