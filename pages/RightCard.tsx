@@ -168,27 +168,27 @@ export default function Card() {
                   setMintErrorMessage("");
                   setSendErrorMessage("");
                   setTransferErrorMessage("");
-                  try {
-                    const transactionHash = await send(
-                      activeSendToken,
-                      sendAddress,
-                      clients
-                    );
-                    if (activeSendToken.blockchainExplorerURL !== null) {
-                      setSendTransactionURL(
-                        activeSendToken.blockchainExplorerURL.replace(
-                          "{TRANSACTION_HASH}",
-                          transactionHash
-                        )
-                      );
-                    } else {
-                      setSendTransactionURL("");
-                    }
-                  } catch (e) {
-                    console.error(e.message);
-                    setSendStatus(STATUS.ERROR);
-                    setSendErrorMessage(e.message);
-                  }
+                  // try {
+                  //   const transactionHash = await send(
+                  //     activeSendToken,
+                  //     sendAddress,
+                  //     clients
+                  //   );
+                  //   if (activeSendToken.blockchainExplorerURL !== null) {
+                  //     setSendTransactionURL(
+                  //       activeSendToken.blockchainExplorerURL.replace(
+                  //         "{TRANSACTION_HASH}",
+                  //         transactionHash
+                  //       )
+                  //     );
+                  //   } else {
+                  //     setSendTransactionURL("");
+                  //   }
+                  // } catch (e) {
+                  //   console.error(e.message);
+                  //   setSendStatus(STATUS.ERROR);
+                  //   setSendErrorMessage(e.message);
+                  // }
                 }}
                 disabled={
                   sendStatus === STATUS.IN_PROGRESS ||
