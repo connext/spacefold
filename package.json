@@ -17,11 +17,9 @@
   "devDependencies": {
     "@types/node": "^14.14.9",
     "@types/react": "^16.9.56",
-    "axios": "^0.21.0",
     "ethers": "^5.0.21",
     "pino": "^6.7.0",
     "sass": "^1.29.0",
-    "tailwindcss": "^2.0.1",
     "typescript": "^4.1.2"
   }
 }
