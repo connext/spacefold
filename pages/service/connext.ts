@@ -1,24 +1,14 @@
-import { utils, ethers } from "ethers";
+import { ethers } from "ethers";
 import { BrowserNode } from "@connext/vector-browser-node";
 import pino from "pino";
 import {
   getPublicKeyFromPublicIdentifier,
   encrypt,
   createlockHash,
-  getBalanceForAssetId,
-  getRandomBytes32,
-  constructRpcRequest,
 } from "@connext/vector-utils";
-import {
-  EngineEvents,
-  FullChannelState,
-  TransferNames,
-} from "@connext/vector-types";
-// import axios from "axios";
+import { TransferNames } from "@connext/vector-types";
 
-const iframeSrc = "https://wallet.connext.network/";
-
-class connext {
+export default class Connext {
   connextClient: any;
   channnel: any;
   provider: any;
@@ -28,26 +18,14 @@ class connext {
 
   constructor() {
     this.channnel = new Map();
+    this.connectNode();
   }
 
   // Create methods
-
   async connectNode() {
     this.connextClient = await BrowserNode.connect({
-      iframeSrc: iframeSrc,
       logger: pino(),
     });
-  }
-
-  async connectMetamask() {
-    if (typeof window !== "undefined") {
-      await window.ethereum.enable();
-      this.provider = new ethers.providers.Web3Provider(window.ethereum);
-      // The Metamask plugin also allows signing transactions to
-      // send ether and pay to change state within the blockchain.
-      // For this, you need the account signer...
-      this.signer = this.provider.getSigner();
-    }
   }
 
   async setupChannel(aliceIdentifier: string, chainId: number) {
@@ -59,7 +37,19 @@ class connext {
     if (setupRes.isError) {
       console.error(setupRes.getError());
     } else {
+      console.log(setupRes.getValue());
       this.channnel.set(chainId, setupRes.getValue());
+    }
+  }
+
+  async connectMetamask() {
+    if (typeof window !== "undefined") {
+      await window.ethereum.enable();
+      this.provider = new ethers.providers.Web3Provider(window.ethereum);
+      // The Metamask plugin also allows signing transactions to
+      // send ether and pay to change state within the blockchain.
+      // For this, you need the account signer...
+      this.signer = this.provider.getSigner();
     }
   }
 
