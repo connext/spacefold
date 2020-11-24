@@ -1,15 +1,15 @@
 import { utils } from "ethers";
-import * as connext from "@connext/client";
-import { ColorfulLogger, stringify, getRandomBytes32 } from "@connext/utils";
-import { getLocalStore } from "@connext/store";
+import { BrowserNode } from "@connext/vector-browser-node";
+import pino from "pino";
+import { stringify, getRandomBytes32 } from "@connext/vector-utils";
 import axios from "axios";
 
-import { getWallet } from "./wallet";
+import { Wallet } from "./utils";
 
 // const dotenv = require("dotenv");
 // dotenv.config();
 
-const nodeUrl = "https://node.spacefold.io";
+const iframeSrc = "https://node.spacefold.io";
 
 export async function initClients(
   tokens,
@@ -29,21 +29,10 @@ export async function initClients(
             chainId: token.chainId,
           })}`
         );
-        const pk = getWallet(token.chainId).privateKey;
-        const client = await connext.connect({
-          nodeUrl,
-          ethProviderUrl: token.ethProviderUrl,
-          signer: getWallet(token.chainId).privateKey,
-          loggerService: new ColorfulLogger(
-            token.chainId.toString(),
-            3,
-            false,
-            token.chainId
-          ),
-          store: getLocalStore({
-            prefix: `INDRA_CLIENT_${pk.substring(0, 10).toUpperCase()}`,
-          }),
-          logLevel: 3,
+        const pk = Wallet.getWallet(token.chainId).privateKey;
+        const client = await BrowserNode.connect({
+          iframeSrc,
+          logger: pino(),
         });
         const freeBalance = await client.getFreeBalance(token.tokenAddress);
         console.log(

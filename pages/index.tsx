@@ -24,11 +24,11 @@ if (typeof window !== "undefined") {
   }
 }
 
-const getTweetURL = (publicIdentifier, chainName, tokenName) =>
-  "https://twitter.com/intent/tweet?text=" +
-  encodeURIComponent(
-    `Minting ${tokenName} tokens for channel ${publicIdentifier} https://spacefold.io on ${chainName}! By @ConnextNetwork`
-  );
+// const getTweetURL = (publicIdentifier, chainName, tokenName) =>
+//   "https://twitter.com/intent/tweet?text=" +
+//   encodeURIComponent(
+//     `Minting ${tokenName} tokens for channel ${publicIdentifier} https://spacefold.io on ${chainName}! By @ConnextNetwork`
+//   );
 
 export default function Home() {
   const [clients, setClients] = useState({});
