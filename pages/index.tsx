@@ -1,10 +1,10 @@
 import Head from "next/head";
-import Loading from "../components/Loading";
+import { Loading, Navbar, Footer } from "../components";
 import React, { useState, useEffect, useRef } from "react";
 import { utils } from "ethers";
 import Select from "react-select";
 
-import { initClients, mint, transfer, send, collateralize } from "./actions";
+// import { initClients, mint, transfer, send, collateralize } from "./actions";
 import {
   TOKENS,
   IMAGE_PATH,
@@ -13,16 +13,16 @@ import {
   MINIMUM_BALANCE,
 } from "../constants";
 
-if (typeof window !== "undefined") {
-  if (
-    !window.localStorage.getItem("VERSION") ||
-    window.localStorage.getItem("VERSION") !== LOCAL_STORAGE_VERSION
-  ) {
-    window.localStorage.clear();
-    window.localStorage.setItem("VERSION", LOCAL_STORAGE_VERSION);
-    window.location.reload();
-  }
-}
+// if (typeof window !== "undefined") {
+//   if (
+//     !window.localStorage.getItem("VERSION") ||
+//     window.localStorage.getItem("VERSION") !== LOCAL_STORAGE_VERSION
+//   ) {
+//     window.localStorage.clear();
+//     window.localStorage.setItem("VERSION", LOCAL_STORAGE_VERSION);
+//     window.location.reload();
+//   }
+// }
 
 // const getTweetURL = (publicIdentifier, chainName, tokenName) =>
 //   "https://twitter.com/intent/tweet?text=" +
@@ -272,30 +272,8 @@ export default function Home() {
 
   return (
     <div className="App">
-      <Loading initializing={initializing} message={loadingMessage} />
-      <div className="More-Buttons">
-        <a
-          href="https://github.com/connext/spacefold"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <i className="fab fa-github Github-Icon"></i> GitHub
-        </a>
-        <a
-          href="https://discord.com/channels/454734546869551114"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <i className="fab fa-discord Discord-Icon"></i> Chat
-        </a>
-        <a
-          href="https://medium.com/connext/introducing-spacefold-d1c227a29d3"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <i className="fa fa-info About-Icon"></i> About
-        </a>
-      </div>
+      {/* <Loading initializing={initializing} message={loadingMessage} /> */}
+      <Navbar />
       {activeMintToken !== null && activeSendToken !== null && (
         <div className="Main-Content">
           <div
@@ -553,7 +531,7 @@ export default function Home() {
                   <>
                     FOLD{" "}
                     <img
-                      src={` ${transferDisabled} ? ${IMAGE_PATH.status.transferDisabled} : ${IMAGE_PATH.gifs.transfer}`}
+                      src={ transferDisabled ? `${IMAGE_PATH.status.transferDisabled}` : `${IMAGE_PATH.gifs.transfer}`}
                       alt="fold"
                     />
                   </>
@@ -761,14 +739,7 @@ export default function Home() {
           </div>
         </div>
       )}
-      <a
-        className="Footer"
-        href="https://connext.network/"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        Made with <i className="fas fa-heart Heart-Icon"></i> by Connext
-      </a>
+      <Footer />
     </div>
   );
 }

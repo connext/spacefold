@@ -8,14 +8,13 @@
     "start": "next start"
   },
   "dependencies": {
+    "@connext/vector-browser-node": "^0.0.14-beta.0",
     "next": "10.0.2",
     "react": "17.0.1",
-    "react-dom": "17.0.1"
+    "react-dom": "17.0.1",
+    "react-select": "^3.1.1"
   },
   "devDependencies": {
-    "@connext/vector-browser-node": "^0.0.14-beta.0",
-    "@connext/vector-types": "^0.0.14-beta.0",
-    "@connext/vector-utils": "^0.0.14-beta.0",
     "@types/node": "^14.14.9",
     "@types/react": "^16.9.56",
     "axios": "^0.21.0",

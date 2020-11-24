@@ -31,7 +31,7 @@ yarn-error.log*
 .env.production.local
 
 # vercel
-.yarn.lock
+yarn.lock
 .vercel
 .vscode
 .env
