@@ -9,10 +9,15 @@ import {
 import { TransferNames } from "@connext/vector-types";
 
 export default class Connext {
-  connextClient: any;
+  connextClient: BrowserNode;
   channnel: any;
   provider: any;
   signer: any;
+
+  publicIdentifier: string =
+    "indra7tbbTxQp8ppEQUgPsbGiTrVdapLdU5dH7zTbVuXRf1M4CEBU9Q";
+  chainId: number = 4; // Rinkeby
+  chainId_2: number = 42; //Kovan
 
   //constructor
 
@@ -20,12 +25,16 @@ export default class Connext {
     this.channnel = new Map();
     this.connectNode();
   }
-
+  
   // Create methods
   async connectNode() {
+    const iframeSrc = "https://wallet.connext.network";
     this.connextClient = await BrowserNode.connect({
+      iframeSrc,
       logger: pino(),
     });
+    this.setupChannel(this.publicIdentifier, this.chainId);
+    // this.setupChannel(this.publicIdentifier, this.chainId_2);
   }
 
   async setupChannel(aliceIdentifier: string, chainId: number) {

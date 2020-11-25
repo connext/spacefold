@@ -29,13 +29,10 @@ export default function Home() {
   const leftCardRef = useRef(null);
   const rightCardRef = useRef(null);
 
-  const connextNode = new Connext();
-  const publicIdentifier = "indra7tbbTxQp8ppEQUgPsbGiTrVdapLdU5dH7zTbVuXRf1M4CEBU9Q"
-  const chainId = 4 // Rinkeby
-  const chainId_2 = 42 //Kovan
+  if (process.browser) {
+    const connextNode = new Connext();
+  }
 
-  const firstChannel = connextNode.setupChannel(publicIdentifier, chainId);
-  const secondChannel = connextNode.setupChannel(publicIdentifier, chainId_2);
 
   // window resize setup
   useEffect(() => {
