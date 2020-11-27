@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 @import "app.scss";
 @import "loading.scss";
 
@@ -21,4 +25,11 @@ code {
 button {
   border: none;
   cursor: pointer;
+}
+
+input:focus,
+select:focus,
+textarea:focus,
+button:focus {
+    outline: none;
 }

@@ -1,3 +1,6 @@
+import { faHeart } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+
 export default function Footer() {
   return (
     <a
@@ -6,7 +9,7 @@ export default function Footer() {
       target="_blank"
       rel="noopener noreferrer"
     >
-      Made with <i className="fas fa-heart Heart-Icon"></i> by Connext
+      Made with <FontAwesomeIcon icon={faHeart} /> by Connext
     </a>
   );
 }

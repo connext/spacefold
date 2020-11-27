@@ -8,6 +8,74 @@ export const STATUS = {
   SUCCESS: 3,
 };
 
+export interface TOKEN {
+  name: string;
+  icon: string;
+  background: string;
+  address: string;
+}
+
+export interface ENV {
+  chainId: number;
+  name: string;
+  icon: string;
+  tokens: TOKEN[];
+  color: string;
+  ethProviderUrl: string;
+  blockchainExplorerURL: string;
+}
+
+const RINKEBY_TOKENS: TOKEN[] = [
+  {
+    name: "ETH",
+    icon: "/images/eth.png",
+    background: "/images/rinkebyBackground.png",
+    address: "0x4d4deb65DBC13dE6811095baba7064B41A72D9Db",
+  },
+  {
+    name: "MOON",
+    icon: "/images/moon.png",
+    background: "/images/rinkebyBackground.png",
+    address: "0x50C94BeCAd95bEe21aF226dc799365Ee6B134459",
+  },
+];
+
+const KOVAN_TOKENS: TOKEN[] = [
+  {
+    name: "ETH",
+    icon: "/images/eth.png",
+    background: "/images/rinkebyBackground.png",
+    address: "0x4d4deb65DBC13dE6811095baba7064B41A72D9Db",
+  },
+  {
+    name: "MOON",
+    icon: "/images/moon.png",
+    background: "/images/rinkebyBackground.png",
+    address: "0x50C94BeCAd95bEe21aF226dc799365Ee6B134459",
+  },
+];
+
+export const ENVIRONMENT: ENV[] = [
+  {
+    chainId: 4,
+    name: "Rinkeby",
+    tokens: RINKEBY_TOKENS,
+    icon: "/images/brickBackground.png",
+    color: "#EFC45C",
+    ethProviderUrl: `https://rinkeby.infura.io/v3/${process.env.REACT_APP_INFURA_ID}`,
+    blockchainExplorerURL: "https://rinkeby.etherscan.io/tx/{TRANSACTION_HASH}",
+  },
+  {
+    chainId: 42,
+    name: "Kovan",
+    tokens: KOVAN_TOKENS,
+    icon: "/images/rinkebyBackground.png",
+    color: "#5b32a2",
+    ethProviderUrl: `https://kovan.infura.io/v3/${process.env.REACT_APP_INFURA_ID}`,
+    blockchainExplorerURL: "https://kovan.etherscan.io/tx/{TRANSACTION_HASH}",
+  },
+];
+
 export const IMAGE_PATH = {
   icon: {
     eth: "/images/eth.png",
