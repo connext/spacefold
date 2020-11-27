@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import Select from "react-select";
 import { IMAGE_PATH, STATUS, MINIMUM_BALANCE } from "../constants";
 
-export default function Card() {
+export default function RightCard() {
   const [showTweetInput, setShowTweetInput] = useState(false);
   const [mintStatus, setMintStatus] = useState(STATUS.READY);
   const [clients, setClients] = useState({});

@@ -2,7 +2,7 @@ import React, { useState, useRef } from "react";
 import Select from "react-select";
 import { IMAGE_PATH, STATUS } from "../constants";
 
-export default function Card() {
+export default function LeftCard() {
   const [showTweetInput, setShowTweetInput] = useState(false);
   const [mintStatus, setMintStatus] = useState(STATUS.READY);
   const [transferStatus, setTransferStatus] = useState(STATUS.READY);

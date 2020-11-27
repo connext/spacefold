@@ -29,12 +29,13 @@ export default class Connext {
   // Create methods
   async connectNode() {
     const iframeSrc = "https://wallet.connext.network";
+    // const iframeSrc = "http://localhost:3030"
     this.connextClient = await BrowserNode.connect({
       iframeSrc,
       logger: pino(),
     });
     this.setupChannel(this.publicIdentifier, this.chainId);
-    // this.setupChannel(this.publicIdentifier, this.chainId_2);
+    this.setupChannel(this.publicIdentifier, this.chainId_2);
   }
 
   async setupChannel(aliceIdentifier: string, chainId: number) {

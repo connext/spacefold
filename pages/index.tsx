@@ -1,8 +1,9 @@
 import Head from "next/head";
 import { Loading, Navbar, Footer } from "./components";
-import Card from "./LeftCard";
+import Card from "./Card";
+import LeftCard from "./LeftCard";
+import RigthCard from "./RightCard";
 import Fold from "./Fold";
-import AnotherCard from "./RightCard";
 import React, { useState, useEffect, useRef } from "react";
 import Connext from "./service/connext";
 
@@ -54,9 +55,10 @@ export default function Home() {
       {/* <Loading initializing={initializing} message={loadingMessage} /> */}
       <Navbar />
       <div className="Main-Content">
-        <Card />
-        <Fold />
-        <AnotherCard />
+        <Card/>
+        {/* <LeftCard /> */}
+        {/* <Fold /> */}
+        {/* <RightCard /> */}
       </div>
       <Footer />
     </div>
