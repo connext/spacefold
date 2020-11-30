@@ -8,6 +8,12 @@ import {
 } from "@connext/vector-utils";
 import { TransferNames } from "@connext/vector-types";
 
+declare global {
+  interface Window {
+    ethereum: any;
+  }
+}
+
 export default class Connext {
   connextClient: BrowserNode;
   channnel: any;
@@ -15,7 +21,7 @@ export default class Connext {
   signer: any;
 
   publicIdentifier: string =
-    "indra7tbbTxQp8ppEQUgPsbGiTrVdapLdU5dH7zTbVuXRf1M4CEBU9Q";
+    "vector7tbbTxQp8ppEQUgPsbGiTrVdapLdU5dH7zTbVuXRf1M4CEBU9Q";
   chainId: number = 4; // Rinkeby
   chainId_2: number = 42; //Kovan
 
@@ -23,27 +29,33 @@ export default class Connext {
 
   constructor() {
     this.channnel = new Map();
+    console.log("Enter in Constructor");
     this.connectNode();
   }
-  
+
   // Create methods
   async connectNode() {
-    const iframeSrc = "https://wallet.connext.network";
-    // const iframeSrc = "http://localhost:3030"
+    // const iframeSrc = "https://wallet.connext.network";
+    const iframeSrc = "http://localhost:3030";
+    console.log("Connect Node");
     this.connextClient = await BrowserNode.connect({
       iframeSrc,
       logger: pino(),
     });
-    this.setupChannel(this.publicIdentifier, this.chainId);
-    this.setupChannel(this.publicIdentifier, this.chainId_2);
+    // console.log("Setup first channel")
+    // this.setupChannel(this.publicIdentifier, this.chainId);
+    // console.log("Setup Sec channel")
+    // this.setupChannel(this.publicIdentifier, this.chainId_2);
   }
 
   async setupChannel(aliceIdentifier: string, chainId: number) {
+    console.log("Setup channel req");
     const setupRes = await this.connextClient.setup({
       counterpartyIdentifier: aliceIdentifier,
       chainId: chainId,
       timeout: "100000",
     });
+    console.log("After Setup channel req");
     if (setupRes.isError) {
       console.error(setupRes.getError());
     } else {
@@ -54,8 +66,11 @@ export default class Connext {
 
   async connectMetamask() {
     if (typeof window !== "undefined") {
-      await window.ethereum.enable();
-      this.provider = new ethers.providers.Web3Provider(window.ethereum);
+      window.ethereum
+        .enable()
+        .then(
+          (this.provider = new ethers.providers.Web3Provider(window.ethereum))
+        );
       // The Metamask plugin also allows signing transactions to
       // send ether and pay to change state within the blockchain.
       // For this, you need the account signer...
@@ -93,7 +108,7 @@ export default class Connext {
 
     const requestRes = await this.connextClient.conditionalTransfer({
       type: TransferNames.HashlockTransfer,
-      channnel: channelState.channelAddress,
+      channelAddress: channelState.channelAddress,
       recipientChainId: chainId,
       assetId,
       amount,

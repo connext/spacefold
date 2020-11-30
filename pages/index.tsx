@@ -32,6 +32,7 @@ export default function Home() {
 
   if (process.browser) {
     const connextNode = new Connext();
+    connextNode.connectMetamask();
   }
 
 
