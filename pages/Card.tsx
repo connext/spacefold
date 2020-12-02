@@ -1,24 +1,30 @@
-import Image from "next/image";
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState } from "react";
 import Select from "react-select";
-import { faAngleDown } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { IMAGE_PATH, STATUS } from "../constants";
-import { ENVIRONMENT, ENV, TOKEN } from "../constants";
+import Image from "next/image";
+// import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
+// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { IMAGE_PATH, STATUS, ENVIRONMENT, ENV, TOKEN } from "../constants";
+import Connext from "./service/connext";
 
 export default function Card() {
-  const [showTweetInput, setShowTweetInput] = useState(false);
-  const [mintStatus, setMintStatus] = useState(STATUS.READY);
-  const [transferStatus, setTransferStatus] = useState(STATUS.READY);
-  const [leftSelectHeight, setLeftSelectHeight] = useState(0);
-  const leftCardRef = useRef(null);
+  const [connext, setConnext] = useState<Connext>();
 
   const [fromNetwork, setFromNetwork] = useState<ENV>(ENVIRONMENT[0]);
   const [amount, setAmount] = useState("0");
   const [fromToken, setFromToken] = useState<TOKEN>(fromNetwork.tokens[0]);
 
   const [toNetwork, setToNetwork] = useState<ENV>(ENVIRONMENT[0]);
-  const [toToken, setToToken] = useState<TOKEN>(toNetwork.tokens[0]);
+  // const [toToken, setToToken] = useState<TOKEN>(toNetwork.tokens[0]);
+
+  const connect = async () => {
+    if (typeof window !== "undefined") {
+      const connextNode = new Connext();
+      connextNode.connectNode();
+      connextNode.connectMetamask();
+      setConnext(connextNode);
+      // connextNode.deposit(4);
+    }
+  };
 
   const controlStyles = {
     // padding: "0 56px",
@@ -26,9 +32,6 @@ export default function Card() {
     border: "none",
     boxShadow: "none",
     cursor: "pointer",
-  };
-  const menuStyles = {
-    margin: 0,
   };
   const selectStyles = {
     control: (base) => ({
@@ -41,7 +44,7 @@ export default function Card() {
     }),
     menu: (base) => ({
       ...base,
-      ...menuStyles,
+      margin: 0,
     }),
     menuList: (base) => ({
       ...base,
@@ -61,18 +64,16 @@ export default function Card() {
     }),
   };
 
-  const leftSelectDisabled =
-    transferStatus === STATUS.IN_PROGRESS || mintStatus === STATUS.IN_PROGRESS;
-
   return (
-    <div
-      className="Token"
-      //   style={{
-      //     backgroundColor:
-      //       activeMintToken.balance > 0 ? activeMintToken.color : "#F4F5F7",
-      //   }}
-    >
+    <div className="Token">
       <div id="card" className="Card p-6">
+        <button
+          type="button"
+          className={`Mint-Button`}
+          onClick={() => connect()}
+        >
+          Connect to Connext
+        </button>
         <div
           id="from"
           className="p-2 mb-8 border-2 border-blue-500 border-opacity-25 rounded-3xl"
@@ -109,12 +110,8 @@ export default function Card() {
                 value: t.chainId,
               })).filter((opt) => opt.value !== fromNetwork.chainId)}
               isSearchable={false}
-              // isDisabled={leftSelectDisabled}
-              components={{
-                DropdownIndicator: leftSelectDisabled
-                  ? DisabledDropdownIndicator
-                  : DropdownIndicator,
-              }}
+              // isDisabled={}
+              components={DropdownIndicator}
             />
 
             <div className="w-2/3 flex focus-within:text-gray-600">
@@ -154,12 +151,8 @@ export default function Card() {
                   }))
                   .filter((opt) => opt.value !== fromToken.address)}
                 isSearchable={false}
-                // isDisabled={leftSelectDisabled}
-                components={{
-                  DropdownIndicator: leftSelectDisabled
-                    ? DisabledDropdownIndicator
-                    : DropdownIndicator,
-                }}
+                // isDisabled={}
+                components={DropdownIndicator}
               />
             </div>
           </div>
@@ -203,12 +196,8 @@ export default function Card() {
                 value: t.chainId,
               })).filter((opt) => opt.value !== toNetwork.chainId)}
               isSearchable={false}
-              // isDisabled={leftSelectDisabled}
-              components={{
-                DropdownIndicator: leftSelectDisabled
-                  ? DisabledDropdownIndicator
-                  : DropdownIndicator,
-              }}
+              // isDisabled={}
+              components={DropdownIndicator}
             />
 
             <div className="w-2/3 flex focus-within:text-gray-600">
@@ -216,44 +205,28 @@ export default function Card() {
                 <img src={fromToken.icon} height="30px" width="30px" />
               </div>
               <div className="w-3/6 flex items-center pl-2 text-2xl font-semibold">
-                <p className="">
-                  {amount}&nbsp;
-                </p>
+                <p className="">{amount}&nbsp;</p>
               </div>
-                <span className="w-2/6 flex items-center text-xl">{fromToken.name}</span>
+              <span className="w-2/6 flex items-center text-xl">
+                {fromToken.name}
+              </span>
             </div>
           </div>
         </div>
-        {/* <div
-              className="Card-Image"
-              style={{
-                backgroundImage: `url(${IMAGE_PATH.background.rinkeby})`,
-              }}
-            ></div> */}
         <button
           type="button"
-          className= "Mint-Button mb-2"
-          onClick={() => setShowTweetInput(!showTweetInput)}
-          //   disabled={
-          //     mintStatus === STATUS.IN_PROGRESS ||
-          //     transferStatus === STATUS.IN_PROGRESS ||
-          //     tokensWereAlreadyMinted
-          //   }
+          className="Mint-Button mb-2"
+          onClick={() => connext.deposit(fromNetwork.chainId, amount)}
         >
           Deposit
         </button>
-        <button
+        {/* <button
           type="button"
           className={`Mint-Button`}
           onClick={() => setShowTweetInput(!showTweetInput)}
-          //   disabled={
-          //     mintStatus === STATUS.IN_PROGRESS ||
-          //     transferStatus === STATUS.IN_PROGRESS ||
-          //     tokensWereAlreadyMinted
-          //   }
         >
           Send
-        </button>
+        </button> */}
       </div>
     </div>
   );
