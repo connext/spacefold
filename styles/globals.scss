@@ -2,8 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url("/styles/app.scss");
-@import url("/styles/loading.scss");;
+@import "styles/app.scss";
+@import "styles/loading.scss";
 
 @font-face {
   font-family: 'Proxima Nova';
