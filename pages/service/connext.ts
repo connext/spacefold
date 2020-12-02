@@ -6,7 +6,8 @@ import {
   encrypt,
   createlockHash,
 } from "@connext/vector-utils";
-import { TransferNames } from "@connext/vector-types";
+import { TransferNames, FullChannelState } from "@connext/vector-types";
+import { IMAGE_PATH, STATUS, ENVIRONMENT, ENV, TOKEN } from "../../constants";
 
 declare global {
   interface Window {
@@ -16,36 +17,59 @@ declare global {
 
 export default class Connext {
   connextClient: BrowserNode;
-  channnel: any;
+  channel: any;
+  config: any;
   provider: any;
   signer: any;
 
-  publicIdentifier: string =
+  counterparty: string =
     "vector7tbbTxQp8ppEQUgPsbGiTrVdapLdU5dH7zTbVuXRf1M4CEBU9Q";
-  chainId: number = 4; // Rinkeby
-  chainId_2: number = 42; //Kovan
 
   //constructor
-
-  constructor() {
-    this.channnel = new Map();
-    console.log("Enter in Constructor");
-    this.connectNode();
-  }
+  constructor() {}
 
   // Create methods
   async connectNode() {
     // const iframeSrc = "https://wallet.connext.network";
     const iframeSrc = "http://localhost:3030";
     console.log("Connect Node");
-    this.connextClient = await BrowserNode.connect({
-      iframeSrc,
-      logger: pino(),
+    if (!this.connextClient) {
+      this.connextClient = await BrowserNode.connect({
+        iframeSrc,
+        logger: pino(),
+      });
+    }
+
+    await this.connextClient.getConfig().then((res) => {
+      console.log("GET CONFIG: ", res[0]);
+      this.config = res[0];
     });
-    // console.log("Setup first channel")
-    // this.setupChannel(this.publicIdentifier, this.chainId);
-    // console.log("Setup Sec channel")
-    // this.setupChannel(this.publicIdentifier, this.chainId_2);
+
+    ENVIRONMENT.findIndex(async (t) => {
+      const channelState = await this.getChannelByParticipants(
+        this.config.publicIdentifier,
+        this.counterparty,
+        t.chainId
+      );
+      console.log(channelState);
+
+      // if (!this.channel) {
+      //   console.log("Setup Sec channel");
+      //   this.setupChannel(this.counterparty, this.chainId_2);
+      // }
+    });
+  }
+  async getChannelByParticipants(publicIdentifier, counterparty, chainId) {
+    const channelState: any = await this.connextClient
+      .getStateChannelByParticipants({
+        publicIdentifier: publicIdentifier,
+        counterparty: counterparty,
+        chainId: chainId,
+      })
+      .then((res) => {
+        console.log(`GetChannelByParticipants for Chain: ${chainId} :`, res);
+      });
+    return channelState;
   }
 
   async setupChannel(aliceIdentifier: string, chainId: number) {
@@ -60,7 +84,7 @@ export default class Connext {
       console.error(setupRes.getError());
     } else {
       console.log(setupRes.getValue());
-      this.channnel.set(chainId, setupRes.getValue());
+      this.channel = setupRes.getValue() as FullChannelState;
     }
   }
 
@@ -78,15 +102,15 @@ export default class Connext {
     }
   }
 
-  async deposit(chainId: number) {
-    if (!this.checkChannel(chainId)) {
-      console.log(`Channel doesn't exist for ${chainId}`);
-      return;
-    }
-    const channelState = this.getChannel(chainId);
+  async deposit(chainId: number, amount: string) {
+    const channelState = await this.getChannelByParticipants(
+      this.config.publicIdentifier,
+      this.counterparty,
+      chainId
+    );
     const tx = this.signer.sendTransaction({
       to: channelState.channelAddress,
-      value: ethers.utils.parseEther("1.0"),
+      value: ethers.utils.parseEther(amount),
     });
     console.log(tx);
   }
@@ -104,8 +128,11 @@ export default class Connext {
       const encryptedPreImage = await encrypt(preImage, recipientPublicKey);
       submittedMeta.encryptedPreImage = encryptedPreImage;
     }
-    const channelState = this.getChannel(chainId);
-
+    const channelState = await this.getChannelByParticipants(
+      this.config.publicIdentifier,
+      this.counterparty,
+      chainId
+    );
     const requestRes = await this.connextClient.conditionalTransfer({
       type: TransferNames.HashlockTransfer,
       channelAddress: channelState.channelAddress,
@@ -131,7 +158,11 @@ export default class Connext {
     recipient: string,
     chainId: number
   ) {
-    const channelState = this.getChannel(chainId);
+    const channelState = await this.getChannelByParticipants(
+      this.config.publicIdentifier,
+      this.counterparty,
+      chainId
+    );
     const requestRes = await this.connextClient.withdraw({
       channelAddress: channelState.channelAddress,
       assetId,
@@ -156,17 +187,12 @@ export default class Connext {
   }
 
   // verify Methods
-  checkChannel(chainId: number) {
-    return this.channnel.has(chainId);
-  }
+  // checkChannel(chainId: number) {
+  //   return this.channnel.has(chainId);
+  // }
 
-  // Getter Methods
-  getChannel(chainId: number) {
-    return this.channnel.get(chainId);
-  }
-
-  // Delete all entries
-  deleteDB() {
-    this.channnel.clear();
-  }
+  // // Getter Methods
+  // getChannel(chainId: number) {
+  //   return this.channnel.get(chainId);
+  // }
 }
