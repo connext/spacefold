@@ -4,7 +4,7 @@ import Image from "next/image";
 // import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
 // import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { IMAGE_PATH, STATUS, ENVIRONMENT, ENV, TOKEN } from "../constants";
-import Connext from "./service/connext";
+import Connext from "../service/connext";
 
 export default function Card() {
   const [connext, setConnext] = useState<Connext>();

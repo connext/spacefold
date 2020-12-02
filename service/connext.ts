@@ -7,7 +7,7 @@ import {
   createlockHash,
 } from "@connext/vector-utils";
 import { TransferNames, FullChannelState } from "@connext/vector-types";
-import { IMAGE_PATH, STATUS, ENVIRONMENT, ENV, TOKEN } from "../../constants";
+import { IMAGE_PATH, STATUS, ENVIRONMENT, ENV, TOKEN } from "../constants";
 
 declare global {
   interface Window {
