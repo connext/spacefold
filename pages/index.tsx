@@ -1,5 +1,5 @@
 import Head from "next/head";
-import { Loading, Navbar, Footer } from "./components";
+import { Loading, Navbar, Footer } from "../components";
 import Card from "./Card";
 import React from "react";
 

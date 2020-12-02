@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Image from "next/image";
-import {IMAGE_PATH} from "../../constants"
+import {IMAGE_PATH} from "../constants"
 
 export default function Loading({ initializing, message }) {
   const [imageLoaded, setImageLoaded] = useState(false);
