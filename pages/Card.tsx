@@ -3,7 +3,7 @@ import Select from "react-select";
 import Image from "next/image";
 // import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
 // import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { IMAGE_PATH, STATUS, ENVIRONMENT, ENV, TOKEN } from "../constants";
+import { IMAGE_PATH, ENVIRONMENT, ENV, TOKEN } from "../constants";
 import Connext from "../service/connext";
 
 export default function Card() {
@@ -14,13 +14,13 @@ export default function Card() {
   const [fromToken, setFromToken] = useState<TOKEN>(fromNetwork.tokens[0]);
 
   const [toNetwork, setToNetwork] = useState<ENV>(ENVIRONMENT[0]);
+  const [address, setAddress] = useState("");
   // const [toToken, setToToken] = useState<TOKEN>(toNetwork.tokens[0]);
 
   const connect = async () => {
     if (typeof window !== "undefined") {
       const connextNode = new Connext();
       connextNode.connectNode();
-      connextNode.connectMetamask();
       setConnext(connextNode);
       // connextNode.deposit(4);
     }
@@ -69,7 +69,7 @@ export default function Card() {
       <div id="card" className="Card p-6">
         <button
           type="button"
-          className={`Mint-Button`}
+          className="First-Button mb-2"
           onClick={() => connect()}
         >
           Connect to Connext
@@ -111,7 +111,7 @@ export default function Card() {
               })).filter((opt) => opt.value !== fromNetwork.chainId)}
               isSearchable={false}
               // isDisabled={}
-              components={DropdownIndicator}
+              components={{ DropdownIndicator }}
             />
 
             <div className="w-2/3 flex focus-within:text-gray-600">
@@ -152,7 +152,7 @@ export default function Card() {
                   .filter((opt) => opt.value !== fromToken.address)}
                 isSearchable={false}
                 // isDisabled={}
-                components={DropdownIndicator}
+                components={{ DropdownIndicator }}
               />
             </div>
           </div>
@@ -197,9 +197,8 @@ export default function Card() {
               })).filter((opt) => opt.value !== toNetwork.chainId)}
               isSearchable={false}
               // isDisabled={}
-              components={DropdownIndicator}
+              components={{ DropdownIndicator }}
             />
-
             <div className="w-2/3 flex focus-within:text-gray-600">
               <div className="w-1/6 left-0 pl-3 flex items-center">
                 <img src={fromToken.icon} height="30px" width="30px" />
@@ -212,18 +211,55 @@ export default function Card() {
               </span>
             </div>
           </div>
+
+          <input
+            className="w-full p-3 text-center border-2 border-blue-500 border-opacity-25 rounded-3xl"
+            id="transferAddress"
+            name="Address"
+            type="text"
+            aria-label="address"
+            placeholder="public address(0x)"
+            // autoComplete="off"
+            onChange={(event) => setAddress(event.target.value)}
+          />
+
         </div>
         <button
           type="button"
-          className="Mint-Button mb-2"
-          onClick={() => connext.deposit(fromNetwork.chainId, amount)}
+          className="First-Button mb-2"
+          onClick={() =>
+            connext.deposit(fromNetwork.chainId, fromToken.address, amount)
+          }
         >
           Deposit
         </button>
+        <button
+          type="button"
+          className="First-Button mb-2"
+          onClick={() =>
+            connext.transfer(fromNetwork.chainId, fromToken.address, amount)
+          }
+        >
+          Transfer
+        </button>
+        <button
+          type="button"
+          className="First-Button mb-2"
+          onClick={() =>
+            connext.withdraw(
+              fromNetwork.chainId,
+              fromToken.address,
+              address,
+              amount
+            )
+          }
+        >
+          Withdraw
+        </button>
         {/* <button
           type="button"
-          className={`Mint-Button`}
-          onClick={() => setShowTweetInput(!showTweetInput)}
+          className="First-Button mb-2"
+          onClick={() => connext.send(fromNetwork.chainId, amount)}
         >
           Send
         </button> */}
