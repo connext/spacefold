@@ -1,9 +1,10 @@
+@use "app";
+@use "loading";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@use "app";
-@use "loading";
 
 @font-face {
   font-family: 'Proxima Nova';
