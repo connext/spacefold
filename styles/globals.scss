@@ -1,5 +1,5 @@
-@use "app";
-@use "loading";
+@import "styles/app.scss";
+@import "styles/loading.scss";
 
 @tailwind base;
 @tailwind components;
