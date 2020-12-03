@@ -7,7 +7,7 @@ import {
   createlockHash,
   getRandomBytes32,
 } from "@connext/vector-utils";
-import { TransferNames } from "@connext/vector-types";
+import { FullChannelState, TransferNames } from "@connext/vector-types";
 import { ENVIRONMENT } from "../constants";
 
 declare global {
@@ -67,13 +67,14 @@ export default class Connext {
     } else {
       console.log("Updated channel:", res.getValue());
     }
+    return res;
   }
 
   async getChannelByParticipants(
     publicIdentifier: string,
     counterparty: string,
     chainId: number
-  ) {
+  ): Promise<FullChannelState> {
     let channelState: any;
     const res = await this.connextClient!.getStateChannelByParticipants({
       publicIdentifier: publicIdentifier,
@@ -126,6 +127,7 @@ export default class Connext {
     });
     await response.wait(3); // 3 confirmations just in case
     await this.reconcileDeposit(channelState.channelAddress, assetId);
+    await this.updateChannel(channelState.channelAddress);
   }
 
   async reconcileDeposit(channelAddress: string, assetId: string) {
