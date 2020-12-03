@@ -33,23 +33,23 @@ export default function Card() {
     cursor: "pointer",
   };
   const selectStyles = {
-    control: (base) => ({
+    control: (base: any) => ({
       ...base,
       ...controlStyles,
     }),
-    valueContainer: (base) => ({
+    valueContainer: (base: any) => ({
       ...base,
       paddingLeft: 4,
     }),
-    menu: (base) => ({
+    menu: (base: any) => ({
       ...base,
       margin: 0,
     }),
-    menuList: (base) => ({
+    menuList: (base: any) => ({
       ...base,
       maxHeight: "100%",
     }),
-    option: (base) => ({
+    option: (base: any) => ({
       ...base,
       backgroundColor: "#FFFFFF",
       // color: "#505D68",
@@ -58,7 +58,7 @@ export default function Card() {
       textAlign: "left",
       cursor: "pointer",
     }),
-    indicatorSeparator: (base) => ({
+    indicatorSeparator: (base: any) => ({
       width: 0,
     }),
   };
@@ -90,7 +90,7 @@ export default function Card() {
                 ),
                 value: fromNetwork.chainId,
               }}
-              onChange={(option) => {
+              onChange={(option: { value: number }) => {
                 ENVIRONMENT.findIndex((t) => {
                   if (t.chainId === option.value) {
                     setFromNetwork(t);
@@ -132,7 +132,7 @@ export default function Card() {
                   label: fromToken.name,
                   value: fromToken.address,
                 }}
-                onChange={(option) => {
+                onChange={(option: { value: string }) => {
                   fromNetwork.tokens.findIndex((t) => {
                     if (t.address === option.value) setFromToken(t);
                   });
@@ -176,7 +176,7 @@ export default function Card() {
                 ),
                 value: toNetwork.chainId,
               }}
-              onChange={(option) => {
+              onChange={(option: { value: number }) => {
                 ENVIRONMENT.findIndex((t) => {
                   if (t.chainId === option.value) {
                     setToNetwork(t);
@@ -221,7 +221,6 @@ export default function Card() {
             // autoComplete="off"
             onChange={(event) => setAddress(event.target.value)}
           />
-
         </div>
         <button
           type="button"
