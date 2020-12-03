@@ -1,4 +1,4 @@
-import { ethers } from "ethers";
+import { ethers, providers } from "ethers";
 import { BrowserNode } from "@connext/vector-browser-node";
 import pino from "pino";
 import {
@@ -18,16 +18,16 @@ declare global {
 
 export default class Connext {
   connextClient: BrowserNode;
-  channel: any;
-  config: any;
-  provider: any;
-  signer: any;
+  config: {
+    publicIdentifier: string;
+    signerAddress: string;
+    index: number;
+  };
+  provider: providers.Web3Provider;
+  signer: providers.JsonRpcSigner;
 
   counterparty: string =
     "vector7tbbTxQp8ppEQUgPsbGiTrVdapLdU5dH7zTbVuXRf1M4CEBU9Q";
-
-  //constructor
-  constructor() {}
 
   // Create methods
   async connectNode() {
@@ -69,16 +69,19 @@ export default class Connext {
     }
   }
 
-  async getChannelByParticipants(publicIdentifier, counterparty, chainId) {
-    let channelState;
-    await this.connextClient!.getStateChannelByParticipants({
+  async getChannelByParticipants(
+    publicIdentifier: string,
+    counterparty: string,
+    chainId: number
+  ) {
+    let channelState: any;
+    const res = await this.connextClient!.getStateChannelByParticipants({
       publicIdentifier: publicIdentifier,
       counterparty: counterparty,
       chainId: chainId,
-    }).then((res) => {
-      console.log(`GetChannelByParticipants for Chain: ${chainId} :`, res);
-      channelState = res.getValue();
     });
+    console.log(`GetChannelByParticipants for Chain: ${chainId} :`, res);
+    channelState = res.getValue();
     return channelState;
   }
 
@@ -101,11 +104,8 @@ export default class Connext {
 
   async connectMetamask() {
     if (typeof window !== "undefined") {
-      window.ethereum
-        .enable()
-        .then(
-          (this.provider = new ethers.providers.Web3Provider(window.ethereum))
-        );
+      await window.ethereum.enable();
+      this.provider = new ethers.providers.Web3Provider(window.ethereum);
       // The Metamask plugin also allows signing transactions to
       // send ether and pay to change state within the blockchain.
       // For this, you need the account signer...
@@ -120,20 +120,12 @@ export default class Connext {
       this.counterparty,
       chainId
     );
-    await this.signer
-      .sendTransaction({
-        to: channelState.channelAddress,
-        value: ethers.utils.parseEther(amount),
-      })
-      .then((res) => {
-        console.log(
-          `deposit to ${channelState.channelAddress} at Chain: ${chainId} :`,
-          res
-        );
-        this.provider.waitForTransaction(res.hash).then(async () => {
-          await this.reconcileDeposit(channelState.channelAddress, assetId);
-        });
-      });
+    const response = await this.signer.sendTransaction({
+      to: channelState.channelAddress,
+      value: ethers.utils.parseEther(amount),
+    });
+    await response.wait(3); // 3 confirmations just in case
+    await this.reconcileDeposit(channelState.channelAddress, assetId);
   }
 
   async reconcileDeposit(channelAddress: string, assetId: string) {
@@ -162,46 +154,42 @@ export default class Connext {
       this.counterparty,
       chainId
     );
-    await this.connextClient
-      .conditionalTransfer({
-        type: TransferNames.HashlockTransfer,
-        channelAddress: channelState.channelAddress,
-        recipientChainId: chainId,
-        assetId,
-        amount,
-        recipient,
-        details: {
-          lockHash: createlockHash(preImage),
-          expiry: "0",
-        },
-        timeout: "100000",
-        meta: submittedMeta,
-      })
-      .then(async (res) => {
-        console.log(`Setup Channel for Chain: ${chainId} :`, res);
-        if (res.isError) {
-          console.error("Error transferring", res.getError());
-        } else {
-          console.log(res.getValue());
-          const transferState = res.getValue();
-          await this.connextClient
-            .resolveTransfer({
-              channelAddress: transferState.channelAddress,
-              transferResolver: {
-                preImage: preImage,
-              },
-              transferId: transferState.transferId,
-            })
-            .then(async (requestRes) => {
-              if (requestRes.isError) {
-                console.error(
-                  "Error resolving transfer",
-                  requestRes.getError()
-                );
-              }
-            });
-        }
-      });
+    const recipientChainId = chainId;
+    const transferRes = await this.connextClient.conditionalTransfer({
+      type: TransferNames.HashlockTransfer,
+      channelAddress: channelState.channelAddress,
+      recipientChainId,
+      assetId,
+      amount,
+      recipient,
+      details: {
+        lockHash: createlockHash(preImage),
+        expiry: "0",
+      },
+      timeout: "100000",
+      meta: submittedMeta,
+    });
+    if (transferRes.isError) {
+      console.error("Error transferring", transferRes.getError());
+      return;
+    }
+
+    console.log(
+      `Transfer from for chain: ${chainId} to chain ${recipientChainId} :`,
+      transferRes.getValue()
+    );
+    const transferState = transferRes.getValue();
+    const resolveRes = await this.connextClient.resolveTransfer({
+      channelAddress: transferState.channelAddress,
+      transferResolver: {
+        preImage: preImage,
+      },
+      transferId: transferState.transferId,
+    });
+
+    if (resolveRes.isError) {
+      console.error("Error resolving transfer", resolveRes.getError());
+    }
   }
 
   async withdraw(
@@ -229,8 +217,8 @@ export default class Connext {
   }
 
   async send(chainId: number, assetId: string, amount: string) {
-    return await this.deposit(chainId, assetId, amount)
-      .then(async () => await this.transfer(chainId, assetId, amount))
-      .then(() => console.log("Successful desposit and transfer"));
+    await this.deposit(chainId, assetId, amount);
+    await this.transfer(chainId, assetId, amount);
+    console.log("Successful desposit and transfer");
   }
 }
