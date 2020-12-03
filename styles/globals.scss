@@ -1,22 +1,25 @@
+@use "styles/app.scss";
+@use "styles/loading.scss";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-
 @font-face {
-  font-family: 'Proxima Nova';
-  src: local('Proxima Nova'), url("/fonts/Proxima\ Nova\ Regular.otf") format('opentype');
+  font-family: "Proxima Nova";
+  src: local("Proxima Nova"),
+    url("/fonts/Proxima\ Nova\ Regular.otf") format("opentype");
 }
 
 body {
   margin: 0;
-  font-family: 'Proxima Nova', sans-serif;
+  font-family: "Proxima Nova", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
 
@@ -29,5 +32,5 @@ input:focus,
 select:focus,
 textarea:focus,
 button:focus {
-    outline: none;
+  outline: none;
 }
