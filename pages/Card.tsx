@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import Select from "react-select";
-import Image from "next/image";
 // import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
 // import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { IMAGE_PATH, ENVIRONMENT, ENV, TOKEN } from "../constants";
