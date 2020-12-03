@@ -30,14 +30,14 @@ const RINKEBY_TOKENS: TOKEN[] = [
     name: "ETH",
     icon: "/images/eth.png",
     background: "/images/rinkebyBackground.png",
-    address: "0x4d4deb65DBC13dE6811095baba7064B41A72D9Db",
+    address: "0x0000000000000000000000000000000000000000",
   },
-  {
-    name: "MOON",
-    icon: "/images/moon.png",
-    background: "/images/rinkebyBackground.png",
-    address: "0x50C94BeCAd95bEe21aF226dc799365Ee6B134459",
-  },
+  // {
+  //   name: "MOON",
+  //   icon: "/images/moon.png",
+  //   background: "/images/rinkebyBackground.png",
+  //   address: "0x50C94BeCAd95bEe21aF226dc799365Ee6B134459",
+  // },
 ];
 
 const KOVAN_TOKENS: TOKEN[] = [
@@ -45,14 +45,14 @@ const KOVAN_TOKENS: TOKEN[] = [
     name: "ETH",
     icon: "/images/eth.png",
     background: "/images/rinkebyBackground.png",
-    address: "0x4d4deb65DBC13dE6811095baba7064B41A72D9Db",
+    address: "0x0000000000000000000000000000000000000000",
   },
-  {
-    name: "MOON",
-    icon: "/images/moon.png",
-    background: "/images/rinkebyBackground.png",
-    address: "0x50C94BeCAd95bEe21aF226dc799365Ee6B134459",
-  },
+  // {
+  //   name: "MOON",
+  //   icon: "/images/moon.png",
+  //   background: "/images/rinkebyBackground.png",
+  //   address: "0x50C94BeCAd95bEe21aF226dc799365Ee6B134459",
+  // },
 ];
 
 export const ENVIRONMENT: ENV[] = [
