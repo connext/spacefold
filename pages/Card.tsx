@@ -237,37 +237,62 @@ export default function Card() {
         <button
           type="button"
           className="First-Button mb-2"
-          onClick={() =>
-            connext.deposit(fromNetwork.chainId, fromToken.address, amount)
-          }
+          disabled={loading || !connext}
+          onClick={async () => {
+            setLoading(true);
+            try {
+              await connext.deposit(
+                fromNetwork.chainId,
+                fromToken.address,
+                amount
+              );
+            } catch (e) {
+              console.error(e);
+            }
+            setLoading(false);
+          }}
         >
           Deposit
         </button>
         <button
           type="button"
           className="First-Button mb-2"
-          onClick={() =>
-            connext.transfer(
-              fromNetwork.chainId,
-              fromToken.address,
-              amount,
-              toNetwork.chainId
-            )
-          }
+          disabled={loading || !connext}
+          onClick={async () => {
+            setLoading(true);
+            try {
+              await connext.transfer(
+                fromNetwork.chainId,
+                fromToken.address,
+                amount,
+                toNetwork.chainId
+              );
+            } catch (e) {
+              console.error(e);
+            }
+            setLoading(false);
+          }}
         >
           Transfer
         </button>
         <button
           type="button"
           className="First-Button mb-2"
-          onClick={() =>
-            connext.withdraw(
-              fromNetwork.chainId,
-              fromToken.address,
-              address,
-              amount
-            )
-          }
+          disabled={loading || !connext}
+          onClick={async () => {
+            setLoading(true);
+            try {
+              await connext.withdraw(
+                fromNetwork.chainId,
+                fromToken.address,
+                address,
+                amount
+              );
+            } catch (e) {
+              console.error(e);
+            }
+            setLoading(false);
+          }}
         >
           Withdraw
         </button>

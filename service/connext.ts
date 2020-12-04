@@ -1,4 +1,4 @@
-import { ethers, providers } from "ethers";
+import { BigNumber, ethers, providers } from "ethers";
 import { BrowserNode } from "@connext/vector-browser-node";
 import pino from "pino";
 import {
@@ -177,7 +177,10 @@ export default class Connext {
       throw new Error("Cannot transfer without node connection");
     }
     const preImage = getRandomBytes32();
-    const amount = ethers.utils.parseEther(value).toString();
+    const amount = ethers.utils.parseEther(value);
+    if (amount.isZero()) {
+      throw new Error("Cannot transfer 0 value");
+    }
 
     const senderChannelState = await this.getChannelByParticipants(
       this.config.publicIdentifier,
@@ -211,7 +214,7 @@ export default class Connext {
       channelAddress: senderChannelState.channelAddress,
       recipientChainId: receiverChainId,
       assetId,
-      amount,
+      amount: amount.toString(),
       recipient,
       details: {
         lockHash: createlockHash(preImage),
