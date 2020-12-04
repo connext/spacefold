@@ -7,7 +7,11 @@ import {
   createlockHash,
   getRandomBytes32,
 } from "@connext/vector-utils";
-import { FullChannelState, TransferNames } from "@connext/vector-types";
+import {
+  ConditionalTransferCreatedPayload,
+  FullChannelState,
+  TransferNames,
+} from "@connext/vector-types";
 import { ENVIRONMENT } from "../constants";
 
 declare global {
@@ -17,7 +21,6 @@ declare global {
 }
 
 export default class Connext {
-  channel: FullChannelState;
   connextClient: BrowserNode;
   config: {
     publicIdentifier: string;
@@ -47,16 +50,28 @@ export default class Connext {
     this.config = configRes[0];
 
     ENVIRONMENT.map(async (t) => {
-      const channelState = await this.getChannelByParticipants(
+      let channelState = await this.getChannelByParticipants(
         this.config.publicIdentifier,
         this.counterparty,
         t.chainId
       );
-      console.log(channelState);
 
       if (!channelState) {
-        await this.setupChannel(this.counterparty, t.chainId);
+        try {
+          console.log(
+            `No channel detected for chainId ${t.chainId}, setting up channel...`
+          );
+          await this.setupChannel(this.counterparty, t.chainId);
+          channelState = await this.getChannelByParticipants(
+            this.config.publicIdentifier,
+            this.counterparty,
+            t.chainId
+          );
+        } catch (e) {
+          console.error(`Error setting up channel for chainId ${t.chainId}`);
+        }
       }
+      console.log(`Channel for chainId ${t.chainId}: `, channelState);
     });
   }
 
@@ -68,7 +83,6 @@ export default class Connext {
     }
     const channel = res.getValue();
     console.log("Updated channel:", channel);
-    this.channel = channel;
     return channel;
   }
 
@@ -83,7 +97,6 @@ export default class Connext {
       counterparty: counterparty,
       chainId: chainId,
     });
-    console.log(`GetChannelByParticipants for Chain: ${chainId} :`, res);
     channelState = res.getValue();
     return channelState;
   }
@@ -94,29 +107,30 @@ export default class Connext {
       chainId: chainId,
       timeout: "100000",
     });
-    console.log(`Setup Channel for Chain: ${chainId} :`, setupRes);
     if (setupRes.isError) {
-      console.error(setupRes.getError());
-    } else {
-      console.log(setupRes.getValue());
+      console.error(`Error setting up channel: ${setupRes.getError()}`);
+      return;
     }
+    console.log(`Setup Channel for Chain: ${chainId} :`, setupRes.getValue());
   }
 
   async connectMetamask(chainId: number) {
-    if (typeof window !== "undefined") {
-      await window.ethereum.enable();
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-      const network = await provider.getNetwork();
-      if (network.chainId !== chainId) {
-        alert(`Please switch to chainId ${chainId} and try again`);
-        return;
-      }
-      this.provider = provider;
-      // The Metamask plugin also allows signing transactions to
-      // send ether and pay to change state within the blockchain.
-      // For this, you need the account signer...
-      this.signer = this.provider.getSigner();
+    if (typeof window === "undefined" || !window.ethereum) {
+      alert("Web3 browser is required");
+      throw new Error("No Web3 detected");
     }
+    await window.ethereum.enable();
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const network = await provider.getNetwork();
+    if (network.chainId !== chainId) {
+      alert(`Please switch to chainId ${chainId} and try again`);
+      return;
+    }
+    this.provider = provider;
+    // The Metamask plugin also allows signing transactions to
+    // send ether and pay to change state within the blockchain.
+    // For this, you need the account signer...
+    this.signer = this.provider.getSigner();
   }
 
   async deposit(chainId: number, assetId: string, amount: string) {
@@ -152,27 +166,50 @@ export default class Connext {
     console.log(`Deposit reconciled: ${depositRes.getValue()}`);
   }
 
-  async transfer(chainId: number, assetId: string, value: string) {
+  async transfer(
+    senderChainId: number,
+    assetId: string,
+    value: string,
+    receiverChainId: number
+  ) {
     const recipient = this.config.publicIdentifier;
+    if (!recipient) {
+      throw new Error("Cannot transfer without node connection");
+    }
     const preImage = getRandomBytes32();
     const amount = ethers.utils.parseEther(value).toString();
 
-    const submittedMeta: { encryptedPreImage?: string } = {};
-    if (recipient) {
-      const recipientPublicKey = getPublicKeyFromPublicIdentifier(recipient);
-      const encryptedPreImage = await encrypt(preImage, recipientPublicKey);
-      submittedMeta.encryptedPreImage = encryptedPreImage;
-    }
-    const channelState = await this.getChannelByParticipants(
+    const senderChannelState = await this.getChannelByParticipants(
       this.config.publicIdentifier,
       this.counterparty,
-      chainId
+      senderChainId
     );
-    const recipientChainId = chainId;
+    const receiverChannelState = await this.getChannelByParticipants(
+      this.config.publicIdentifier,
+      this.counterparty,
+      receiverChainId
+    );
+    console.log(
+      `Sending ${value} from ${senderChannelState.channelAddress} to ${receiverChannelState.channelAddress} using preImage ${preImage}`
+    );
+
+    const event: Promise<ConditionalTransferCreatedPayload> = new Promise(
+      (res) => {
+        this.connextClient.once("CONDITIONAL_TRANSFER_CREATED", (payload) => {
+          if (payload.channelAddress !== receiverChannelState.channelAddress) {
+            return;
+          }
+          console.log(
+            `Received CONDITIONAL_TRANSFER_CREATED event: ${payload}`
+          );
+          res(payload);
+        });
+      }
+    );
     const transferRes = await this.connextClient.conditionalTransfer({
       type: TransferNames.HashlockTransfer,
-      channelAddress: channelState.channelAddress,
-      recipientChainId,
+      channelAddress: senderChannelState.channelAddress,
+      recipientChainId: receiverChainId,
       assetId,
       amount,
       recipient,
@@ -181,7 +218,7 @@ export default class Connext {
         expiry: "0",
       },
       timeout: "100000",
-      meta: submittedMeta,
+      meta: {},
     });
     if (transferRes.isError) {
       console.error("Error transferring", transferRes.getError());
@@ -189,16 +226,17 @@ export default class Connext {
     }
 
     console.log(
-      `Transfer from for chain: ${chainId} to chain ${recipientChainId} :`,
+      `Transfer from for chain: ${senderChainId} to chain ${receiverChainId} :`,
       transferRes.getValue()
     );
-    const transferState = transferRes.getValue();
+    const receivedTransfer = await event;
+    console.log(`Received transfer ${receivedTransfer.transfer}, resolving...`);
     const resolveRes = await this.connextClient.resolveTransfer({
-      channelAddress: transferState.channelAddress,
+      channelAddress: receiverChannelState.channelAddress,
       transferResolver: {
         preImage: preImage,
       },
-      transferId: transferState.transferId,
+      transferId: receivedTransfer.transfer.transferId,
     });
 
     if (resolveRes.isError) {
@@ -230,9 +268,14 @@ export default class Connext {
     }
   }
 
-  async send(chainId: number, assetId: string, amount: string) {
-    await this.deposit(chainId, assetId, amount);
-    await this.transfer(chainId, assetId, amount);
+  async send(
+    senderChainId: number,
+    assetId: string,
+    amount: string,
+    receiverChainId: number
+  ) {
+    await this.deposit(senderChainId, assetId, amount);
+    await this.transfer(senderChainId, assetId, amount, receiverChainId);
     console.log("Successful desposit and transfer");
   }
 }

@@ -247,7 +247,12 @@ export default function Card() {
           type="button"
           className="First-Button mb-2"
           onClick={() =>
-            connext.transfer(fromNetwork.chainId, fromToken.address, amount)
+            connext.transfer(
+              fromNetwork.chainId,
+              fromToken.address,
+              amount,
+              toNetwork.chainId
+            )
           }
         >
           Transfer
