@@ -41,10 +41,9 @@ export default class Connext {
       });
     }
 
-    await this.connextClient.getConfig().then((res) => {
-      console.log("GET CONFIG: ", res[0]);
-      this.config = res[0];
-    });
+    const configRes = await this.connextClient.getConfig();
+    console.log("GET CONFIG: ", configRes[0]);
+    this.config = configRes[0];
 
     ENVIRONMENT.map(async (t) => {
       const channelState = await this.getChannelByParticipants(
@@ -87,20 +86,17 @@ export default class Connext {
   }
 
   async setupChannel(aliceIdentifier: string, chainId: number) {
-    await this.connextClient
-      .setup({
-        counterpartyIdentifier: aliceIdentifier,
-        chainId: chainId,
-        timeout: "100000",
-      })
-      .then((res) => {
-        console.log(`Setup Channel for Chain: ${chainId} :`, res);
-        if (res.isError) {
-          console.error(res.getError());
-        } else {
-          console.log(res.getValue());
-        }
-      });
+    const setupRes = await this.connextClient.setup({
+      counterpartyIdentifier: aliceIdentifier,
+      chainId: chainId,
+      timeout: "100000",
+    });
+    console.log(`Setup Channel for Chain: ${chainId} :`, setupRes);
+    if (setupRes.isError) {
+      console.error(setupRes.getError());
+    } else {
+      console.log(setupRes.getValue());
+    }
   }
 
   async connectMetamask() {
