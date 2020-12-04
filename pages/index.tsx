@@ -1,27 +1,25 @@
 import Head from "next/head";
 import { Loading, Navbar, Footer } from "../components";
 import Card from "./Card";
-import React from "react";
-
-// if (typeof window !== "undefined") {
-//   if (
-//     !window.localStorage.getItem("VERSION") ||
-//     window.localStorage.getItem("VERSION") !== LOCAL_STORAGE_VERSION
-//   ) {
-//     window.localStorage.clear();
-//     window.localStorage.setItem("VERSION", LOCAL_STORAGE_VERSION);
-//     window.location.reload();
-//   }
-// }
+import React, { useState, useEffect } from "react";
 
 export default function Home() {
+  const [initializing, setInitializing] = useState(true);
+  const loadingMessage = "Welcome";
+
+  useEffect(() => {
+    setInitializing(false);
+  }, []);
+
   return (
     <div className="App">
-      {/* <Loading initializing={initializing} message={loadingMessage} /> */}
+      <Head>
+        <title>Spacefold</title>
+        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+      </Head>
+      <Loading initializing={initializing} message={loadingMessage} />
       <Navbar />
-      <div className="Main-Content">
-        <Card />
-      </div>
+      <Card />
       <Footer />
     </div>
   );
