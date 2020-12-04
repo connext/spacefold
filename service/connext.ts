@@ -30,8 +30,8 @@ export default class Connext {
 
   // Create methods
   async connectNode() {
-    // const iframeSrc = "https://wallet.connext.network";
-    const iframeSrc = "http://localhost:3030";
+    const iframeSrc = "https://wallet.connext.network";
+    // const iframeSrc = "http://localhost:3030";
     console.log("Connect Node");
     if (!this.connextClient) {
       this.connextClient = await BrowserNode.connect({
