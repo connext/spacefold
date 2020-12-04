@@ -17,6 +17,7 @@ declare global {
 }
 
 export default class Connext {
+  channel: FullChannelState;
   connextClient: BrowserNode;
   config: {
     publicIdentifier: string;
@@ -54,19 +55,21 @@ export default class Connext {
       console.log(channelState);
 
       if (!channelState) {
-        this.setupChannel(this.counterparty, t.chainId);
+        await this.setupChannel(this.counterparty, t.chainId);
       }
     });
   }
 
-  async updateChannel(channelAddress: string) {
+  async updateChannel(channelAddress: string): Promise<FullChannelState> {
     const res = await this.connextClient.getStateChannel({ channelAddress });
     if (res.isError) {
       console.error("Error getting state channel", res.getError());
-    } else {
-      console.log("Updated channel:", res.getValue());
+      return;
     }
-    return res;
+    const channel = res.getValue();
+    console.log("Updated channel:", channel);
+    this.channel = channel;
+    return channel;
   }
 
   async getChannelByParticipants(
@@ -99,10 +102,16 @@ export default class Connext {
     }
   }
 
-  async connectMetamask() {
+  async connectMetamask(chainId: number) {
     if (typeof window !== "undefined") {
       await window.ethereum.enable();
-      this.provider = new ethers.providers.Web3Provider(window.ethereum);
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const network = await provider.getNetwork();
+      if (network.chainId !== chainId) {
+        alert(`Please switch to chainId ${chainId} and try again`);
+        return;
+      }
+      this.provider = provider;
       // The Metamask plugin also allows signing transactions to
       // send ether and pay to change state within the blockchain.
       // For this, you need the account signer...
@@ -111,7 +120,7 @@ export default class Connext {
   }
 
   async deposit(chainId: number, assetId: string, amount: string) {
-    await this.connectMetamask();
+    await this.connectMetamask(chainId);
     const channelState = await this.getChannelByParticipants(
       this.config.publicIdentifier,
       this.counterparty,
@@ -121,7 +130,12 @@ export default class Connext {
       to: channelState.channelAddress,
       value: ethers.utils.parseEther(amount),
     });
-    await response.wait(3); // 3 confirmations just in case
+    const NUM_CONFIRMATIONS = 2;
+    console.log(
+      `Deposit sent, tx: ${response.hash}, waiting for ${NUM_CONFIRMATIONS} confirmations`
+    );
+    await response.wait(NUM_CONFIRMATIONS); // NUM_CONFIRMATIONS confirmations just in case
+    console.log(`Deposit tx received, reconciling deposit`);
     await this.reconcileDeposit(channelState.channelAddress, assetId);
     await this.updateChannel(channelState.channelAddress);
   }
@@ -132,8 +146,10 @@ export default class Connext {
       assetId,
     });
     if (depositRes.isError) {
-      console.error("Error depositing", depositRes.getError());
+      console.error("Error reconciling deposit", depositRes.getError());
+      return;
     }
+    console.log(`Deposit reconciled: ${depositRes.getValue()}`);
   }
 
   async transfer(chainId: number, assetId: string, value: string) {

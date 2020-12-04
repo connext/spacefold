@@ -7,6 +7,7 @@ import Connext from "../service/connext";
 
 export default function Card() {
   const [connext, setConnext] = useState<Connext>();
+  const [loading, setLoading] = useState(false);
 
   const [fromNetwork, setFromNetwork] = useState<ENV>(ENVIRONMENT[0]);
   const [amount, setAmount] = useState("0");
@@ -18,9 +19,15 @@ export default function Card() {
 
   const connect = async () => {
     if (typeof window !== "undefined") {
+      setLoading(true);
       const connextNode = new Connext();
-      connextNode.connectNode();
-      setConnext(connextNode);
+      try {
+        await connextNode.connectNode();
+        setConnext(connextNode);
+      } catch (e) {
+        console.error(`Error connecting: ${e}`);
+      }
+      setLoading(false);
       // connextNode.deposit(4);
     }
   };
@@ -70,8 +77,13 @@ export default function Card() {
           type="button"
           className="First-Button mb-2"
           onClick={() => connect()}
+          disabled={!!connext || loading}
         >
-          Connect to Connext
+          {connext
+            ? `Connected to Connext`
+            : loading
+            ? `Connecting...`
+            : `Connect to Connext`}
         </button>
         <div
           id="from"
