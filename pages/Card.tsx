@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Select from "react-select";
-// import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
-// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowDown } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { IMAGE_PATH, ENVIRONMENT, ENV, TOKEN } from "../constants";
 import Connext from "../service/connext";
 
@@ -13,7 +13,7 @@ export default function Card() {
   const [amount, setAmount] = useState("0");
   const [fromToken, setFromToken] = useState<TOKEN>(fromNetwork.tokens[0]);
 
-  const [toNetwork, setToNetwork] = useState<ENV>(ENVIRONMENT[0]);
+  const [toNetwork, setToNetwork] = useState<ENV>(ENVIRONMENT[1]);
   const [address, setAddress] = useState("");
   // const [toToken, setToToken] = useState<TOKEN>(toNetwork.tokens[0]);
 
@@ -28,7 +28,15 @@ export default function Card() {
         console.error(`Error connecting: ${e}`);
       }
       setLoading(false);
-      // connextNode.deposit(4);
+    }
+  };
+
+  const swap = async () => {
+    if (typeof window !== "undefined") {
+      const from: ENV = fromNetwork;
+      const to: ENV = toNetwork;
+
+      await Promise.all([setFromNetwork(to), setToNetwork(from)]);
     }
   };
 
@@ -87,7 +95,7 @@ export default function Card() {
         </button>
         <div
           id="from"
-          className="p-2 mb-8 border-2 border-blue-500 border-opacity-25 rounded-3xl"
+          className="p-2 border-2 border-blue-500 border-opacity-25 rounded-3xl"
         >
           <p>From</p>
           <div className="flex">
@@ -119,7 +127,11 @@ export default function Card() {
                   </div>
                 ),
                 value: t.chainId,
-              })).filter((opt) => opt.value !== fromNetwork.chainId)}
+              })).filter(
+                (opt) =>
+                  opt.value !== fromNetwork.chainId &&
+                  opt.value !== toNetwork.chainId
+              )}
               isSearchable={false}
               // isDisabled={}
               components={{ DropdownIndicator }}
@@ -169,7 +181,11 @@ export default function Card() {
           </div>
         </div>
 
-        {/* <FontAwesomeIcon icon={faAngleDown} /> */}
+        <div className="p-2 flex flex-col items-center">
+          <div className="">
+            <FontAwesomeIcon className="" icon={faArrowDown} onClick={async () => swap()} />
+          </div>
+        </div>
 
         <div
           id="to"
@@ -205,7 +221,11 @@ export default function Card() {
                   </div>
                 ),
                 value: t.chainId,
-              })).filter((opt) => opt.value !== toNetwork.chainId)}
+              })).filter(
+                (opt) =>
+                  opt.value !== fromNetwork.chainId &&
+                  opt.value !== toNetwork.chainId
+              )}
               isSearchable={false}
               // isDisabled={}
               components={{ DropdownIndicator }}
