@@ -197,11 +197,7 @@ export default class Connext {
           if (payload.channelAddress !== receiverChannelState.channelAddress) {
             return;
           }
-          console.log(
-            `Received CONDITIONAL_TRANSFER_CREATED event: ${JSON.stringify(
-              payload
-            )}`
-          );
+          console.log(`Received CONDITIONAL_TRANSFER_CREATED event: `, payload);
           res(payload);
         });
       }
@@ -248,7 +244,7 @@ export default class Connext {
       return;
     }
 
-    console.log(`Successfully resolved transfer: ${resolveRes.getValue()}`);
+    console.log(`Successfully resolved transfer:, `, resolveRes.getValue());
     await this.updateChannel(senderChannelState.channelAddress);
     await this.updateChannel(receiverChannelState.channelAddress);
   }
@@ -276,7 +272,7 @@ export default class Connext {
       console.error("Error withdrawing", requestRes.getError());
       return;
     }
-    console.log(`Successfully withdrew: ${requestRes.getValue()}`);
+    console.log(`Successfully withdrew: `, requestRes.getValue());
     await this.updateChannel(channelState.channelAddress);
   }
 
