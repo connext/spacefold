@@ -55,23 +55,44 @@ const KOVAN_TOKENS: TOKEN[] = [
   // },
 ];
 
+// export const ENVIRONMENT: ENV[] = [
+//   {
+//     chainId: 4,
+//     name: "Rinkeby",
+//     tokens: RINKEBY_TOKENS,
+//     icon: "/images/brickBackground.png",
+//     color: "#EFC45C",
+//     ethProviderUrl: `https://rinkeby.infura.io/v3/${process.env.REACT_APP_INFURA_ID}`,
+//     blockchainExplorerURL: "https://rinkeby.etherscan.io/tx/{TRANSACTION_HASH}",
+//   },
+//   {
+//     chainId: 42,
+//     name: "Kovan",
+//     tokens: KOVAN_TOKENS,
+//     icon: "/images/rinkebyBackground.png",
+//     color: "#5b32a2",
+//     ethProviderUrl: `https://kovan.infura.io/v3/${process.env.REACT_APP_INFURA_ID}`,
+//     blockchainExplorerURL: "https://kovan.etherscan.io/tx/{TRANSACTION_HASH}",
+//   },
+// ];
+
 export const ENVIRONMENT: ENV[] = [
   {
-    chainId: 4,
-    name: "Rinkeby",
+    chainId: 1337,
+    name: "Local 1337",
     tokens: RINKEBY_TOKENS,
     icon: "/images/brickBackground.png",
     color: "#EFC45C",
-    ethProviderUrl: `https://rinkeby.infura.io/v3/${process.env.REACT_APP_INFURA_ID}`,
+    ethProviderUrl: `http://localhost:8545`,
     blockchainExplorerURL: "https://rinkeby.etherscan.io/tx/{TRANSACTION_HASH}",
   },
   {
-    chainId: 42,
-    name: "Kovan",
+    chainId: 1338,
+    name: "Local 1338",
     tokens: KOVAN_TOKENS,
     icon: "/images/rinkebyBackground.png",
     color: "#5b32a2",
-    ethProviderUrl: `https://kovan.infura.io/v3/${process.env.REACT_APP_INFURA_ID}`,
+    ethProviderUrl: `http://localhost:8546`,
     blockchainExplorerURL: "https://kovan.etherscan.io/tx/{TRANSACTION_HASH}",
   },
 ];

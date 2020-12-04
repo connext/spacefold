@@ -1,12 +1,7 @@
 import { BigNumber, ethers, providers } from "ethers";
 import { BrowserNode } from "@connext/vector-browser-node";
 import pino from "pino";
-import {
-  getPublicKeyFromPublicIdentifier,
-  encrypt,
-  createlockHash,
-  getRandomBytes32,
-} from "@connext/vector-utils";
+import { createlockHash, getRandomBytes32 } from "@connext/vector-utils";
 import {
   ConditionalTransferCreatedPayload,
   FullChannelState,
@@ -30,13 +25,13 @@ export default class Connext {
   provider: providers.Web3Provider;
   signer: providers.JsonRpcSigner;
 
-  counterparty: string =
-    "vector7tbbTxQp8ppEQUgPsbGiTrVdapLdU5dH7zTbVuXRf1M4CEBU9Q";
+  // counterparty ="vector7tbbTxQp8ppEQUgPsbGiTrVdapLdU5dH7zTbVuXRf1M4CEBU9Q";
+  counterparty = "vector8Uz1BdpA9hV5uTm6QUv5jj1PsUyCH8m8ciA94voCzsxVmrBRor"; // local
 
   // Create methods
   async connectNode() {
-    const iframeSrc = "https://wallet.connext.network";
-    // const iframeSrc = "http://localhost:3030";
+    // const iframeSrc = "https://wallet.connext.network";
+    const iframeSrc = "http://localhost:3030";
     console.log("Connect Node");
     if (!this.connextClient) {
       this.connextClient = await BrowserNode.connect({
@@ -144,7 +139,7 @@ export default class Connext {
       to: channelState.channelAddress,
       value: ethers.utils.parseEther(amount),
     });
-    const NUM_CONFIRMATIONS = 2;
+    const NUM_CONFIRMATIONS = 1;
     console.log(
       `Deposit sent, tx: ${response.hash}, waiting for ${NUM_CONFIRMATIONS} confirmations`
     );
@@ -163,7 +158,7 @@ export default class Connext {
       console.error("Error reconciling deposit", depositRes.getError());
       return;
     }
-    console.log(`Deposit reconciled: ${depositRes.getValue()}`);
+    console.log(`Deposit reconciled: ${JSON.stringify(depositRes.getValue())}`);
   }
 
   async transfer(
@@ -198,12 +193,14 @@ export default class Connext {
 
     const event: Promise<ConditionalTransferCreatedPayload> = new Promise(
       (res) => {
-        this.connextClient.once("CONDITIONAL_TRANSFER_CREATED", (payload) => {
+        this.connextClient.on("CONDITIONAL_TRANSFER_CREATED", (payload) => {
           if (payload.channelAddress !== receiverChannelState.channelAddress) {
             return;
           }
           console.log(
-            `Received CONDITIONAL_TRANSFER_CREATED event: ${payload}`
+            `Received CONDITIONAL_TRANSFER_CREATED event: ${JSON.stringify(
+              payload
+            )}`
           );
           res(payload);
         });
@@ -233,7 +230,11 @@ export default class Connext {
       transferRes.getValue()
     );
     const receivedTransfer = await event;
-    console.log(`Received transfer ${receivedTransfer.transfer}, resolving...`);
+    console.log(
+      `Received transfer ${JSON.stringify(
+        receivedTransfer.transfer
+      )}, resolving...`
+    );
     const resolveRes = await this.connextClient.resolveTransfer({
       channelAddress: receiverChannelState.channelAddress,
       transferResolver: {
@@ -244,7 +245,12 @@ export default class Connext {
 
     if (resolveRes.isError) {
       console.error("Error resolving transfer", resolveRes.getError());
+      return;
     }
+
+    console.log(`Successfully resolved transfer: ${resolveRes.getValue()}`);
+    await this.updateChannel(senderChannelState.channelAddress);
+    await this.updateChannel(receiverChannelState.channelAddress);
   }
 
   async withdraw(
@@ -268,7 +274,10 @@ export default class Connext {
     });
     if (requestRes.isError) {
       console.error("Error withdrawing", requestRes.getError());
+      return;
     }
+    console.log(`Successfully withdrew: ${requestRes.getValue()}`);
+    await this.updateChannel(channelState.channelAddress);
   }
 
   async send(
