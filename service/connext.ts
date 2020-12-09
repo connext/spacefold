@@ -1,6 +1,9 @@
-import { BigNumber, ethers, providers } from "ethers";
+import { ethers, providers } from "ethers";
 import { BrowserNode } from "@connext/vector-browser-node";
-import pino from "pino";
+import {
+  DEFAULT_CHANNEL_TIMEOUT,
+  DEFAULT_TRANSFER_TIMEOUT,
+} from "@connext/vector-types";
 import { createlockHash, getRandomBytes32 } from "@connext/vector-utils";
 import {
   ConditionalTransferCreatedPayload,
@@ -36,7 +39,6 @@ export default class Connext {
     if (!this.connextClient) {
       this.connextClient = await BrowserNode.connect({
         iframeSrc,
-        logger: pino(),
       });
     }
 
@@ -100,7 +102,7 @@ export default class Connext {
     const setupRes = await this.connextClient.setup({
       counterpartyIdentifier: aliceIdentifier,
       chainId: chainId,
-      timeout: "100000",
+      timeout: DEFAULT_CHANNEL_TIMEOUT.toString(),
     });
     if (setupRes.isError) {
       console.error(`Error setting up channel: ${setupRes.getError()}`);
@@ -213,7 +215,7 @@ export default class Connext {
         lockHash: createlockHash(preImage),
         expiry: "0",
       },
-      timeout: "100000",
+      timeout: DEFAULT_TRANSFER_TIMEOUT.toString(),
       meta: {},
     });
     if (transferRes.isError) {
@@ -250,7 +252,7 @@ export default class Connext {
   }
 
   async withdraw(
-    chainId: number,
+    receiverChainId: number,
     assetId: string,
     recipient: string,
     value: string
@@ -260,7 +262,7 @@ export default class Connext {
     const channelState = await this.getChannelByParticipants(
       this.config.publicIdentifier,
       this.counterparty,
-      chainId
+      receiverChainId
     );
     const requestRes = await this.connextClient.withdraw({
       channelAddress: channelState.channelAddress,
@@ -278,12 +280,14 @@ export default class Connext {
 
   async send(
     senderChainId: number,
-    assetId: string,
-    amount: string,
-    receiverChainId: number
+    senderAssetId: string,
+    receiverChainId: number,
+    receiverAddress: string,
+    amount: string
   ) {
-    await this.deposit(senderChainId, assetId, amount);
-    await this.transfer(senderChainId, assetId, amount, receiverChainId);
+    await this.deposit(senderChainId, senderAssetId, amount);
+    await this.transfer(senderChainId, senderAssetId, amount, receiverChainId);
+    await this.withdraw(receiverChainId, senderAssetId, receiverAddress, amount);
     console.log("Successful desposit and transfer");
   }
 }
