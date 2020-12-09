@@ -1,11 +1,57 @@
+import {
+  LoadingOutlined,
+  ArrowDownOutlined,
+  CheckCircleFilled,
+  SmileOutlined,
+  EllipsisOutlined,
+  CloseCircleOutlined,
+} from "@ant-design/icons";
+
 export const LOCAL_STORAGE_VERSION = "1";
 export const MINIMUM_BALANCE = 0.001;
 
-export const STATUS = {
-  READY: 0,
-  IN_PROGRESS: 1,
-  ERROR: 2,
-  SUCCESS: 3,
+export const CURRENT = {
+  DEPOSIT: 0,
+  TRANSFER: 1,
+  WITHDRAW: 2,
+};
+
+export interface STATUS_TYPE {
+  WAIT: {
+    status: "wait";
+    icon: React.ReactNode;
+  };
+  PROCESS: {
+    status: "process";
+    icon: React.ReactNode;
+  };
+  FINISH: {
+    status: "finish";
+    icon: React.ReactNode;
+  };
+  ERROR: {
+    status: "error";
+    icon: React.ReactNode;
+  };
+}
+
+export const STATUS: STATUS_TYPE = {
+  WAIT: {
+    status: "wait",
+    icon: EllipsisOutlined,
+  },
+  PROCESS: {
+    status: "process",
+    icon: LoadingOutlined,
+  },
+  FINISH: {
+    status: "finish",
+    icon: CheckCircleFilled,
+  },
+  ERROR: {
+    status: "error",
+    icon: CloseCircleOutlined,
+  },
 };
 
 export interface TOKEN {

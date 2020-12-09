@@ -1,13 +1,29 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Select from "react-select";
+import { Steps, Popover } from "antd";
 import { faArrowDown } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { IMAGE_PATH, ENVIRONMENT, ENV, TOKEN } from "../constants";
+import {
+  CURRENT,
+  STATUS,
+  IMAGE_PATH,
+  ENVIRONMENT,
+  ENV,
+  TOKEN,
+} from "../constants";
+import { ArrowDownOutlined } from "@ant-design/icons";
 import Connext from "../service/connext";
 
 export default function Card() {
+  const { Step } = Steps;
+
   const [connext, setConnext] = useState<Connext>();
+
   const [loading, setLoading] = useState(false);
+  const [current, setCurrent] = useState(CURRENT.DEPOSIT);
+  const [sendStatus, setSendStatus] = useState<
+    "wait" | "process" | "finish" | "error"
+  >(STATUS.WAIT.status);
 
   const [fromNetwork, setFromNetwork] = useState<ENV>(ENVIRONMENT[0]);
   const [amount, setAmount] = useState("0");
@@ -15,6 +31,7 @@ export default function Card() {
 
   const [toNetwork, setToNetwork] = useState<ENV>(ENVIRONMENT[1]);
   const [address, setAddress] = useState("");
+
   // const [toToken, setToToken] = useState<TOKEN>(toNetwork.tokens[0]);
 
   const connect = async () => {
@@ -183,7 +200,7 @@ export default function Card() {
 
         <div className="p-2 flex flex-col items-center">
           <div className="">
-            <FontAwesomeIcon className="" icon={faArrowDown} onClick={async () => swap()} />
+            <ArrowDownOutlined onClick={async () => swap()} />
           </div>
         </div>
 
@@ -254,75 +271,69 @@ export default function Card() {
             onChange={(event) => setAddress(event.target.value)}
           />
         </div>
+
+        <div className="mb-8">
+          <Steps
+            direction="horizontal"
+            // progressDot={customDot}
+            current={current}
+            status={sendStatus}
+            size="small"
+          >
+            <Step title="Deposit" />
+            <Step title="Transfer" />
+            <Step title="Withdraw" />
+          </Steps>
+        </div>
+
         <button
           type="button"
-          className="First-Button mb-2"
+          className="First-Button mb-8"
           disabled={loading || !connext}
           onClick={async () => {
             setLoading(true);
             try {
+              setCurrent(CURRENT.DEPOSIT);
+              setSendStatus(STATUS.PROCESS.status);
               await connext.deposit(
                 fromNetwork.chainId,
                 fromToken.address,
                 amount
               );
-            } catch (e) {
-              console.error(e);
-            }
-            setLoading(false);
-          }}
-        >
-          Deposit
-        </button>
-        <button
-          type="button"
-          className="First-Button mb-2"
-          disabled={loading || !connext}
-          onClick={async () => {
-            setLoading(true);
-            try {
+
+              setCurrent(CURRENT.TRANSFER);
               await connext.transfer(
                 fromNetwork.chainId,
                 fromToken.address,
                 amount,
                 toNetwork.chainId
               );
-            } catch (e) {
-              console.error(e);
-            }
-            setLoading(false);
-          }}
-        >
-          Transfer
-        </button>
-        <button
-          type="button"
-          className="First-Button mb-2"
-          disabled={loading || !connext}
-          onClick={async () => {
-            setLoading(true);
-            try {
+
+              setCurrent(CURRENT.WITHDRAW);
               await connext.withdraw(
-                fromNetwork.chainId,
+                toNetwork.chainId,
                 fromToken.address,
                 address,
                 amount
               );
+
+              setSendStatus(STATUS.FINISH.status);
+              // await connext.send(
+              //   fromNetwork.chainId,
+              //   fromToken.address,
+              //   toNetwork.chainId,
+              //   address,
+              //   amount
+              // );
             } catch (e) {
               console.error(e);
+              setSendStatus(STATUS.ERROR.status);
             }
             setLoading(false);
           }}
         >
-          Withdraw
-        </button>
-        {/* <button
-          type="button"
-          className="First-Button mb-2"
-          onClick={() => connext.send(fromNetwork.chainId, amount)}
-        >
           Send
-        </button> */}
+        </button>
       </div>
     </div>
   );
@@ -337,20 +348,6 @@ const DropdownIndicator = ({ selectProps }) => {
           : "Dropdown-Indicator"
       }
       src={IMAGE_PATH.gifs.dropdown}
-      alt="dropdownIndicator"
-    />
-  );
-};
-
-const DisabledDropdownIndicator = ({ selectProps }) => {
-  return (
-    <img
-      className={
-        selectProps && selectProps.menuIsOpen
-          ? "Dropdown-Indicator Dropdown-Indicator-Open"
-          : "Dropdown-Indicator"
-      }
-      src={IMAGE_PATH.status.dropdownDisabled}
       alt="dropdownIndicator"
     />
   );
