@@ -41,12 +41,14 @@ export default function Card() {
   // Promise.all([connext.connectNode()]);
 
   useEffect(() => {
+    setLoading(true);
     async function start() {
-      setLoading(true)
+      setLoading(true);
       await connext.connectNode();
-      setLoading(false)
+      setLoading(false);
     }
-    start();
+    // start();
+    setLoading(false);
   }, []);
 
   const swap = async () => {
@@ -75,7 +77,7 @@ export default function Card() {
 
   return (
     <div className="home">
-      <div id="card" className="card p-6">
+      <div id="card" className="card p-8">
         <div
           id="from"
           className="h-18 border-2 border-gray-300 border-opacity-100"
@@ -355,12 +357,7 @@ export default function Card() {
                 fromToken.address,
                 amount.toString()
               );
-            } catch (e) {
-              console.error(e);
-              setSendStatus(STATUS.ERROR.status);
-            }
 
-            try {
               setCurrent(CURRENT.TRANSFER);
               await connext.transfer(
                 fromNetwork.chainId,
@@ -368,24 +365,19 @@ export default function Card() {
                 amount.toString(),
                 toNetwork.chainId
               );
+
+              setCurrent(CURRENT.WITHDRAW);
+              await connext.withdraw(
+                toNetwork.chainId,
+                fromToken.address,
+                address,
+                amount.toString()
+              );
             } catch (e) {
               console.error(e);
               setSendStatus(STATUS.ERROR.status);
             }
-
-            // try {
-            //   setCurrent(CURRENT.WITHDRAW);
-            //   await connext.withdraw(
-            //     toNetwork.chainId,
-            //     fromToken.address,
-            //     address,
-            //     amount.toString()
-            //   );
-            // } catch (e) {
-            //   console.error(e);
-            //   setSendStatus(STATUS.ERROR.status);
-            // }
-            // setSendStatus(STATUS.FINISH.status);
+            setSendStatus(STATUS.FINISH.status);
             setLoading(false);
           }}
         >
