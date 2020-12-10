@@ -47,7 +47,7 @@ export default function Card() {
       await connext.connectNode();
       setLoading(false);
     }
-    // start();
+    start();
     setLoading(false);
   }, []);
 
