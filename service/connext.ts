@@ -18,7 +18,7 @@ declare global {
   }
 }
 
-export default class Connext {
+class Connext {
   connextClient: BrowserNode;
   config: {
     publicIdentifier: string;
@@ -34,49 +34,41 @@ export default class Connext {
   // Create methods
   async connectNode() {
     const iframeSrc = "https://wallet.connext.network";
-    // const iframeSrc = "http://localhost:3030";
+    const supportedChains: number[] = [];
+    ENVIRONMENT.map(async (t) => {
+      supportedChains.push(t.chainId);
+    });
+    const routerPublicIdentifier: string = this.counterparty;
+
     console.log("Connect Node");
     if (!this.connextClient) {
-      this.connextClient = await BrowserNode.connect({
-        iframeSrc,
-      });
+      try {
+        const client = new BrowserNode({
+          iframeSrc,
+          supportedChains,
+          routerPublicIdentifier,
+        });
+        await client.init();
+        this.connextClient = client;
+      } catch (e) {
+        console.error(e);
+        throw new Error(`Error connecting to iframe: ${e}`);
+      }
+      console.log("connection success");
     }
 
     const configRes = await this.connextClient.getConfig();
+    if (!configRes[0])
+      throw new Error(`Error getConfig: node connection failed`);
+
     console.log("GET CONFIG: ", configRes[0]);
     this.config = configRes[0];
-
-    ENVIRONMENT.map(async (t) => {
-      let channelState = await this.getChannelByParticipants(
-        this.config.publicIdentifier,
-        this.counterparty,
-        t.chainId
-      );
-
-      if (!channelState) {
-        try {
-          console.log(
-            `No channel detected for chainId ${t.chainId}, setting up channel...`
-          );
-          await this.setupChannel(this.counterparty, t.chainId);
-          channelState = await this.getChannelByParticipants(
-            this.config.publicIdentifier,
-            this.counterparty,
-            t.chainId
-          );
-        } catch (e) {
-          console.error(`Error setting up channel for chainId ${t.chainId}`);
-        }
-      }
-      console.log(`Channel for chainId ${t.chainId}: `, channelState);
-    });
   }
 
   async updateChannel(channelAddress: string): Promise<FullChannelState> {
     const res = await this.connextClient.getStateChannel({ channelAddress });
     if (res.isError) {
-      console.error("Error getting state channel", res.getError());
-      return;
+      throw new Error(`Error getting state channel ${res.getError()}`);
     }
     const channel = res.getValue();
     console.log("Updated channel:", channel);
@@ -94,21 +86,13 @@ export default class Connext {
       counterparty: counterparty,
       chainId: chainId,
     });
+    if (res.isError) {
+      throw new Error(
+        `Error getting state channel by participants ${res.getError()}`
+      );
+    }
     channelState = res.getValue();
     return channelState;
-  }
-
-  async setupChannel(aliceIdentifier: string, chainId: number) {
-    const setupRes = await this.connextClient.setup({
-      counterpartyIdentifier: aliceIdentifier,
-      chainId: chainId,
-      timeout: DEFAULT_CHANNEL_TIMEOUT.toString(),
-    });
-    if (setupRes.isError) {
-      console.error(`Error setting up channel: ${setupRes.getError()}`);
-      return;
-    }
-    console.log(`Setup Channel for Chain: ${chainId} :`, setupRes.getValue());
   }
 
   async connectMetamask(chainId: number) {
@@ -116,7 +100,12 @@ export default class Connext {
       alert("Web3 browser is required");
       throw new Error("No Web3 detected");
     }
-    await window.ethereum.enable();
+    try {
+      await window.ethereum.enable();
+    } catch (e) {
+      throw new Error(`Error connecting to Metamask: ${e}`);
+    }
+
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     const network = await provider.getNetwork();
     if (network.chainId !== chainId) {
@@ -124,29 +113,41 @@ export default class Connext {
       return;
     }
     this.provider = provider;
-    // The Metamask plugin also allows signing transactions to
-    // send ether and pay to change state within the blockchain.
-    // For this, you need the account signer...
     this.signer = this.provider.getSigner();
   }
 
+  // TODO: get user on chain balance 
+  // async getOnChainBalance(chainId: number) {
+  // }
+
   async deposit(chainId: number, assetId: string, amount: string) {
+    if (ethers.utils.parseEther(amount).isZero()) {
+      throw new Error("Cannot deposit 0 value");
+    }
     await this.connectMetamask(chainId);
+
     const channelState = await this.getChannelByParticipants(
       this.config.publicIdentifier,
       this.counterparty,
       chainId
     );
-    const response = await this.signer.sendTransaction({
-      to: channelState.channelAddress,
-      value: ethers.utils.parseEther(amount),
-    });
-    const NUM_CONFIRMATIONS = 1;
-    console.log(
-      `Deposit sent, tx: ${response.hash}, waiting for ${NUM_CONFIRMATIONS} confirmations`
-    );
-    await response.wait(NUM_CONFIRMATIONS); // NUM_CONFIRMATIONS confirmations just in case
+
+    try {
+      const response = await this.signer.sendTransaction({
+        to: channelState.channelAddress,
+        value: ethers.utils.parseEther(amount),
+      });
+      const NUM_CONFIRMATIONS = 1;
+      console.log(
+        `Deposit sent, tx: ${response.hash}, waiting for ${NUM_CONFIRMATIONS} confirmations`
+      );
+      await response.wait(NUM_CONFIRMATIONS); // NUM_CONFIRMATIONS confirmations just in case
+    } catch (e) {
+      console.error(e);
+      throw new Error(`Error Deposit onChain: ${e}`);
+    }
     console.log(`Deposit tx received, reconciling deposit`);
+
     await this.reconcileDeposit(channelState.channelAddress, assetId);
     await this.updateChannel(channelState.channelAddress);
   }
@@ -157,8 +158,7 @@ export default class Connext {
       assetId,
     });
     if (depositRes.isError) {
-      console.error("Error reconciling deposit", depositRes.getError());
-      return;
+      throw new Error(`Error reconciling deposit: ${depositRes.getError()}`);
     }
     console.log(`Deposit reconciled: ${JSON.stringify(depositRes.getValue())}`);
   }
@@ -219,8 +219,7 @@ export default class Connext {
       meta: {},
     });
     if (transferRes.isError) {
-      console.error("Error transferring", transferRes.getError());
-      return;
+      throw new Error(`Error transferring: ${transferRes.getError()}`);
     }
 
     console.log(
@@ -240,10 +239,8 @@ export default class Connext {
       },
       transferId: receivedTransfer.transfer.transferId,
     });
-
     if (resolveRes.isError) {
-      console.error("Error resolving transfer", resolveRes.getError());
-      return;
+      throw new Error(`Error resolving transfer: ${resolveRes.getError()}`);
     }
 
     console.log(`Successfully resolved transfer:, `, resolveRes.getValue());
@@ -257,6 +254,14 @@ export default class Connext {
     recipient: string,
     value: string
   ) {
+    if (ethers.utils.parseEther(value).isZero()) {
+      throw new Error("Cannot withdraw 0 value");
+    }
+
+    if (!ethers.utils.isAddress(recipient)) {
+      throw new Error("Invalid Recipient Address");
+    }
+
     const amount = ethers.utils.parseEther(value).toString();
 
     const channelState = await this.getChannelByParticipants(
@@ -264,6 +269,7 @@ export default class Connext {
       this.counterparty,
       receiverChainId
     );
+
     const requestRes = await this.connextClient.withdraw({
       channelAddress: channelState.channelAddress,
       assetId,
@@ -271,11 +277,44 @@ export default class Connext {
       recipient,
     });
     if (requestRes.isError) {
-      console.error("Error withdrawing", requestRes.getError());
-      return;
+      throw new Error(`Error withdrawing: ${requestRes.getError()}`);
     }
-    console.log(`Successfully withdrew: `, requestRes.getValue());
+    console.log(`Successfully withdraw: `, requestRes.getValue());
+
     await this.updateChannel(channelState.channelAddress);
+  }
+
+  async crossTransfer(
+    value: string,
+    fromChainId: number,
+    fromAssetId: string,
+    toChainId: number,
+    toAssetId: string,
+    withdrawalAddress?: string
+  ) {
+    if (ethers.utils.parseEther(value).isZero()) {
+      throw new Error("Cannot withdraw 0 value");
+    }
+
+    if (!ethers.utils.isAddress(withdrawalAddress)) {
+      throw new Error("Invalid Recipient Address");
+    }
+
+    const amount = ethers.utils.parseEther(value).toString();
+
+    const params = {
+      amount,
+      fromChainId,
+      fromAssetId,
+      toChainId,
+      toAssetId,
+      withdrawalAddress,
+    };
+    try {
+      await this.connextClient.crossChainTransfer(params);
+    } catch (e) {
+      throw new Error(`Error crossChainTransfer: ${e}`);
+    }
   }
 
   async send(
@@ -287,7 +326,57 @@ export default class Connext {
   ) {
     await this.deposit(senderChainId, senderAssetId, amount);
     await this.transfer(senderChainId, senderAssetId, amount, receiverChainId);
-    await this.withdraw(receiverChainId, senderAssetId, receiverAddress, amount);
-    console.log("Successful desposit and transfer");
+    await this.withdraw(
+      receiverChainId,
+      senderAssetId,
+      receiverAddress,
+      amount
+    );
+    console.log("Successfully Sent");
+  }
+
+  /* ------------------------------------------------------------ */
+  // functions below are not being used
+
+  async checkAndSetupChannel() {
+    ENVIRONMENT.map(async (t) => {
+      let channelState = await this.getChannelByParticipants(
+        this.config.publicIdentifier,
+        this.counterparty,
+        t.chainId
+      );
+
+      if (!channelState) {
+        try {
+          console.log(
+            `No channel detected for chainId ${t.chainId}, setting up channel...`
+          );
+          await this.setupChannel(this.counterparty, t.chainId);
+          channelState = await this.getChannelByParticipants(
+            this.config.publicIdentifier,
+            this.counterparty,
+            t.chainId
+          );
+        } catch (e) {
+          console.error(`Error setting up channel for chainId ${t.chainId}`);
+        }
+      }
+      console.log(`Channel for chainId ${t.chainId}: `, channelState);
+    });
+  }
+
+  async setupChannel(aliceIdentifier: string, chainId: number) {
+    const setupRes = await this.connextClient.setup({
+      counterpartyIdentifier: aliceIdentifier,
+      chainId: chainId,
+      timeout: DEFAULT_CHANNEL_TIMEOUT.toString(),
+    });
+    if (setupRes.isError) {
+      console.error(`Error setting up channel: ${setupRes.getError()}`);
+      return;
+    }
+    console.log(`Setup Channel for Chain: ${chainId} :`, setupRes.getValue());
   }
 }
+
+export const connext = new Connext();
