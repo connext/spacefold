@@ -1,11 +1,96 @@
 import {
   LoadingOutlined,
-  ArrowDownOutlined,
   CheckCircleFilled,
-  SmileOutlined,
   EllipsisOutlined,
   CloseCircleOutlined,
 } from "@ant-design/icons";
+
+export const tokenSelectStyles = {
+  control: (base: any) => ({
+    ...base,
+    background: "transparent",
+    border: "none",
+    height:"40px!important",
+    minHeight: "20px!important",
+    // border: "1px solid #bbc0c5",
+    fontSize: "20px",
+    // padding: "6px 3px",
+    display: "flex",
+    flex: "0 0 auto",
+    boxShadow: "none",
+    cursor: "pointer",
+  }),
+  valueContainer: (base: any) => ({
+    ...base,
+    justifyContent: "center",
+  }),
+  menu: (base: any) => ({
+    ...base,
+    margin: 0,
+  }),
+  menuList: (base: any) => ({
+    ...base,
+    maxHeight: "100%",
+  }),
+  option: (base: any) => ({
+    ...base,
+    backgroundColor: "#FFFFFF",
+    // color: "#505D68",
+    maxheight: "20px",
+    textAlign: "left",
+    cursor: "pointer",
+  }),
+  indicatorSeparator: (base: any) => ({
+    width: 0,
+  }),
+};
+
+const networkIndicator = {
+  fontStyle: "normal",
+  fontWeight: "normal",
+  fontSize: "0.625rem",
+  lineHeight: "140%",
+  display: "flex",
+  alignItems: "center",
+};
+
+export const networkSelectStyles = {
+  control: (base: any) => ({
+    ...base,
+    background: "transparent",
+    minWidth: "20px",
+    minHeight: "20px!important",
+    border: "1px solid #bbc0c5",
+    borderRadius: "16px",
+    display: "flex",
+    flex: "0 0 auto",
+    boxShadow: "none",
+    cursor: "pointer",
+  }),
+  valueContainer: (base: any) => ({
+    ...base,
+    justifyContent: "center",
+  }),
+  menu: (base: any) => ({
+    ...base,
+    // ...networkIndicator,
+    margin: 0,
+  }),
+  menuList: (base: any) => ({
+    ...base,
+    maxHeight: "100%",
+  }),
+  option: (base: any) => ({
+    ...base,
+    backgroundColor: "#FFFFFF",
+    maxheight: "20px",
+    textAlign: "left",
+    cursor: "pointer",
+  }),
+  indicatorSeparator: (base: any) => ({
+    width: 0,
+  }),
+};
 
 export const LOCAL_STORAGE_VERSION = "1";
 export const MINIMUM_BALANCE = 0.001;
