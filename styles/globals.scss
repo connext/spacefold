@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
+@import "styles/CardWindow.scss";
+
 @font-face {
   font-family: "Proxima Nova";
   src: local("Proxima Nova"),
@@ -31,7 +33,6 @@ textarea:focus,
 button:focus {
   outline: none;
 }
-
 
 // app.scss
 
@@ -542,7 +543,7 @@ button {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background-color: rgba(244,245,247, 0.8);
+  background-color: rgba(244, 245, 247, 0.8);
   z-index: 999;
 }
 
@@ -551,10 +552,10 @@ button {
   -webkit-animation-name: fadeOut;
   -ms-animation-name: fadeOut;
   animation-name: fadeOut;
-  -moz-animation-duration: .5s;
-  -webkit-animation-duration: .5s;
-  -ms-animation-duration: .5s;
-  animation-duration: .5s;
+  -moz-animation-duration: 0.5s;
+  -webkit-animation-duration: 0.5s;
+  -ms-animation-duration: 0.5s;
+  animation-duration: 0.5s;
   -moz-animation-fill-mode: forwards;
   -webkit-animation-fill-mode: forwards;
   -ms-animation-fill-mode: forwards;
@@ -565,7 +566,7 @@ button {
   height: 96px;
   width: 96px;
   border-radius: 64px;
-  background-color: #FCD116;
+  background-color: #fcd116;
   overflow: hidden;
 }
 
