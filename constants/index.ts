@@ -10,7 +10,7 @@ export const tokenSelectStyles = {
     ...base,
     background: "transparent",
     border: "none",
-    height:"40px!important",
+    height: "40px!important",
     minHeight: "20px!important",
     // border: "1px solid #bbc0c5",
     fontSize: "20px",
@@ -186,6 +186,21 @@ const KOVAN_TOKENS: TOKEN[] = [
   // },
 ];
 
+const GOERLI_TOKENS: TOKEN[] = [
+  {
+    name: "ETH",
+    icon: "/images/eth.png",
+    background: "/images/rinkebyBackground.png",
+    address: "0x0000000000000000000000000000000000000000",
+  },
+  // {
+  //   name: "MOON",
+  //   icon: "/images/moon.png",
+  //   background: "/images/rinkebyBackground.png",
+  //   address: "0x50C94BeCAd95bEe21aF226dc799365Ee6B134459",
+  // },
+];
+
 export const ENVIRONMENT: ENV[] = [
   {
     chainId: 4,
@@ -194,7 +209,7 @@ export const ENVIRONMENT: ENV[] = [
     icon: "/images/brickBackground.png",
     color: "#EFC45C",
     ethProviderUrl: `https://rinkeby.infura.io/v3/${process.env.REACT_APP_INFURA_ID}`,
-    blockchainExplorerURL: "https://rinkeby.etherscan.io/tx/{TRANSACTION_HASH}",
+    blockchainExplorerURL: `https://rinkeby.etherscan.io/tx/`,
   },
   {
     chainId: 42,
@@ -203,7 +218,16 @@ export const ENVIRONMENT: ENV[] = [
     icon: "/images/rinkebyBackground.png",
     color: "#5b32a2",
     ethProviderUrl: `https://kovan.infura.io/v3/${process.env.REACT_APP_INFURA_ID}`,
-    blockchainExplorerURL: "https://kovan.etherscan.io/tx/{TRANSACTION_HASH}",
+    blockchainExplorerURL: `https://kovan.etherscan.io/tx/`,
+  },
+  {
+    chainId: 5,
+    name: "Goerli",
+    tokens: GOERLI_TOKENS,
+    icon: "/images/brickBackground.png",
+    color: "#0091F2",
+    ethProviderUrl: `https://goerli.infura.io/v3/${process.env.REACT_APP_INFURA_ID}`,
+    blockchainExplorerURL: `https://goerli.etherscan.io/tx/`,
   },
 ];
 
