@@ -52,7 +52,7 @@ class Connext {
         this.connextClient = client;
       } catch (e) {
         console.error(e);
-        throw new Error(`Error connecting to iframe: ${e}`);
+        throw new Error(`connecting to iframe: ${e}`);
       }
       console.log("connection success");
     }
@@ -116,21 +116,60 @@ class Connext {
     this.signer = this.provider.getSigner();
   }
 
-  // TODO: get user on chain balance 
+  // TODO: get user on chain balance
   // async getOnChainBalance(chainId: number) {
+
+  //   let customHttpProvider = new ethers.providers.JsonRpcProvider(url);
   // }
 
-  async deposit(chainId: number, assetId: string, amount: string) {
-    if (ethers.utils.parseEther(amount).isZero()) {
-      throw new Error("Cannot deposit 0 value");
+  async basicSanitation(params: {
+    value?: string;
+    fromChainId?: number;
+    fromAssetId?: string;
+    toChainId?: number;
+    toAssetId?: string;
+    withdrawalAddress?: string;
+  }) {
+    if (!this.connextClient) {
+      throw new Error("iframe Connection failed");
     }
-    await this.connectMetamask(chainId);
+
+    if (!this.config) {
+      throw new Error("Node Connection failed");
+    }
+
+    if (!this.config.publicIdentifier) {
+      throw new Error("user publicIdentifier missing");
+    }
+
+    if (params.value) {
+      if (ethers.utils.parseEther(params.value).isZero()) {
+        throw new Error("Value can't be zero");
+      }
+    }
+
+    if (params.withdrawalAddress) {
+      if (!ethers.utils.isAddress(params.withdrawalAddress)) {
+        throw new Error("Invalid Recipient Address");
+      }
+    }
+    console.log("Valid params");
+  }
+
+  async deposit(chainId: number, assetId: string, amount: string) {
+    await this.basicSanitation({
+      fromChainId: chainId,
+      fromAssetId: assetId,
+      value: amount,
+    });
 
     const channelState = await this.getChannelByParticipants(
       this.config.publicIdentifier,
       this.counterparty,
       chainId
     );
+
+    await this.connectMetamask(chainId);
 
     try {
       const response = await this.signer.sendTransaction({
@@ -144,7 +183,7 @@ class Connext {
       await response.wait(NUM_CONFIRMATIONS); // NUM_CONFIRMATIONS confirmations just in case
     } catch (e) {
       console.error(e);
-      throw new Error(`Error Deposit onChain: ${e}`);
+      throw new Error(`Deposit onChain: ${e}`);
     }
     console.log(`Deposit tx received, reconciling deposit`);
 
@@ -169,15 +208,16 @@ class Connext {
     value: string,
     receiverChainId: number
   ) {
+    await this.basicSanitation({
+      fromChainId: senderChainId,
+      fromAssetId: assetId,
+      toChainId: receiverChainId,
+      value: value,
+    });
+
     const recipient = this.config.publicIdentifier;
-    if (!recipient) {
-      throw new Error("Cannot transfer without node connection");
-    }
     const preImage = getRandomBytes32();
     const amount = ethers.utils.parseEther(value);
-    if (amount.isZero()) {
-      throw new Error("Cannot transfer 0 value");
-    }
 
     const senderChannelState = await this.getChannelByParticipants(
       this.config.publicIdentifier,
@@ -254,13 +294,12 @@ class Connext {
     recipient: string,
     value: string
   ) {
-    if (ethers.utils.parseEther(value).isZero()) {
-      throw new Error("Cannot withdraw 0 value");
-    }
-
-    if (!ethers.utils.isAddress(recipient)) {
-      throw new Error("Invalid Recipient Address");
-    }
+    await this.basicSanitation({
+      toChainId: receiverChainId,
+      fromAssetId: assetId,
+      value: value,
+      withdrawalAddress: recipient,
+    });
 
     const amount = ethers.utils.parseEther(value).toString();
 
@@ -292,13 +331,14 @@ class Connext {
     toAssetId: string,
     withdrawalAddress?: string
   ) {
-    if (ethers.utils.parseEther(value).isZero()) {
-      throw new Error("Cannot withdraw 0 value");
-    }
-
-    if (!ethers.utils.isAddress(withdrawalAddress)) {
-      throw new Error("Invalid Recipient Address");
-    }
+    await this.basicSanitation({
+      fromChainId: fromChainId,
+      fromAssetId: fromAssetId,
+      toChainId: toChainId,
+      toAssetId: toAssetId,
+      value: value,
+      withdrawalAddress: withdrawalAddress,
+    });
 
     const amount = ethers.utils.parseEther(value).toString();
 
@@ -315,6 +355,7 @@ class Connext {
     } catch (e) {
       throw new Error(`Error crossChainTransfer: ${e}`);
     }
+    console.log("CrossChain transfer is Successfull");
   }
 
   async send(
