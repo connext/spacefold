@@ -373,11 +373,12 @@ export default function Card() {
                 address,
                 amount.toString()
               );
+
+              setSendStatus(STATUS.FINISH.status);
             } catch (e) {
               console.error(e);
               setSendStatus(STATUS.ERROR.status);
             }
-            setSendStatus(STATUS.FINISH.status);
             setLoading(false);
           }}
         >
