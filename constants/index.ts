@@ -188,11 +188,37 @@ const KOVAN_TOKENS: TOKEN[] = [
 
 const GOERLI_TOKENS: TOKEN[] = [
   {
+    name: "MATIC",
+    icon: "/images/matic.png",
+    background: "/images/maticBackground.png",
+    address: "0x499d11E0b6eAC7c0593d8Fb292DCBbF815Fb29Ae",
+  },
+  {
     name: "ETH",
     icon: "/images/eth.png",
     background: "/images/rinkebyBackground.png",
     address: "0x0000000000000000000000000000000000000000",
   },
+  // {
+  //   name: "MOON",
+  //   icon: "/images/moon.png",
+  //   background: "/images/rinkebyBackground.png",
+  //   address: "0x50C94BeCAd95bEe21aF226dc799365Ee6B134459",
+  // },
+];
+const MATIC_TOKENS: TOKEN[] = [
+  {
+    name: "MATIC",
+    icon: "/images/matic.png",
+    background: "/images/maticBackground.png",
+    address: "0x0000000000000000000000000000000000001010",
+  },
+  // {
+  //   name: "ETH",
+  //   icon: "/images/eth.png",
+  //   background: "/images/maticBackground.png",
+  //   address: "0x0000000000000000000000000000000000000000",
+  // },
   // {
   //   name: "MOON",
   //   icon: "/images/moon.png",
@@ -228,6 +254,16 @@ export const ENVIRONMENT: ENV[] = [
     color: "#0091F2",
     ethProviderUrl: `https://goerli.infura.io/v3/${process.env.REACT_APP_INFURA_ID}`,
     blockchainExplorerURL: `https://goerli.etherscan.io/tx/`,
+  },
+  {
+    chainId: 80001,
+    name: "Matic Testnet",
+    tokens: MATIC_TOKENS,
+    icon: "/images/rinkebyBackground.png",
+    color: "#2b6def",
+    ethProviderUrl: `https://rpc-mumbai.matic.today`,
+    blockchainExplorerURL:
+      "https://mumbai-explorer.matic.today/tx/{TRANSACTION_HASH}/token_transfers",
   },
 ];
 
