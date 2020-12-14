@@ -1,26 +1,33 @@
-import Head from "next/head";
-import { Loading, Navbar, Footer } from "../components";
-import Card from "./Card";
-import React, { useState, useEffect } from "react";
+import React, { Component, FunctionComponent, useState } from 'react';
+import { ReactDOM, render } from 'react-dom';
+import { IMAGE_PATH } from "../constants";
 
-export default function Home() {
-  const [initializing, setInitializing] = useState(true);
-  const loadingMessage = "Welcome";
+import { Modal } from '../components/modal-button/modal-button';
+import { ConnextModal } from '../components/connext-modal/connext-modal';
+import { useModal } from '../useModal';
 
-  useEffect(() => {
-    setInitializing(false);
-  }, []);
-
+const App: FunctionComponent = () => {
+  const { isShown, toggle } = useModal();
+  const onConfirm = () => toggle();
+  const onCancel = () => toggle();
   return (
-    <div className="App">
-      <Head>
-        <title>Spacefold</title>
-        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
-      </Head>
-      <Loading initializing={initializing} message={loadingMessage} />
-      <Navbar />
-      <Card />
-      <Footer />
-    </div>
+    <React.Fragment>
+      <button onClick={toggle}> <img src={IMAGE_PATH.icon.connext} /> Send</button>
+      <Modal
+        isShown={isShown}
+        hide={toggle}
+        headerText="Connext Modal for Send"
+        modalContent={
+          <ConnextModal
+            onConfirm={onConfirm}
+            onCancel={onCancel}
+            message="This is the address to send token to:"
+          />
+        }
+      />
+    </React.Fragment>
   );
-}
+};
+
+
+export default App

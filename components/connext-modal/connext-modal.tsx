@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { FunctionComponent, useState, useEffect } from "react";
 import Select from "react-select";
 import { Steps, Input, InputNumber, Row, Col, notification } from "antd";
 import {
@@ -9,16 +9,22 @@ import {
   TOKEN,
   tokenSelectStyles,
   networkSelectStyles,
-} from "../constants";
+} from "../../constants";
 import {
   ArrowDownOutlined,
   DownOutlined,
   QuestionCircleOutlined,
   LoadingOutlined,
 } from "@ant-design/icons";
-import { connext } from "../service/connext";
+import { connext } from "../../service/connext";
 
-export default function Card() {
+interface ConnextModalProps {
+  onConfirm: () => void;
+  onCancel: () => void;
+  message: string;
+}
+
+export const ConnextModal: FunctionComponent<ConnextModalProps> = (props) => {
   const { Step } = Steps;
 
   // const [connext, setConnext] = useState<Connext>();
@@ -316,8 +322,8 @@ export default function Card() {
                 sendStatus === STATUS.PROCESS.status && current === 0 ? (
                   <LoadingOutlined />
                 ) : (
-                  ""
-                )
+                    ""
+                  )
               }
             />
             <Step
@@ -326,8 +332,8 @@ export default function Card() {
                 sendStatus === STATUS.PROCESS.status && current === 1 ? (
                   <LoadingOutlined />
                 ) : (
-                  ""
-                )
+                    ""
+                  )
               }
             />
             <Step
@@ -336,8 +342,8 @@ export default function Card() {
                 sendStatus === STATUS.PROCESS.status && current === 2 ? (
                   <LoadingOutlined />
                 ) : (
-                  ""
-                )
+                    ""
+                  )
               }
             />
           </Steps>

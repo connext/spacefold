@@ -28,12 +28,12 @@ class Connext {
   provider: providers.Web3Provider;
   signer: providers.JsonRpcSigner;
 
-  counterparty = "vector7tbbTxQp8ppEQUgPsbGiTrVdapLdU5dH7zTbVuXRf1M4CEBU9Q";
-  // counterparty = "vector8Uz1BdpA9hV5uTm6QUv5jj1PsUyCH8m8ciA94voCzsxVmrBRor"; // local
+  // counterparty = "vector7tbbTxQp8ppEQUgPsbGiTrVdapLdU5dH7zTbVuXRf1M4CEBU9Q";
+  counterparty = "vector8Uz1BdpA9hV5uTm6QUv5jj1PsUyCH8m8ciA94voCzsxVmrBRor"; // local
 
   // Create methods
   async connectNode() {
-    const iframeSrc = "https://wallet.connext.network";
+    const iframeSrc = "http://localhost:3030"
     const supportedChains: number[] = [];
     ENVIRONMENT.map(async (t) => {
       supportedChains.push(t.chainId);
