@@ -103,7 +103,7 @@ export const ConnextModal: FunctionComponent<ConnextModalProps> = (props) => {
                       ) : (
                         <QuestionCircleOutlined />
                       )} */}
-                        <QuestionCircleOutlined className="pr-1" />{" "}
+                        <QuestionCircleOutlined className="pr-1" />{" "}           
                         {fromNetwork.name}{" "}
                       </div>
                     ),
@@ -356,6 +356,7 @@ export const ConnextModal: FunctionComponent<ConnextModalProps> = (props) => {
           onClick={async () => {
             setLoading(true);
             try {
+            
               setCurrent(CURRENT.DEPOSIT);
               setSendStatus(STATUS.PROCESS.status);
               await connext.deposit(
