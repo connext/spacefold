@@ -1,5 +1,8 @@
 import { ethers, providers } from "ethers";
+import { AddressZero } from "@ethersproject/constants";
+import { Contract } from "@ethersproject/contracts";
 import { BrowserNode } from "@connext/vector-browser-node";
+import { TestToken } from "@connext/vector-contracts";
 import {
   DEFAULT_CHANNEL_TIMEOUT,
   DEFAULT_TRANSFER_TIMEOUT,
@@ -170,17 +173,37 @@ class Connext {
     );
 
     await this.connectMetamask(chainId);
+    const value = ethers.utils.parseEther(amount);
 
     try {
-      const response = await this.signer.sendTransaction({
-        to: channelState.channelAddress,
-        value: ethers.utils.parseEther(amount),
-      });
+      if (assetId !== AddressZero) {
+        const approval = await new Contract(
+          assetId,
+          TestToken.abi,
+          this.signer
+        ).approve(channelState.channelAddress, value);
+        await approval.wait();
+      }
+    } catch (e) {
+      console.log(e.message);
+      throw new Error(`Approve ERC20 token: ${e}`);
+    }
+    try {
+      const tx =
+        assetId === AddressZero
+          ? await this.signer.sendTransaction({
+              value,
+              to: channelState.channelAddress,
+            })
+          : await new Contract(assetId, TestToken.abi, this.signer).transfer(
+              channelState.channelAddress,
+              value
+            );
       const NUM_CONFIRMATIONS = 1;
       console.log(
-        `Deposit sent, tx: ${response.hash}, waiting for ${NUM_CONFIRMATIONS} confirmations`
+        `Deposit sent, tx: ${tx.hash}, waiting for ${NUM_CONFIRMATIONS} confirmations`
       );
-      await response.wait(NUM_CONFIRMATIONS); // NUM_CONFIRMATIONS confirmations just in case
+      await tx.wait(NUM_CONFIRMATIONS); // NUM_CONFIRMATIONS confirmations just in case
     } catch (e) {
       console.error(e);
       throw new Error(`Deposit onChain: ${e}`);

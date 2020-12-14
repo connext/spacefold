@@ -188,16 +188,16 @@ const KOVAN_TOKENS: TOKEN[] = [
 
 const GOERLI_TOKENS: TOKEN[] = [
   {
-    name: "MATIC",
-    icon: "/images/moon.png",
-    background: "/images/maticBackground.png",
-    address: "0x499d11E0b6eAC7c0593d8Fb292DCBbF815Fb29Ae",
-  },
-  {
     name: "ETH",
     icon: "/images/eth.png",
     background: "/images/rinkebyBackground.png",
     address: "0x0000000000000000000000000000000000000000",
+  },
+  {
+    name: "MATIC",
+    icon: "/images/moon.png",
+    background: "/images/maticBackground.png",
+    address: "0x499d11E0b6eAC7c0593d8Fb292DCBbF815Fb29Ae",
   },
   // {
   //   name: "MOON",
