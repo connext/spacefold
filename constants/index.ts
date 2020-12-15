@@ -102,41 +102,17 @@ export const CURRENT = {
 };
 
 export interface STATUS_TYPE {
-  WAIT: {
-    status: "wait";
-    icon: React.ReactNode;
-  };
-  PROCESS: {
-    status: "process";
-    icon: React.ReactNode;
-  };
-  FINISH: {
-    status: "finish";
-    icon: React.ReactNode;
-  };
-  ERROR: {
-    status: "error";
-    icon: React.ReactNode;
-  };
+  WAIT: "wait";
+  PROCESS: "process";
+  FINISH: "finish";
+  ERROR: "error";
 }
 
 export const STATUS: STATUS_TYPE = {
-  WAIT: {
-    status: "wait",
-    icon: EllipsisOutlined,
-  },
-  PROCESS: {
-    status: "process",
-    icon: LoadingOutlined,
-  },
-  FINISH: {
-    status: "finish",
-    icon: CheckCircleFilled,
-  },
-  ERROR: {
-    status: "error",
-    icon: CloseCircleOutlined,
-  },
+  WAIT: "wait",
+  PROCESS: "process",
+  FINISH: "finish",
+  ERROR: "error",
 };
 
 export interface TOKEN {
@@ -245,7 +221,7 @@ export const ENVIRONMENT: ENV[] = [
     color: "#2b6def",
     ethProviderUrl: `https://rpc-mumbai.matic.today`,
     blockchainExplorerURL:
-      "https://mumbai-explorer.matic.today/tx/{TRANSACTION_HASH}/token_transfers",
+      "https://mumbai-explorer.matic.today/tx/",
   },
   {
     chainId: 4,
