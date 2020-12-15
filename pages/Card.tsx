@@ -35,8 +35,7 @@ export default function Card() {
 
   const [toNetwork, setToNetwork] = useState<ENV>(ENVIRONMENT[1]);
   const [address, setAddress] = useState("");
-
-  // const [toToken, setToToken] = useState<TOKEN>(toNetwork.tokens[0]);
+  const [toToken, setToToken] = useState<TOKEN>(toNetwork.tokens[0]);
 
   // Promise.all([connext.connectNode()]);
 
@@ -134,7 +133,7 @@ export default function Card() {
             </Row>
             <Row className="h-10 pr-1">
               <Col className="w-2/3 flex">
-                <img src={fromToken.icon} className="h-8 w-8 pt-1" />
+                <img src={fromToken.icon} className="self-center h-8 w-8 pt-1" />
                 <InputNumber
                   id="amount"
                   autoFocus={true}
@@ -213,7 +212,7 @@ export default function Card() {
                     ENVIRONMENT.findIndex((t) => {
                       if (t.chainId === option.value) {
                         setToNetwork(t);
-                        // setToToken(t.tokens[0]);
+                        setToToken(t.tokens[0]);
                       }
                     });
                   }}
@@ -239,7 +238,7 @@ export default function Card() {
             </Row>
             <Row className="h-10 pr-1">
               <Col className="w-2/3 flex">
-                <img src={fromToken.icon} className="h-8 w-8 pt-1" />
+                <img src={toToken.icon} className="self-center h-8 w-8 pt-1" />
                 <InputNumber
                   id="amount"
                   type="number"
@@ -257,16 +256,16 @@ export default function Card() {
               <Col className="w-1/3 h-10 border-l-2 border-gray-300 border-opacity-100">
                 <Select
                   value={{
-                    label: fromToken.name,
-                    value: fromToken.address,
+                    label: toToken.name,
+                    value: toToken.address,
                   }}
                   onChange={(option: { value: string }) => {
-                    fromNetwork.tokens.findIndex((t) => {
-                      if (t.address === option.value) setFromToken(t);
+                    toNetwork.tokens.findIndex((t) => {
+                      if (t.address === option.value) setToToken(t);
                     });
                   }}
                   styles={tokenSelectStyles}
-                  options={fromNetwork.tokens
+                  options={toNetwork.tokens
                     .map((t) => ({
                       label: (
                         <div className="flex items-center">
@@ -276,9 +275,9 @@ export default function Card() {
                       ),
                       value: t.address,
                     }))
-                    .filter((opt) => opt.value !== fromToken.address)}
+                    .filter((opt) => opt.value !== toToken.address)}
                   isSearchable={false}
-                  // isDisabled={}
+                  // isDisabled={true}
                   components={{ DropdownIndicator }}
                 />
               </Col>
@@ -363,7 +362,8 @@ export default function Card() {
                 fromNetwork.chainId,
                 fromToken.address,
                 amount.toString(),
-                toNetwork.chainId
+                toNetwork.chainId,
+                toToken.address
               );
 
               setCurrent(CURRENT.WITHDRAW);

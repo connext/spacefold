@@ -227,14 +227,16 @@ class Connext {
 
   async transfer(
     senderChainId: number,
-    assetId: string,
+    senderAssetId: string,
     value: string,
-    receiverChainId: number
+    recipientChainId: number,
+    recipientAssetId: string
   ) {
     await this.basicSanitation({
       fromChainId: senderChainId,
-      fromAssetId: assetId,
-      toChainId: receiverChainId,
+      fromAssetId: senderAssetId,
+      toChainId: recipientChainId,
+      toAssetId: recipientAssetId,
       value: value,
     });
 
@@ -250,7 +252,7 @@ class Connext {
     const receiverChannelState = await this.getChannelByParticipants(
       this.config.publicIdentifier,
       this.counterparty,
-      receiverChainId
+      recipientChainId
     );
     console.log(
       `Sending ${value} from ${senderChannelState.channelAddress} to ${receiverChannelState.channelAddress} using preImage ${preImage}`
@@ -270,10 +272,11 @@ class Connext {
     const transferRes = await this.connextClient.conditionalTransfer({
       type: TransferNames.HashlockTransfer,
       channelAddress: senderChannelState.channelAddress,
-      recipientChainId: receiverChainId,
-      assetId,
+      assetId: senderAssetId,
       amount: amount.toString(),
       recipient,
+      recipientChainId: recipientChainId,
+      recipientAssetId: recipientAssetId,
       details: {
         lockHash: createlockHash(preImage),
         expiry: "0",
@@ -286,7 +289,7 @@ class Connext {
     }
 
     console.log(
-      `Transfer from for chain: ${senderChainId} to chain ${receiverChainId} :`,
+      `Transfer from for chain: ${senderChainId} to chain ${recipientChainId} :`,
       transferRes.getValue()
     );
     const receivedTransfer = await event;
@@ -313,15 +316,15 @@ class Connext {
 
   async withdraw(
     receiverChainId: number,
-    assetId: string,
-    recipient: string,
+    receiverAssetId: string,
+    receiverAddress: string,
     value: string
   ) {
     await this.basicSanitation({
       toChainId: receiverChainId,
-      fromAssetId: assetId,
+      toAssetId: receiverAssetId,
       value: value,
-      withdrawalAddress: recipient,
+      withdrawalAddress: receiverAddress,
     });
 
     const amount = ethers.utils.parseEther(value).toString();
@@ -334,9 +337,9 @@ class Connext {
 
     const requestRes = await this.connextClient.withdraw({
       channelAddress: channelState.channelAddress,
-      assetId,
+      assetId: receiverAssetId,
       amount,
-      recipient,
+      recipient: receiverAddress,
     });
     if (requestRes.isError) {
       throw new Error(`Error withdrawing: ${requestRes.getError()}`);
@@ -385,14 +388,21 @@ class Connext {
     senderChainId: number,
     senderAssetId: string,
     receiverChainId: number,
+    receiverAssetId: string,
     receiverAddress: string,
     amount: string
   ) {
     await this.deposit(senderChainId, senderAssetId, amount);
-    await this.transfer(senderChainId, senderAssetId, amount, receiverChainId);
+    await this.transfer(
+      senderChainId,
+      senderAssetId,
+      amount,
+      receiverChainId,
+      receiverAssetId
+    );
     await this.withdraw(
       receiverChainId,
-      senderAssetId,
+      receiverAssetId,
       receiverAddress,
       amount
     );

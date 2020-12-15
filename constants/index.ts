@@ -229,24 +229,6 @@ const MATIC_TOKENS: TOKEN[] = [
 
 export const ENVIRONMENT: ENV[] = [
   {
-    chainId: 4,
-    name: "Rinkeby",
-    tokens: RINKEBY_TOKENS,
-    icon: "/images/brickBackground.png",
-    color: "#EFC45C",
-    ethProviderUrl: `https://rinkeby.infura.io/v3/${process.env.REACT_APP_INFURA_ID}`,
-    blockchainExplorerURL: `https://rinkeby.etherscan.io/tx/`,
-  },
-  {
-    chainId: 42,
-    name: "Kovan",
-    tokens: KOVAN_TOKENS,
-    icon: "/images/rinkebyBackground.png",
-    color: "#5b32a2",
-    ethProviderUrl: `https://kovan.infura.io/v3/${process.env.REACT_APP_INFURA_ID}`,
-    blockchainExplorerURL: `https://kovan.etherscan.io/tx/`,
-  },
-  {
     chainId: 5,
     name: "Goerli",
     tokens: GOERLI_TOKENS,
@@ -264,6 +246,24 @@ export const ENVIRONMENT: ENV[] = [
     ethProviderUrl: `https://rpc-mumbai.matic.today`,
     blockchainExplorerURL:
       "https://mumbai-explorer.matic.today/tx/{TRANSACTION_HASH}/token_transfers",
+  },
+  {
+    chainId: 4,
+    name: "Rinkeby",
+    tokens: RINKEBY_TOKENS,
+    icon: "/images/brickBackground.png",
+    color: "#EFC45C",
+    ethProviderUrl: `https://rinkeby.infura.io/v3/${process.env.REACT_APP_INFURA_ID}`,
+    blockchainExplorerURL: `https://rinkeby.etherscan.io/tx/`,
+  },
+  {
+    chainId: 42,
+    name: "Kovan",
+    tokens: KOVAN_TOKENS,
+    icon: "/images/rinkebyBackground.png",
+    color: "#5b32a2",
+    ethProviderUrl: `https://kovan.infura.io/v3/${process.env.REACT_APP_INFURA_ID}`,
+    blockchainExplorerURL: `https://kovan.etherscan.io/tx/`,
   },
 ];
 
