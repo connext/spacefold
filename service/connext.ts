@@ -6,13 +6,11 @@ import { TestToken } from "@connext/vector-contracts";
 import {
   DEFAULT_CHANNEL_TIMEOUT,
   DEFAULT_TRANSFER_TIMEOUT,
-} from "@connext/vector-types";
-import { createlockHash, getRandomBytes32 } from "@connext/vector-utils";
-import {
   ConditionalTransferCreatedPayload,
   FullChannelState,
   TransferNames,
 } from "@connext/vector-types";
+import { createlockHash, getRandomBytes32 } from "@connext/vector-utils";
 import { ENVIRONMENT } from "../constants";
 
 declare global {
@@ -182,14 +180,17 @@ class Connext {
           TestToken.abi,
           this.signer
         ).approve(channelState.channelAddress, value);
+        console.log(`Approval sent, tx:${approval.hash}`);
         await approval.wait();
       }
     } catch (e) {
       console.log(e.message);
       throw new Error(`Approve ERC20 token: ${e}`);
     }
+
+    let tx;
     try {
-      const tx =
+      tx =
         assetId === AddressZero
           ? await this.signer.sendTransaction({
               value,
@@ -212,6 +213,16 @@ class Connext {
 
     await this.reconcileDeposit(channelState.channelAddress, assetId);
     await this.updateChannel(channelState.channelAddress);
+
+    let url: string;
+    ENVIRONMENT.findIndex((t) => {
+      if (t.chainId === chainId) {
+        url = t.blockchainExplorerURL;
+      }
+    });
+    const link = `${url}${tx.hash}`;
+    const message = "Deposit successful";
+    return { message, link };
   }
 
   async reconcileDeposit(channelAddress: string, assetId: string) {
@@ -309,9 +320,11 @@ class Connext {
       throw new Error(`Error resolving transfer: ${resolveRes.getError()}`);
     }
 
-    console.log(`Successfully resolved transfer:, `, resolveRes.getValue());
+    console.log(`successfuly resolved transfer:, `, resolveRes.getValue());
     await this.updateChannel(senderChannelState.channelAddress);
     await this.updateChannel(receiverChannelState.channelAddress);
+
+    return `Successful transfer from chain: ${senderChainId} to chain ${recipientChainId}`;
   }
 
   async withdraw(
@@ -344,9 +357,20 @@ class Connext {
     if (requestRes.isError) {
       throw new Error(`Error withdrawing: ${requestRes.getError()}`);
     }
-    console.log(`Successfully withdraw: `, requestRes.getValue());
+    console.log(`successfuly withdraw: `, requestRes.getValue());
 
     await this.updateChannel(channelState.channelAddress);
+
+    let url: string;
+    ENVIRONMENT.findIndex((t) => {
+      if (t.chainId === receiverChainId) {
+        url = t.blockchainExplorerURL;
+      }
+    });
+
+    const link = `${url}${requestRes.getValue().transactionHash}`;
+    const message = "Successful Withdrawl";
+    return { message, link };
   }
 
   async crossTransfer(
@@ -381,7 +405,7 @@ class Connext {
     } catch (e) {
       throw new Error(`Error crossChainTransfer: ${e}`);
     }
-    console.log("CrossChain transfer is Successfull");
+    console.log("CrossChain transfer is successful");
   }
 
   async send(
@@ -406,7 +430,7 @@ class Connext {
       receiverAddress,
       amount
     );
-    console.log("Successfully Sent");
+    console.log("Successfuly Sent");
   }
 
   /* ------------------------------------------------------------ */

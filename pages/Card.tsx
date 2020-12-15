@@ -27,7 +27,7 @@ export default function Card() {
   const [current, setCurrent] = useState(CURRENT.DEPOSIT);
   const [sendStatus, setSendStatus] = useState<
     "wait" | "process" | "finish" | "error"
-  >(STATUS.WAIT.status);
+  >(STATUS.WAIT);
 
   const [fromNetwork, setFromNetwork] = useState<ENV>(ENVIRONMENT[0]);
   const [amount, setAmount] = useState(0);
@@ -40,14 +40,12 @@ export default function Card() {
   // Promise.all([connext.connectNode()]);
 
   useEffect(() => {
-    setLoading(true);
     async function start() {
       setLoading(true);
       await connext.connectNode();
       setLoading(false);
     }
     start();
-    setLoading(false);
   }, []);
 
   const swap = async () => {
@@ -59,24 +57,87 @@ export default function Card() {
     }
   };
 
-  const openNotification = () => {
-    notification.open({
-      message: "Notification Title",
-      description:
-        "This is the content of the notification. This is the content of the notification. This is the content of the notification.",
-      onClick: () => {
-        console.log("Notification Clicked!");
-      },
-    });
+  const onChange = (value) => {
+    setAmount(value);
   };
 
-  const onChange = async (value) => {
-    setAmount(value);
+  const openNotification = (
+    response: string,
+    progress?: number,
+    link?: string,
+    isError?: boolean
+  ) => {
+    const config = {
+      message: "Title",
+      description: "Response",
+      duration: 10,
+      onClick: () => {
+        console.log("Notification Clicked!");
+        window.open(link, "_blank");
+      },
+    };
+
+    if (progress === 0) config.message = "Deposit";
+    else if (progress === 1) config.message = "Transfer";
+    else if (progress === 2) config.message = "Withdraw";
+    else config.message = "ERROR";
+
+    config.description = response;
+
+    if (isError) notification.error(config);
+    else notification.success(config);
+  };
+
+  const send = async () => {
+    setLoading(true);
+    try {
+      setCurrent(CURRENT.DEPOSIT);
+      setSendStatus(STATUS.PROCESS);
+      const deposit = await connext.deposit(
+        fromNetwork.chainId,
+        fromToken.address,
+        amount.toString()
+      );
+
+      openNotification(deposit.message, CURRENT.DEPOSIT, deposit.link);
+      setCurrent(CURRENT.TRANSFER);
+      console.log(current, CURRENT.TRANSFER);
+      const transfer = await connext.transfer(
+        fromNetwork.chainId,
+        fromToken.address,
+        amount.toString(),
+        toNetwork.chainId,
+        toToken.address
+      );
+
+      openNotification(transfer, CURRENT.TRANSFER);
+      setCurrent(CURRENT.WITHDRAW);
+      console.log(current, CURRENT.WITHDRAW);
+      const withdraw = await connext.withdraw(
+        toNetwork.chainId,
+        toToken.address,
+        address,
+        amount.toString()
+      );
+
+      openNotification(withdraw.message, CURRENT.WITHDRAW, withdraw.link);
+      setSendStatus(STATUS.FINISH);
+    } catch (e) {
+      console.error(e);
+      setSendStatus(STATUS.ERROR);
+      openNotification(e.message, undefined, undefined, true);
+    }
+    setLoading(false);
   };
 
   return (
     <div className="home">
       <div id="card" className="card p-8">
+        <div className="flex self-center p-4">
+          <h1 className="text-lg leading-tight font-bold mt-0">
+            {`Send ${fromToken.name} from ${fromNetwork.name} to ${toNetwork.name}`}
+          </h1>
+        </div>
         <div
           id="from"
           className="h-18 border-2 border-gray-300 border-opacity-100"
@@ -133,10 +194,13 @@ export default function Card() {
             </Row>
             <Row className="h-10 pr-1">
               <Col className="w-2/3 flex">
-                <img src={fromToken.icon} className="self-center h-8 w-8 pt-1" />
+                <img
+                  src={fromToken.icon}
+                  className="self-center h-8 w-8 pt-1"
+                />
                 <InputNumber
                   id="amount"
-                  autoFocus={true}
+                  autoFocus={false}
                   type="string"
                   size="large"
                   min={0}
@@ -312,7 +376,7 @@ export default function Card() {
             <Step
               title="Deposit"
               icon={
-                sendStatus === STATUS.PROCESS.status && current === 0 ? (
+                sendStatus === STATUS.PROCESS && current === 0 ? (
                   <LoadingOutlined />
                 ) : (
                   ""
@@ -322,7 +386,7 @@ export default function Card() {
             <Step
               title="Transfer"
               icon={
-                sendStatus === STATUS.PROCESS.status && current === 1 ? (
+                sendStatus === STATUS.PROCESS && current === 1 ? (
                   <LoadingOutlined />
                 ) : (
                   ""
@@ -332,7 +396,7 @@ export default function Card() {
             <Step
               title="Withdraw"
               icon={
-                sendStatus === STATUS.PROCESS.status && current === 2 ? (
+                sendStatus === STATUS.PROCESS && current === 2 ? (
                   <LoadingOutlined />
                 ) : (
                   ""
@@ -346,41 +410,7 @@ export default function Card() {
           type="button"
           className="First-Button"
           disabled={loading || !connext || !amount || !address}
-          onClick={async () => {
-            setLoading(true);
-            try {
-              setCurrent(CURRENT.DEPOSIT);
-              setSendStatus(STATUS.PROCESS.status);
-              await connext.deposit(
-                fromNetwork.chainId,
-                fromToken.address,
-                amount.toString()
-              );
-
-              setCurrent(CURRENT.TRANSFER);
-              await connext.transfer(
-                fromNetwork.chainId,
-                fromToken.address,
-                amount.toString(),
-                toNetwork.chainId,
-                toToken.address
-              );
-
-              setCurrent(CURRENT.WITHDRAW);
-              await connext.withdraw(
-                toNetwork.chainId,
-                toToken.address,
-                address,
-                amount.toString()
-              );
-
-              setSendStatus(STATUS.FINISH.status);
-            } catch (e) {
-              console.error(e);
-              setSendStatus(STATUS.ERROR.status);
-            }
-            setLoading(false);
-          }}
+          onClick={send}
         >
           Send
         </button>
