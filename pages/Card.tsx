@@ -369,7 +369,7 @@ export default function Card() {
               setCurrent(CURRENT.WITHDRAW);
               await connext.withdraw(
                 toNetwork.chainId,
-                fromToken.address,
+                toToken.address,
                 address,
                 amount.toString()
               );
