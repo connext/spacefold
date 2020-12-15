@@ -187,17 +187,17 @@ const KOVAN_TOKENS: TOKEN[] = [
 ];
 
 const GOERLI_TOKENS: TOKEN[] = [
+  // {
+  //   name: "ETH",
+  //   icon: "/images/eth.png",
+  //   background: "/images/rinkebyBackground.png",
+  //   address: "0x0000000000000000000000000000000000000000",
+  // },
   {
-    name: "ETH",
-    icon: "/images/eth.png",
-    background: "/images/rinkebyBackground.png",
-    address: "0x0000000000000000000000000000000000000000",
-  },
-  {
-    name: "MATIC",
+    name: "DERC20",
     icon: "/images/moon.png",
     background: "/images/maticBackground.png",
-    address: "0x499d11E0b6eAC7c0593d8Fb292DCBbF815Fb29Ae",
+    address: "0x655F2166b0709cd575202630952D71E2bB0d61Af",
   },
   // {
   //   name: "MOON",
@@ -208,10 +208,10 @@ const GOERLI_TOKENS: TOKEN[] = [
 ];
 const MATIC_TOKENS: TOKEN[] = [
   {
-    name: "MATIC",
+    name: "DERC20",
     icon: "/images/moon.png",
     background: "/images/maticBackground.png",
-    address: "0x0000000000000000000000000000000000001010",
+    address: "0xfe4F5145f6e09952a5ba9e956ED0C25e3Fa4c7F1",
   },
   // {
   //   name: "ETH",
