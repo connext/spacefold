@@ -53,7 +53,12 @@ export default function Card() {
       const from: ENV = fromNetwork;
       const to: ENV = toNetwork;
 
-      await Promise.all([setFromNetwork(to), setToNetwork(from)]);
+      await Promise.all([
+        setFromNetwork(to),
+        setFromToken(toToken),
+        setToNetwork(from),
+        setToToken(fromToken),
+      ]);
     }
   };
 
