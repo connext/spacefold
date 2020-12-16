@@ -8,7 +8,7 @@
     "start": "next start"
   },
   "dependencies": {
-    "@connext/vector-browser-node": "^0.0.33",
+    "@connext/vector-browser-node": "^0.0.37",
     "@fortawesome/fontawesome-svg-core": "^1.2.32",
     "@fortawesome/free-brands-svg-icons": "^5.15.1",
     "@fortawesome/free-solid-svg-icons": "^5.15.1",
@@ -17,7 +17,6 @@
     "autoprefixer": "^10.1.0",
     "ethers": "^5.0.24",
     "next": "^10.0.3",
-    "pino": "^6.7.0",
     "postcss": "^8.2.0",
     "react": "17.0.1",
     "react-dom": "17.0.1",
