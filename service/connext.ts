@@ -180,7 +180,11 @@ class Connext {
           TestToken.abi,
           this.signer
         ).approve(channelState.channelAddress, value);
-        console.log(`Approval sent, tx:${approval.hash}`);
+        console.log(
+          `Approval sent on ${await this.signer.getChainId()}, tx:${
+            approval.hash
+          }`
+        );
         await approval.wait();
       }
     } catch (e) {
@@ -202,7 +206,9 @@ class Connext {
             );
       const NUM_CONFIRMATIONS = 1;
       console.log(
-        `Deposit sent, tx: ${tx.hash}, waiting for ${NUM_CONFIRMATIONS} confirmations`
+        `Deposit sent on ${await this.signer.getChainId()}, tx: ${
+          tx.hash
+        }, waiting for ${NUM_CONFIRMATIONS} confirmations`
       );
       await tx.wait(NUM_CONFIRMATIONS); // NUM_CONFIRMATIONS confirmations just in case
     } catch (e) {
