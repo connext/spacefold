@@ -173,25 +173,6 @@ class Connext {
     await this.connectMetamask(chainId);
     const value = ethers.utils.parseEther(amount);
 
-    try {
-      if (assetId !== AddressZero) {
-        const approval = await new Contract(
-          assetId,
-          TestToken.abi,
-          this.signer
-        ).approve(channelState.channelAddress, value);
-        console.log(
-          `Approval sent on ${await this.signer.getChainId()}, tx:${
-            approval.hash
-          }`
-        );
-        await approval.wait();
-      }
-    } catch (e) {
-      console.log(e.message);
-      throw new Error(`Approve ERC20 token: ${e}`);
-    }
-
     let tx;
     try {
       tx =
