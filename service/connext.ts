@@ -110,8 +110,7 @@ class Connext {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     const network = await provider.getNetwork();
     if (network.chainId !== chainId) {
-      alert(`Please switch to chainId ${chainId} and try again`);
-      return;
+      throw new Error(`Please switch to chainId ${chainId} and try again`);
     }
     this.provider = provider;
     this.signer = this.provider.getSigner();
@@ -315,13 +314,13 @@ class Connext {
   }
 
   async withdraw(
-    receiverChainId: number,
+    recipientChainId: number,
     receiverAssetId: string,
     receiverAddress: string,
     value: string
   ) {
     await this.basicSanitation({
-      toChainId: receiverChainId,
+      toChainId: recipientChainId,
       toAssetId: receiverAssetId,
       value: value,
       withdrawalAddress: receiverAddress,
@@ -332,7 +331,7 @@ class Connext {
     const channelState = await this.getChannelByParticipants(
       this.config.publicIdentifier,
       this.counterparty,
-      receiverChainId
+      recipientChainId
     );
 
     const requestRes = await this.connextClient.withdraw({
@@ -350,7 +349,7 @@ class Connext {
 
     let url: string;
     ENVIRONMENT.findIndex((t) => {
-      if (t.chainId === receiverChainId) {
+      if (t.chainId === recipientChainId) {
         url = t.blockchainExplorerURL;
       }
     });
@@ -362,43 +361,58 @@ class Connext {
 
   async crossTransfer(
     value: string,
-    fromChainId: number,
-    fromAssetId: string,
-    toChainId: number,
-    toAssetId: string,
-    withdrawalAddress?: string
+    senderChainId: number,
+    senderAssetId: string,
+    recipientChainId: number,
+    recipientAssetId: string,
+    withdrawalAddress: string
   ) {
     await this.basicSanitation({
-      fromChainId: fromChainId,
-      fromAssetId: fromAssetId,
-      toChainId: toChainId,
-      toAssetId: toAssetId,
+      fromChainId: senderChainId,
+      fromAssetId: senderAssetId,
+      toChainId: recipientChainId,
+      toAssetId: recipientAssetId,
       value: value,
       withdrawalAddress: withdrawalAddress,
     });
 
     const amount = ethers.utils.parseEther(value).toString();
+    const crossChainTransferId = getRandomBytes32();
 
     const params = {
       amount,
-      fromChainId,
-      fromAssetId,
-      toChainId,
-      toAssetId,
-      withdrawalAddress,
+      fromChainId: senderChainId,
+      fromAssetId: senderAssetId,
+      toChainId: recipientChainId,
+      toAssetId: recipientAssetId,
+      reconcileDeposit: false,
+      withdrawalAddress: withdrawalAddress,
+      meta: { crossChainTransferId },
     };
+
+    let result;
     try {
-      await this.connextClient.crossChainTransfer(params);
+      result = await this.connextClient.crossChainTransfer(params);
     } catch (e) {
-      throw new Error(`Error crossChainTransfer: ${e}`);
+      throw new Error(`${e}`);
     }
     console.log("CrossChain transfer is successful");
+    let url: string;
+    ENVIRONMENT.findIndex((t) => {
+      if (t.chainId === recipientChainId) {
+        url = t.blockchainExplorerURL;
+      }
+    });
+
+    const link = `${url}${result.withdrawalTx}`;
+    const message = "Successful cross chain transfer";
+    return { message, link };
   }
 
   async send(
     senderChainId: number,
     senderAssetId: string,
-    receiverChainId: number,
+    recipientChainId: number,
     receiverAssetId: string,
     receiverAddress: string,
     amount: string
@@ -408,11 +422,11 @@ class Connext {
       senderChainId,
       senderAssetId,
       amount,
-      receiverChainId,
+      recipientChainId,
       receiverAssetId
     );
     await this.withdraw(
-      receiverChainId,
+      recipientChainId,
       receiverAssetId,
       receiverAddress,
       amount
