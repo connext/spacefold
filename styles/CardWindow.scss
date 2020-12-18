@@ -31,3 +31,24 @@
     padding-right: 0 !important;
   }
 }
+
+::ng-deep .ant-tabs-nav {
+  width: 100% !important;
+}
+
+.ant-tabs-nav-wrap {
+  flex-flow: column;
+}
+.ant-tabs-tab {
+  width: 100%;
+}
+
+::ng-deep .ant-tabs-tab {
+  flex: 1;
+  text-align: center;
+}
+
+::ng-deep .ant-tabs-nav > div:nth-of-type(1) {
+  display: flex !important;
+  width: 100% !important;
+}
