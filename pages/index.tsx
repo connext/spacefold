@@ -1,6 +1,6 @@
 import Head from "next/head";
 import { Loading, Navbar, Footer } from "../components";
-import Card from "./Card";
+import MainCard from "./MainCard";
 import React, { useState, useEffect } from "react";
 
 export default function Home() {
@@ -19,7 +19,8 @@ export default function Home() {
       </Head>
       <Loading initializing={initializing} message={loadingMessage} />
       <Navbar />
-      <Card />
+      <MainCard/>
+      {/* <Card /> */}
       <Footer />
     </div>
   );
