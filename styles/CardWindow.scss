@@ -1,0 +1,54 @@
+.home {
+  flex-grow: 1;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  width: 80%;
+  max-width: 480px;
+  background-color: #ffffff;
+  border-radius: 5px;
+  overflow: hidden;
+  -webkit-box-shadow: 0px 0px 30px rgba(95, 111, 119, 0.5);
+  -moz-box-shadow: 0px 0px 30px rgba(95, 111, 119, 0.5);
+  box-shadow: 0px 0px 30px rgba(95, 111, 119, 0.5);
+}
+
+.bar {
+  background-color: #f2f3f4;
+}
+
+@media screen and (max-width: 415px) {
+  .exchange-padding {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+}
+
+::ng-deep .ant-tabs-nav {
+  width: 100% !important;
+}
+
+.ant-tabs-nav-wrap {
+  flex-flow: column;
+}
+.ant-tabs-tab {
+  width: 100%;
+}
+
+::ng-deep .ant-tabs-tab {
+  flex: 1;
+  text-align: center;
+}
+
+::ng-deep .ant-tabs-nav > div:nth-of-type(1) {
+  display: flex !important;
+  width: 100% !important;
+}
