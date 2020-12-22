@@ -20,7 +20,6 @@ export default function Home() {
       <Loading initializing={initializing} message={loadingMessage} />
       <Navbar />
       <MainCard/>
-      {/* <Card /> */}
       <Footer />
     </div>
   );
