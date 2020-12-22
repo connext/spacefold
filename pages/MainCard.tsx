@@ -1,5 +1,5 @@
 import { Tabs } from "antd";
-import { Card, CrossChainCard } from "../components";
+import { Modal, Card, CrossChainCard } from "../components";
 
 export default function MainCard() {
   const { TabPane } = Tabs;
@@ -7,10 +7,13 @@ export default function MainCard() {
     <div className="home">
       <div id="card" className="card p-8">
         <Tabs type="card">
-          <TabPane tab="Simple" key="1">
+          <TabPane tab="Component" key="1">
+            <Modal />
+          </TabPane>
+          <TabPane tab="Simple" key="2">
             <CrossChainCard />
           </TabPane>
-          <TabPane tab="Advance" key="2">
+          <TabPane tab="Advance" key="3">
             <Card />
           </TabPane>
         </Tabs>
