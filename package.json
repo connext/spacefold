@@ -8,7 +8,7 @@
     "start": "next start"
   },
   "dependencies": {
-    "@connext/vector-browser-node": "^0.0.40",
+    "@connext/vector-browser-node": "^0.0.41",
     "@connext/vector-modal": "0.0.3",
     "@fortawesome/fontawesome-svg-core": "^1.2.32",
     "@fortawesome/free-brands-svg-icons": "^5.15.1",
