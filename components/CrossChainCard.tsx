@@ -106,7 +106,7 @@ export default function CrossChainCard() {
 
       openNotification(deposit.message, CURRENT.DEPOSIT, deposit.link);
       setCurrent(CURRENT.TRANSFER);
-      console.log(current, CURRENT.TRANSFER);
+      
       const crossChaintransfer = await connext.crossTransfer(
         amount.toString(),
         fromNetwork.chainId,
