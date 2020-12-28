@@ -1,5 +1,5 @@
 import { BrowserNode } from '@connext/vector-browser-node';
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useEffect, useState, useRef } from 'react';
 import {
   Dialog,
   DialogTitle,
@@ -29,6 +29,7 @@ import {
   withStyles,
   StepIconProps,
   Icon,
+  Menu,
 } from '@material-ui/core';
 import {
   MoreVert,
@@ -60,7 +61,6 @@ import {
   routerPublicIdentifier,
   iframeSrc,
   TransferStates,
-  ConnextModalProps,
   TRANSFER_STATES,
 } from '../../constants';
 import {
@@ -103,6 +103,7 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       width: '100%',
+      padding: '1rem',
     },
     spacing: {
       margin: theme.spacing(3, 2),
@@ -115,12 +116,24 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
+export type Network = {
+  chainId: number;
+  assetId: string;
+}
+
+export type ConnextModalProps = {
+  showModal: boolean;
+  depositChain: Network[];
+  withdrawChain: Network[];
+  withdrawalAddress: string;
+  onClose: () => void;
+};
+
+
 const ConnextModal: FC<ConnextModalProps> = ({
   showModal,
-  depositChainId,
-  depositAssetId,
-  withdrawChainId,
-  withdrawAssetId,
+  depositChain,
+  withdrawChain,
   withdrawalAddress,
   onClose,
 }) => {
@@ -128,11 +141,26 @@ const ConnextModal: FC<ConnextModalProps> = ({
   const [initializing, setInitializing] = useState(true);
   const [depositAddress, setDepositAddress] = useState<string>();
   const [depositChainName, setDepositChainName] = useState<string>(
-    depositChainId.toString()
+    depositChain[0].chainId.toString()
   );
   const [withdrawChainName, setWithdrawChainName] = useState<string>(
-    withdrawChainId.toString()
+    withdrawChain[0].chainId.toString()
   );
+
+  const [depositChainId, setDepositChainId] = useState<number>(
+    depositChain[0].chainId
+  );
+  const [withdrawChainId, setWithdrawChainId] = useState<number>(
+    withdrawChain[0].chainId
+  );
+
+  const [depositAssetId, setDepositAssetId] = useState<string>(
+    depositChain[0].assetId
+  );
+  const [withdrawAssetId, setWithdrawAssetId] = useState<string>(
+    withdrawChain[0].assetId
+  );
+
   const [sentAmount, setSentAmount] = useState<string>();
 
   const [withdrawTx, setWithdrawTx] = useState<string>();
@@ -373,7 +401,12 @@ const ConnextModal: FC<ConnextModalProps> = ({
 
   return (
     <ThemeProvider theme={theme}>
-      <Dialog open={showModal} fullWidth={true} maxWidth="xs">
+      <Dialog
+        className={classes.root}
+        open={showModal}
+        fullWidth={true}
+        maxWidth="xs"
+      >
         <Card className={classes.card}>
           <Grid
             id="Header"
@@ -562,8 +595,8 @@ const Options: FC = () => {
   }
 
   // return focus to the button when we transitioned from !open -> open
-  const prevOpen = React.useRef(open);
-  React.useEffect(() => {
+  const prevOpen = useRef(open);
+  useEffect(() => {
     if (prevOpen.current === true && open === false) {
       anchorRef.current!.focus();
     }
@@ -712,6 +745,15 @@ export interface NetworkBarProps {
 
 const NetworkBar: FC<NetworkBarProps> = props => {
   const { depositChainName, withdrawChainName } = props;
+  const [anchorEl, setAnchorEl] = React.useState(null);
+
+  const handleClick = event => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   return (
     <>
@@ -724,7 +766,25 @@ const NetworkBar: FC<NetworkBarProps> = props => {
         className="pb-4"
       >
         <Grid item>
-          <Chip color="secondary" label={depositChainName} />
+          <Button
+            color="secondary"
+            aria-controls="simple-menu"
+            aria-haspopup="true"
+            onClick={handleClick}
+          >
+            {depositChainName}
+          </Button>
+          <Menu
+            id="simple-menu"
+            anchorEl={anchorEl}
+            keepMounted
+            open={Boolean(anchorEl)}
+            onClose={handleClose}
+          >
+            <MenuItem onClick={handleClose}>Profile</MenuItem>
+            <MenuItem onClick={handleClose}>My account</MenuItem>
+            <MenuItem onClick={handleClose}>Logout</MenuItem>
+          </Menu>
         </Grid>
         <Grid item>
           <IconButton aria-label="arrow">
@@ -732,7 +792,25 @@ const NetworkBar: FC<NetworkBarProps> = props => {
           </IconButton>
         </Grid>
         <Grid item>
-          <Chip color="primary" label={withdrawChainName} />
+          <Button
+            color="primary"
+            aria-controls="simple-menu"
+            aria-haspopup="true"
+            onClick={handleClick}
+          >
+            {withdrawChainName}
+          </Button>
+          <Menu
+            id="simple-menu"
+            anchorEl={anchorEl}
+            keepMounted
+            open={Boolean(anchorEl)}
+            onClose={handleClose}
+          >
+            <MenuItem onClick={handleClose}>Profile</MenuItem>
+            <MenuItem onClick={handleClose}>My account</MenuItem>
+            <MenuItem onClick={handleClose}>Logout</MenuItem>
+          </Menu>
         </Grid>
       </Grid>
     </>
