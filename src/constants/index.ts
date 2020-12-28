@@ -1,4 +1,4 @@
-import { TRANSFER_STATES, TransferStates, ConnextModalProps } from './types';
+import { TRANSFER_STATES, TransferStates } from './types';
 
 export const CHAIN_INFO_URL = 'https://chainid.network/chains.json';
 
@@ -16,4 +16,4 @@ export const ethProvidersOverrides = JSON.parse(
   process.env.REACT_APP_ETH_PROVIDERS || '{}'
 );
 
-export { ConnextModalProps, TransferStates, TRANSFER_STATES };
+export { TransferStates, TRANSFER_STATES };

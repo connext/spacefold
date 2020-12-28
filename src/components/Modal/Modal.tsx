@@ -60,7 +60,6 @@ import {
   routerPublicIdentifier,
   iframeSrc,
   TransferStates,
-  ConnextModalProps,
   TRANSFER_STATES,
 } from '../../constants';
 import {
@@ -111,9 +110,23 @@ const useStyles = makeStyles((theme: Theme) =>
       height: 'auto',
       minWidth: '390px',
     },
-    header: {},
+    header: {
+      paddingBottom: '1rem',
+    },
   })
 );
+
+export type ConnextModalProps = {
+  showModal: boolean;
+  depositChainId: number;
+  depositAssetId: string;
+  withdrawChainId: number;
+  withdrawAssetId: string;
+  withdrawalAddress: string;
+  onClose: () => void;
+  connextNode?: BrowserNode;
+  modalStyles?: Record<"root" | "spacing" | "card" | "header", string>;
+};
 
 const ConnextModal: FC<ConnextModalProps> = ({
   showModal,
@@ -123,8 +136,11 @@ const ConnextModal: FC<ConnextModalProps> = ({
   withdrawAssetId,
   withdrawalAddress,
   onClose,
+  connextNode,
+  modalStyles
 }) => {
-  const classes = useStyles();
+  const preClasses = useStyles();
+  const classes = {...preClasses, ...modalStyles }
   const [initializing, setInitializing] = useState(true);
   const [depositAddress, setDepositAddress] = useState<string>();
   const [depositChainName, setDepositChainName] = useState<string>(
@@ -271,11 +287,14 @@ const ConnextModal: FC<ConnextModalProps> = ({
         const _ethProviders = hydrateProviders(depositChainId, withdrawChainId);
 
         // browser node object
-        const browserNode = new BrowserNode({
-          routerPublicIdentifier,
-          iframeSrc,
-          supportedChains: [depositChainId, withdrawChainId],
-        });
+        let browserNode = connextNode;
+        if (!browserNode) {
+          browserNode = new BrowserNode({
+            routerPublicIdentifier,
+            iframeSrc,
+            supportedChains: [depositChainId, withdrawChainId],
+          });
+        }
         try {
           await browserNode.init();
         } catch (e) {
