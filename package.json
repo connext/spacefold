@@ -1,5 +1,5 @@
 {
-  "version": "0.0.3",
+  "version": "0.0.1",
   "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -29,16 +29,16 @@
     "singleQuote": true,
     "trailingComma": "es5"
   },
-  "name": "@connext/vector-modal",
+  "name": "@connext/spacefold",
   "author": "connext",
-  "module": "dist/vector-modal.esm.js",
+  "module": "dist/spacefold.esm.js",
   "size-limit": [
     {
-      "path": "dist/vector-modal.cjs.production.min.js",
+      "path": "dist/spacefold.cjs.production.min.js",
       "limit": "10 KB"
     },
     {
-      "path": "dist/vector-modal.esm.js",
+      "path": "dist/spacefold.esm.js",
       "limit": "10 KB"
     }
   ],
