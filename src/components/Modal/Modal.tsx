@@ -125,7 +125,7 @@ export type ConnextModalProps = {
   withdrawalAddress: string;
   onClose: () => void;
   connextNode?: BrowserNode;
-  modalStyles?: Record<"root" | "spacing" | "card" | "header", string>;
+  modalStyles?: Record<'root' | 'spacing' | 'card' | 'header', string>;
 };
 
 const ConnextModal: FC<ConnextModalProps> = ({
@@ -137,10 +137,10 @@ const ConnextModal: FC<ConnextModalProps> = ({
   withdrawalAddress,
   onClose,
   connextNode,
-  modalStyles
+  modalStyles,
 }) => {
   const preClasses = useStyles();
-  const classes = {...preClasses, ...modalStyles }
+  const classes = { ...preClasses, ...modalStyles };
   const [initializing, setInitializing] = useState(true);
   const [depositAddress, setDepositAddress] = useState<string>();
   const [depositChainName, setDepositChainName] = useState<string>(
@@ -287,8 +287,10 @@ const ConnextModal: FC<ConnextModalProps> = ({
         const _ethProviders = hydrateProviders(depositChainId, withdrawChainId);
 
         // browser node object
-        let browserNode = connextNode;
-        if (!browserNode) {
+        let browserNode: BrowserNode;
+        if (connextNode) {
+          browserNode = connextNode;
+        } else {
           browserNode = new BrowserNode({
             routerPublicIdentifier,
             iframeSrc,
