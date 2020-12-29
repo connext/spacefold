@@ -8,12 +8,8 @@
     "start": "next start"
   },
   "dependencies": {
-    "@connext/vector-browser-node": "0.1.0-rc.0",
+    "@connext/vector-browser-node": "0.1.0-rc.2",
     "@connext/vector-modal": "0.0.9",
-    "@fortawesome/fontawesome-svg-core": "^1.2.32",
-    "@fortawesome/free-brands-svg-icons": "^5.15.1",
-    "@fortawesome/free-solid-svg-icons": "^5.15.1",
-    "@fortawesome/react-fontawesome": "^0.1.14",
     "antd": "^4.9.4",
     "autoprefixer": "^10.1.0",
     "ethers": "^5.0.24",
