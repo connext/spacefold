@@ -1,5 +1,4 @@
-import { faHeart } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { HeartOutlined } from "@ant-design/icons";
 
 export default function Footer() {
   return (
@@ -9,7 +8,7 @@ export default function Footer() {
       target="_blank"
       rel="noopener noreferrer"
     >
-      Made with <FontAwesomeIcon icon={faHeart} /> by Connext
+      Made with <HeartOutlined /> by Connext
     </a>
   );
 }
