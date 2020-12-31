@@ -25,10 +25,10 @@ export default function Modal() {
       </Form>
       <ConnextModal
         showModal={showModal}
-        routerPublicIdentifier="vector6vHve47eegn1uW2Pvexpwh2XyadVUHAb3ZxtjH4RXncMy8DaFT"
-        depositAssetId={"0x76EB2542043B34b08620f6960f131a9bDaC2D578"}
+        routerPublicIdentifier="vector7tbbTxQp8ppEQUgPsbGiTrVdapLdU5dH7zTbVuXRf1M4CEBU9Q"
+        depositAssetId={"0x655F2166b0709cd575202630952D71E2bB0d61Af"}
         depositChainId={5}
-        withdrawAssetId={"0x455302a6e83f8B03a3E2e576CccbaDc005a46b39"}
+        withdrawAssetId={"0xfe4F5145f6e09952a5ba9e956ED0C25e3Fa4c7F1"}
         withdrawChainId={80001}
         withdrawalAddress={form.getFieldValue("withdrawalAddress")}
         onClose={() => setShowModal(false)}
