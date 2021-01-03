@@ -13,7 +13,7 @@ export default function MainCard() {
           <TabPane tab="Simple" key="2">
             <CrossChainCard />
           </TabPane>
-          <TabPane tab="Advance" key="3">
+          <TabPane tab="Advanced" key="3">
             <Card />
           </TabPane>
         </Tabs>
