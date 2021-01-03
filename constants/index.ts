@@ -173,7 +173,7 @@ const GOERLI_TOKENS: TOKEN[] = [
     name: "DERC20",
     icon: "/images/moon.png",
     background: "/images/maticBackground.png",
-    address: "0x655F2166b0709cd575202630952D71E2bB0d61Af",
+    address: "0xbd69fC70FA1c3AED524Bb4E82Adc5fcCFFcD79Fa",
   },
   // {
   //   name: "MOON",
