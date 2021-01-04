@@ -6,9 +6,10 @@ export default function MainCard() {
   return (
     <div className="home">
       <div id="card" className="card p-8">
-        <Tabs type="card">
+        <Modal />
+        {/* <Tabs type="card">
           <TabPane tab="Component" key="1">
-            <Modal />
+            
           </TabPane>
           <TabPane tab="Simple" key="2">
             <CrossChainCard />
@@ -16,7 +17,7 @@ export default function MainCard() {
           <TabPane tab="Advanced" key="3">
             <Card />
           </TabPane>
-        </Tabs>
+        </Tabs> */}
       </div>
     </div>
   );
