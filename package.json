@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@connext/vector-browser-node": "0.1.0-rc.13",
-    "@connext/vector-modal": "0.1.6",
+    "@connext/vector-modal": "0.1.7",
     "@emotion/react": "^11.1.4",
     "@emotion/styled": "^11.0.0",
     "@material-ui/core": "^4.11.2",
