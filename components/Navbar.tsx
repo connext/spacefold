@@ -20,7 +20,7 @@ export default function Navbar() {
         Chat
       </a>
       <a
-        href="https://medium.com/connext/introducing-spacefold-d1c227a29d3"
+        href="https://www.notion.so/Spacefold-Guide-Walkthrough-5100d3bd1463451eb072e91f6e1c7d5d"
         target="_blank"
         rel="noopener noreferrer"
         className="flex items-center"
