@@ -3,6 +3,10 @@ import { GithubOutlined, InfoCircleOutlined } from "@ant-design/icons";
 export default function Navbar() {
   return (
     <div className="More-Buttons">
+      <img
+        src="SpacefoldLogoPurple.png"
+        style={{ height: "100px", paddingRight: "100px" }}
+      />
       <a
         href="https://github.com/connext/spacefold"
         target="_blank"
