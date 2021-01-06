@@ -1,15 +1,10 @@
 import React, { useState } from "react";
 import { ConnextModal } from "@connext/vector-modal";
-import {
-  Grid,
-  Button,
-  Typography,
-  TextField,
-  Select,
-  MenuItem,
-} from "@material-ui/core";
+import { Grid, Button, TextField, Select, MenuItem } from "@material-ui/core";
 import { utils } from "ethers";
-import { Divider, Form, Input } from "antd";
+
+const chainConfig = process.env.NEXT_PUBLIC_CHAIN_PROVIDERS;
+const chainProviders = JSON.parse(chainConfig);
 
 export default function Modal() {
   const [showModal, setShowModal] = useState(false);
@@ -30,7 +25,7 @@ export default function Modal() {
   };
 
   const CHAIN_INFO_URL = "https://chainid.network/chains.json";
-  const getNetworkName = async (chainId): Promise<string> => {
+  const getNetworkName = async (chainId: any): Promise<string> => {
     let chainName: string;
     try {
       const chainInfo: any[] = await utils.fetchJson(CHAIN_INFO_URL);
@@ -118,7 +113,7 @@ export default function Modal() {
             >
               {networks.map((t, index) => {
                 return (
-                  <MenuItem value={index}>
+                  <MenuItem value={index} key={index}>
                     {t.depositChainName} to {t.withdrawChainName}
                   </MenuItem>
                 );
@@ -179,6 +174,8 @@ export default function Modal() {
         withdrawChainId={chain!.withdrawChainId}
         withdrawalAddress={withdrawalAddress}
         onClose={() => setShowModal(false)}
+        depositChainProvider={chainProviders[chain!.depositChainId]}
+        withdrawChainProvider={chainProviders[chain!.withdrawChainId]}
       />
     </>
   );
