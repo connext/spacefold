@@ -8,6 +8,14 @@ export default function Navbar() {
         style={{ height: "100px", paddingRight: "100px" }}
       />
       <a
+        href="https://www.notion.so/Spacefold-Guide-Walkthrough-5100d3bd1463451eb072e91f6e1c7d5d"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="flex items-center"
+      >
+        <InfoCircleOutlined className="About-Icon" /> Help
+      </a>
+      <a
         href="https://github.com/connext/spacefold"
         target="_blank"
         rel="noopener noreferrer"
@@ -22,14 +30,6 @@ export default function Navbar() {
         className="flex items-center"
       >
         Chat
-      </a>
-      <a
-        href="https://www.notion.so/Spacefold-Guide-Walkthrough-5100d3bd1463451eb072e91f6e1c7d5d"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="flex items-center"
-      >
-        <InfoCircleOutlined className="About-Icon" /> About
       </a>
     </div>
   );
