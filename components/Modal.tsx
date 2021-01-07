@@ -2,9 +2,7 @@ import React, { useState } from "react";
 import { ConnextModal } from "@connext/vector-modal";
 import { Grid, Button, TextField, Select, MenuItem } from "@material-ui/core";
 import { utils } from "ethers";
-
-const chainConfig = process.env.NEXT_PUBLIC_CHAIN_PROVIDERS;
-const chainProviders = JSON.parse(chainConfig);
+import { chainProviders } from "../service/connext";
 
 export default function Modal() {
   const [showModal, setShowModal] = useState(false);

@@ -1,10 +1,3 @@
-import {
-  LoadingOutlined,
-  CheckCircleFilled,
-  EllipsisOutlined,
-  CloseCircleOutlined,
-} from "@ant-design/icons";
-
 export const tokenSelectStyles = {
   control: (base: any) => ({
     ...base,
@@ -220,8 +213,7 @@ export const ENVIRONMENT: ENV[] = [
     icon: "/images/rinkebyBackground.png",
     color: "#2b6def",
     ethProviderUrl: `https://rpc-mumbai.matic.today`,
-    blockchainExplorerURL:
-      "https://mumbai-explorer.matic.today/tx/",
+    blockchainExplorerURL: "https://mumbai-explorer.matic.today/tx/",
   },
   {
     chainId: 4,
