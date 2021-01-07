@@ -19,6 +19,9 @@ declare global {
   }
 }
 
+const chainConfig = process.env.NEXT_PUBLIC_CHAIN_PROVIDERS;
+export const chainProviders = JSON.parse(chainConfig!);
+
 class Connext {
   connextClient: BrowserNode;
   config: {

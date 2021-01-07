@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { ConnextModal } from "@connext/vector-modal";
 import { Grid, Button, TextField, Select, MenuItem } from "@material-ui/core";
 import { utils } from "ethers";
+import { chainProviders } from "../service/connext";
 
 export default function Modal() {
   const [showModal, setShowModal] = useState(false);
@@ -22,9 +23,6 @@ export default function Modal() {
   };
 
   const CHAIN_INFO_URL = "https://chainid.network/chains.json";
-
-  const chainConfig = process.env.NEXT_PUBLIC_CHAIN_PROVIDERS;
-  const chainProviders = JSON.parse(chainConfig!);
 
   const getNetworkName = async (chainId: any): Promise<string> => {
     let chainName: string;
