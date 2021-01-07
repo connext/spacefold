@@ -24,10 +24,8 @@ export default function Modal() {
   const CHAIN_INFO_URL = "https://chainid.network/chains.json";
 
   const chainConfig = process.env.NEXT_PUBLIC_CHAIN_PROVIDERS;
-
-  console.log("Using config: ", chainConfig!);
   const chainProviders = JSON.parse(chainConfig!);
-  
+
   const getNetworkName = async (chainId: any): Promise<string> => {
     let chainName: string;
     try {
