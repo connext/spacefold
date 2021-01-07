@@ -135,7 +135,7 @@ export default function Modal() {
           </Grid>
         </Grid>
       </form>
-      <Grid container spacing={2}>
+      <Grid container spacing={2} justifyContent="center">
         <Grid item style={{ marginTop: 16 }}>
           <Button
             variant="contained"
