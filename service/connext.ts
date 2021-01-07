@@ -13,9 +13,6 @@ import {
 import { createlockHash, getRandomBytes32 } from "@connext/vector-utils";
 import { ENVIRONMENT } from "../constants";
 
-const chainConfig = process.env.NEXT_PUBLIC_CHAIN_PROVIDERS;
-export const chainProviders = JSON.parse(chainConfig);
-
 declare global {
   interface Window {
     ethereum: any;
