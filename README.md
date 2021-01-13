@@ -83,13 +83,12 @@ By default, the demo will point to a Connext node that we're hosting at https://
 
 You'll need a few environment variables to start the demo.
 
-1. `REACT_APP_FAUCET_URL=https://nir7je4y8a.execute-api.us-east-1.amazonaws.com/Prod` -- you can use our hosted faucet if you're pointing at the default node.
-2. `REACT_APP_INFURA_ID` -- you'll need to provide your own infura/alchemy/JSONrpcUrl to use the Kovan and Rinkeby chains.
+1. `NEXT_PUBLIC_CHAIN_PROVIDERS=` -- JSON string to provide node URLs with chains, i.e. '{"4":"https://rinkeby.infura.io/v3/...","5":"https://goerli.infura.io/v3/...","42":"https://kovan.infura.io/v3/...","80001":"https://rpc-mumbai.matic.today"}'
 
 Then,
 
 ```
-yarn install && yarn start
+npm i && npm run dev
 ```
 
 ### Running your own Connext Node on Multiple Chains
@@ -97,21 +96,13 @@ yarn install && yarn start
 Running your own Connext node locally is also pretty easy!
 
 ```bash
-git clone git@github.com:connext/indra.git
-cd indra
+git clone git@github.com:connext/vector.git
+cd vector
 make # this will take a while
-make start
+make start-trio
 ```
 
-Note: you will need to have `docker` and `jq` installed already. If you run into trouble, [there's more information about interacting with indra here](https://github.com/connext/indra#launch-indra-in-developer-mode).
-
-By default, this local node will spin up on two local testnet chains with IDs `1337` and `1338`.
-
-If you would like to test out a local indra node with a remote chain (or multiple chains) by following the steps in [this guide](https://github.com/connext/indra/blob/staging/docs/src/how-to/integrate-chain.md).
-
-Lastly, your node can be deployed to a production environment by following [this guide](https://docs.connext.network/en/latest/how-to/deploy-indra.html).
-
-While running a local node is easy, this will not work with this repository without also setting up a local faucet. If you are interested in doing this, please [contact us](https://discord.gg/raNmNb5) for the full process.
+Please refer to our [docs](https://docs.connext.network) for more info, or ping us in our Discord!
 
 ## How does it work?
 
