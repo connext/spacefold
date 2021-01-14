@@ -41,6 +41,7 @@ button:focus {
   display: flex;
   align-items: stretch;
   height: 100vh;
+  background: #8047eb;
 }
 
 .More-Buttons {
@@ -413,13 +414,14 @@ button:focus {
   position: fixed;
   bottom: 0;
   width: 100%;
-  background-color: #deebff;
+  background: #facd48;
   text-decoration: none;
   font-size: 16px;
   padding: 12px 0;
   margin: 0;
   cursor: pointer;
   text-align: center;
+  color: black;
 }
 
 .Heart-Icon {
