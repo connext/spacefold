@@ -88,7 +88,7 @@ You'll need a few environment variables to start the demo.
 Then,
 
 ```
-npm i && npm run dev
+yarn && yarn dev
 ```
 
 ### Running your own Connext Node on Multiple Chains
