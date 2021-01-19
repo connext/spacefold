@@ -51,11 +51,19 @@ export default function Modal() {
     withdrawAssetId: string;
   }
 
-  const GOERLI_MATIC_TOKENS: TOKEN[] = [
+  const GOERLI_MUMBAI_TOKENS: TOKEN[] = [
     {
-      name: "TestToken",
+      name: "Test Token",
       depositAssetId: "0xbd69fC70FA1c3AED524Bb4E82Adc5fcCFFcD79Fa",
       withdrawAssetId: "0xfe4F5145f6e09952a5ba9e956ED0C25e3Fa4c7F1",
+    },
+  ];
+
+  const MUMBAI_GOERLI_TOKENS: TOKEN[] = [
+    {
+      name: "Test Token",
+      depositAssetId: "0xfe4F5145f6e09952a5ba9e956ED0C25e3Fa4c7F1",
+      withdrawAssetId: "0xbd69fC70FA1c3AED524Bb4E82Adc5fcCFFcD79Fa",
     },
   ];
 
@@ -66,13 +74,37 @@ export default function Modal() {
       withdrawAssetId: "0x0000000000000000000000000000000000000000",
     },
   ];
+
+  const ETH_MATIC_TOKENS: TOKEN[] = [
+    {
+      name: "Test Token",
+      depositAssetId: "0x9E86dd60e0B1e7e142F033d1BdEf734c6b3224Bb",
+      withdrawAssetId: "0x9E86dd60e0B1e7e142F033d1BdEf734c6b3224Bb",
+    },
+  ];
+
+  const MATIC_ETH_TOKENS: TOKEN[] = [
+    {
+      name: "Test Token",
+      depositAssetId: "0x9E86dd60e0B1e7e142F033d1BdEf734c6b3224Bb",
+      withdrawAssetId: "0x9E86dd60e0B1e7e142F033d1BdEf734c6b3224Bb",
+    },
+  ];
+
   const networks: NETWORK[] = [
     {
       depositChainId: 5,
       depositChainName: "Goerli Testnet",
       withdrawChainId: 80001,
       withdrawChainName: "Matic Testnet",
-      tokens: GOERLI_MATIC_TOKENS,
+      tokens: GOERLI_MUMBAI_TOKENS,
+    },
+    {
+      depositChainId: 80001,
+      depositChainName: "Matic Testnet",
+      withdrawChainId: 5,
+      withdrawChainName: "Goerli Testnet",
+      tokens: MUMBAI_GOERLI_TOKENS,
     },
     {
       depositChainId: 4,
@@ -80,6 +112,20 @@ export default function Modal() {
       withdrawChainId: 42,
       withdrawChainName: "Kovan Testnet",
       tokens: RINKEBY_KOVAN_TOKENS,
+    },
+    {
+      depositChainId: 137,
+      depositChainName: "Matic Mainnet",
+      withdrawChainId: 1,
+      withdrawChainName: "ETH Mainnet",
+      tokens: MATIC_ETH_TOKENS,
+    },
+    {
+      depositChainId: 1,
+      depositChainName: "ETH Mainnet",
+      withdrawChainId: 137,
+      withdrawChainName: "Matic Mainnet",
+      tokens: ETH_MATIC_TOKENS,
     },
   ];
 
