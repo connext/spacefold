@@ -75,21 +75,21 @@ export default function Modal() {
     },
   ];
 
-  const ETH_MATIC_TOKENS: TOKEN[] = [
-    {
-      name: "Test Token",
-      depositAssetId: "0x9E86dd60e0B1e7e142F033d1BdEf734c6b3224Bb",
-      withdrawAssetId: "0x9E86dd60e0B1e7e142F033d1BdEf734c6b3224Bb",
-    },
-  ];
+  // const ETH_MATIC_TOKENS: TOKEN[] = [
+  //   {
+  //     name: "Test Token",
+  //     depositAssetId: "0x9E86dd60e0B1e7e142F033d1BdEf734c6b3224Bb",
+  //     withdrawAssetId: "0x9E86dd60e0B1e7e142F033d1BdEf734c6b3224Bb",
+  //   },
+  // ];
 
-  const MATIC_ETH_TOKENS: TOKEN[] = [
-    {
-      name: "Test Token",
-      depositAssetId: "0x9E86dd60e0B1e7e142F033d1BdEf734c6b3224Bb",
-      withdrawAssetId: "0x9E86dd60e0B1e7e142F033d1BdEf734c6b3224Bb",
-    },
-  ];
+  // const MATIC_ETH_TOKENS: TOKEN[] = [
+  //   {
+  //     name: "Test Token",
+  //     depositAssetId: "0x9E86dd60e0B1e7e142F033d1BdEf734c6b3224Bb",
+  //     withdrawAssetId: "0x9E86dd60e0B1e7e142F033d1BdEf734c6b3224Bb",
+  //   },
+  // ];
 
   const networks: NETWORK[] = [
     {
@@ -113,20 +113,20 @@ export default function Modal() {
       withdrawChainName: "Kovan Testnet",
       tokens: RINKEBY_KOVAN_TOKENS,
     },
-    {
-      depositChainId: 137,
-      depositChainName: "Matic Mainnet",
-      withdrawChainId: 1,
-      withdrawChainName: "ETH Mainnet",
-      tokens: MATIC_ETH_TOKENS,
-    },
-    {
-      depositChainId: 1,
-      depositChainName: "ETH Mainnet",
-      withdrawChainId: 137,
-      withdrawChainName: "Matic Mainnet",
-      tokens: ETH_MATIC_TOKENS,
-    },
+    // {
+    //   depositChainId: 137,
+    //   depositChainName: "Matic Mainnet",
+    //   withdrawChainId: 1,
+    //   withdrawChainName: "ETH Mainnet",
+    //   tokens: MATIC_ETH_TOKENS,
+    // },
+    // {
+    //   depositChainId: 1,
+    //   depositChainName: "ETH Mainnet",
+    //   withdrawChainId: 137,
+    //   withdrawChainName: "Matic Mainnet",
+    //   tokens: ETH_MATIC_TOKENS,
+    // },
   ];
 
   const handleNetwork = (event) => {
