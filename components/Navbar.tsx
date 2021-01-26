@@ -1,4 +1,4 @@
-import { GithubOutlined, InfoCircleOutlined } from "@ant-design/icons";
+import { GitHub, Info, MessageCircle } from "react-feather";
 
 export default function Navbar() {
   return (
@@ -13,7 +13,7 @@ export default function Navbar() {
         rel="noopener noreferrer"
         className="flex items-center"
       >
-        <InfoCircleOutlined className="About-Icon" /> Help
+        <Info className="About-Icon" /> Help
       </a>
       <a
         href="https://github.com/connext/spacefold"
@@ -21,7 +21,7 @@ export default function Navbar() {
         rel="noopener noreferrer"
         className="flex items-center"
       >
-        <GithubOutlined className="Github-Icon" /> GitHub
+        <GitHub className="Github-Icon" /> GitHub
       </a>
       <a
         href="https://discord.com/channels/454734546869551114"
@@ -29,7 +29,7 @@ export default function Navbar() {
         rel="noopener noreferrer"
         className="flex items-center"
       >
-        Chat
+        <MessageCircle className="Discord-Icon" /> Chat
       </a>
     </div>
   );

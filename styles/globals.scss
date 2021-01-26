@@ -412,6 +412,8 @@ button:focus {
 
 .Footer {
   position: fixed;
+  display: flex;
+  justify-content: center;
   bottom: 0;
   width: 100%;
   background: #facd48;
@@ -425,6 +427,8 @@ button:focus {
 }
 
 .Heart-Icon {
+  margin-right: 5px;
+  margin-left: 5px;
   color: #7d17ea;
 }
 

@@ -1,5 +1,4 @@
-import { HeartOutlined } from "@ant-design/icons";
-
+import { Heart } from "react-feather";
 export default function Footer() {
   return (
     <a
@@ -8,7 +7,7 @@ export default function Footer() {
       target="_blank"
       rel="noopener noreferrer"
     >
-      Made with <HeartOutlined /> by Connext
+      Made with <Heart className="Heart-Icon" /> by Connext
     </a>
   );
 }
