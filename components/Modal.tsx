@@ -195,23 +195,6 @@ export default function Modal() {
         </Grid>
       </Grid>
 
-      {/* <Form form={form} onFinish={() => setShowModal(true)}>
-        <Form.Item
-          name="withdrawalAddress"
-          rules={[
-            { required: true, message: "Please input withdrawal address!" },
-          ]}
-        >
-          <Input placeholder="Withdrawal Address" />
-        </Form.Item>
-        <Divider />
-        <Form.Item>
-          <button type="submit" className="First-Button">
-            Goerli to Matic Testnet
-          </button>
-        </Form.Item>
-      </Form> */}
-
       <ConnextModal
         showModal={showModal}
         routerPublicIdentifier="vector7tbbTxQp8ppEQUgPsbGiTrVdapLdU5dH7zTbVuXRf1M4CEBU9Q"

@@ -8,7 +8,6 @@
     "start": "next start"
   },
   "dependencies": {
-    "@connext/vector-browser-node": "0.1.8-beta.3",
     "@connext/vector-modal": "0.1.42",
     "@emotion/react": "^11.1.4",
     "@emotion/styled": "^11.0.0",
