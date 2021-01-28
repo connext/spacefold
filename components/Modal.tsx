@@ -2,13 +2,15 @@ import React, { useState } from "react";
 import { ConnextModal } from "@connext/vector-modal";
 import { Grid, Button, TextField, Select, MenuItem } from "@material-ui/core";
 import { utils } from "ethers";
-import { chainProviders } from "../service/connext";
 
 export default function Modal() {
   const [showModal, setShowModal] = useState(false);
 
   const [withdrawalAddress, setWithdrawalAddress] = useState("");
   const [open, setOpen] = React.useState(false);
+
+  const chainConfig = process.env.NEXT_PUBLIC_CHAIN_PROVIDERS;
+  const chainProviders = JSON.parse(chainConfig!);
 
   const handleChange = (event) => {
     setWithdrawalAddress(event.target.value);
