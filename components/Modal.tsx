@@ -8,6 +8,7 @@ export default function Modal() {
 
   const [withdrawalAddress, setWithdrawalAddress] = useState("");
   const [open, setOpen] = React.useState(false);
+  const [injectedProvider, setInjectedProvider] = React.useState();
 
   const chainConfig = process.env.NEXT_PUBLIC_CHAIN_PROVIDERS;
   const chainProviders = JSON.parse(chainConfig!);
@@ -145,6 +146,27 @@ export default function Modal() {
   const [chain, setChain] = useState<NETWORK>(networks[0]);
   return (
     <>
+      <Grid container spacing={2} justifyContent="center">
+        <Grid item style={{ marginTop: 16 }}>
+          <Button
+            variant="contained"
+            color="primary"
+            type="submit"
+            disabled={!!injectedProvider}
+            onClick={async () => {
+              if ((window as any).ethereum) {
+                const req = await (window as any).ethereum.send(
+                  "eth_requestAccounts"
+                );
+                console.log("req: ", req);
+                setInjectedProvider((window as any).ethereum);
+              }
+            }}
+          >
+            Connect Metamask
+          </Button>
+        </Grid>
+      </Grid>
       <form onSubmit={handleSubmit} noValidate>
         <Grid container spacing={2}>
           <Grid item xs={12}>
@@ -206,6 +228,7 @@ export default function Modal() {
         onClose={() => setShowModal(false)}
         depositChainProvider={chainProviders[chain!.depositChainId]}
         withdrawChainProvider={chainProviders[chain!.withdrawChainId]}
+        injectedProvider={injectedProvider}
       />
     </>
   );
