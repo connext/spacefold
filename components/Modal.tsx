@@ -78,6 +78,30 @@ export default function Modal() {
     },
   ];
 
+  const KOVAN_RINKEBY_TOKENS: TOKEN[] = [
+    {
+      name: "ETH",
+      depositAssetId: "0x0000000000000000000000000000000000000000",
+      withdrawAssetId: "0x0000000000000000000000000000000000000000",
+    },
+  ];
+
+  const KOVAN_ARBITRUM_TOKENS: TOKEN[] = [
+    {
+      name: "ETH",
+      depositAssetId: "0x0000000000000000000000000000000000000000",
+      withdrawAssetId: "0x0000000000000000000000000000000000000000",
+    },
+  ];
+
+  const ARBITRUM_KOVAN_TOKENS: TOKEN[] = [
+    {
+      name: "ETH",
+      depositAssetId: "0x0000000000000000000000000000000000000000",
+      withdrawAssetId: "0x0000000000000000000000000000000000000000",
+    },
+  ];
+
   // const ETH_MATIC_TOKENS: TOKEN[] = [
   //   {
   //     name: "Test Token",
@@ -115,6 +139,27 @@ export default function Modal() {
       withdrawChainId: 42,
       withdrawChainName: "Kovan Testnet",
       tokens: RINKEBY_KOVAN_TOKENS,
+    },
+    {
+      depositChainId: 42,
+      depositChainName: "Kovan Testnet",
+      withdrawChainId: 4,
+      withdrawChainName: "Rinkeby Testnet",
+      tokens: KOVAN_RINKEBY_TOKENS,
+    },
+    {
+      depositChainId: 42,
+      depositChainName: "Kovan Testnet",
+      withdrawChainId: 79377087078960,
+      withdrawChainName: "Arbitrum Testnet V3",
+      tokens: KOVAN_ARBITRUM_TOKENS,
+    },
+    {
+      depositChainId: 79377087078960,
+      depositChainName: "Arbitrum Testnet V3",
+      withdrawChainId: 42,
+      withdrawChainName: "Kovan Testnet",
+      tokens: ARBITRUM_KOVAN_TOKENS,
     },
     // {
     //   depositChainId: 137,
