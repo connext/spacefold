@@ -255,7 +255,13 @@ export default function Modal() {
             color="primary"
             type="submit"
             disabled={!withdrawalAddress || !chain}
-            onClick={() => setShowModal(true)}
+            onClick={async () => {
+              if (!injectedProvider) {
+                alert("Please connect to Metamask to use this dapp.");
+                throw new Error("Metamask not available");
+              }
+              setShowModal(true);
+            }}
           >
             Cross-Chain Transfer
           </Button>
@@ -265,6 +271,7 @@ export default function Modal() {
       <ConnextModal
         showModal={showModal}
         routerPublicIdentifier="vector7tbbTxQp8ppEQUgPsbGiTrVdapLdU5dH7zTbVuXRf1M4CEBU9Q"
+        iframeSrcOverride="https://prod.d38no841cpixef.amplifyapp.com"
         depositAssetId={chain!.tokens[0].depositAssetId}
         depositChainId={chain!.depositChainId}
         withdrawAssetId={chain!.tokens[0].withdrawAssetId}
