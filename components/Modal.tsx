@@ -271,7 +271,6 @@ export default function Modal() {
       <ConnextModal
         showModal={showModal}
         routerPublicIdentifier="vector7tbbTxQp8ppEQUgPsbGiTrVdapLdU5dH7zTbVuXRf1M4CEBU9Q"
-        iframeSrcOverride="https://prod.d38no841cpixef.amplifyapp.com"
         depositAssetId={chain!.tokens[0].depositAssetId}
         depositChainId={chain!.depositChainId}
         withdrawAssetId={chain!.tokens[0].withdrawAssetId}
