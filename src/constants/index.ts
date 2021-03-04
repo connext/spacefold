@@ -38,15 +38,6 @@ export const tokenSelectStyles = {
   }),
 };
 
-const networkIndicator = {
-  fontStyle: "normal",
-  fontWeight: "normal",
-  fontSize: "0.625rem",
-  lineHeight: "140%",
-  display: "flex",
-  alignItems: "center",
-};
-
 export const networkSelectStyles = {
   control: (base: any) => ({
     ...base,

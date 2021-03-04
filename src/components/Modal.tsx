@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { ConnextModal } from "@connext/vector-modal";
 import { Grid, Button, TextField, Select, MenuItem } from "@material-ui/core";
-import { utils } from "ethers";
 
 export default function Modal() {
   const [showModal, setShowModal] = useState(false);
@@ -11,12 +10,14 @@ export default function Modal() {
   const [injectedProvider, setInjectedProvider] = React.useState();
 
   const chainConfig = process.env.NEXT_PUBLIC_CHAIN_PROVIDERS;
+  console.log(chainConfig);
   const chainProviders = JSON.parse(chainConfig!);
 
-  const handleChange = (event) => {
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setWithdrawalAddress(event.target.value);
   };
 
+  // @ts-ignore
   const handleSubmit = (values) => {
     const errors = { receiverAddress: "" };
     if (!values.receiverAddress) {
@@ -25,22 +26,6 @@ export default function Modal() {
     return errors;
   };
 
-  const CHAIN_INFO_URL = "https://chainid.network/chains.json";
-
-  const getNetworkName = async (chainId: any): Promise<string> => {
-    let chainName: string;
-    try {
-      const chainInfo: any[] = await utils.fetchJson(CHAIN_INFO_URL);
-
-      const getChainInfo = chainInfo.find((info) => info.chainId === chainId);
-      if (getChainInfo) {
-        chainName = getChainInfo.name;
-      }
-    } catch (e) {
-      console.warn(`Could not fetch chain info from ${CHAIN_INFO_URL}`);
-    }
-    return chainName;
-  };
   interface NETWORK {
     depositChainId: number;
     depositChainName: string;
@@ -177,6 +162,7 @@ export default function Modal() {
     // },
   ];
 
+  // @ts-ignore
   const handleNetwork = (event) => {
     setChain(networks[event.target.value]);
   };

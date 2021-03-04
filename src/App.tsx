@@ -1,9 +1,10 @@
-import Head from "next/head";
-import { Loading, Navbar, Footer } from "../components";
-import MainCard from "./MainCard";
 import React, { useState, useEffect } from "react";
+import { Loading, Navbar, Footer } from "./components";
+import { Modal } from "./components";
+import "./styles/globals.scss";
+import "./App.css";
 
-export default function Home() {
+function App() {
   const [initializing, setInitializing] = useState(true);
   const loadingMessage = "Welcome";
 
@@ -13,14 +14,16 @@ export default function Home() {
 
   return (
     <div className="App">
-      <Head>
-        <title>Spacefold</title>
-        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
-      </Head>
       <Loading initializing={initializing} message={loadingMessage} />
       <Navbar />
-      <MainCard/>
+      <div className="home">
+        <div id="card" className="card p-8">
+          <Modal />
+        </div>
+      </div>
       <Footer />
     </div>
   );
 }
+
+export default App;

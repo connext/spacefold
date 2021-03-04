@@ -1,7 +1,12 @@
-import React, { useState } from "react";
+import React, { FC, useState } from "react";
 import { IMAGE_PATH } from "../constants";
 
-export default function Loading({ initializing, message }) {
+interface LoadingProps {
+  initializing: Boolean;
+  message: string;
+}
+const Loading: FC<LoadingProps> = (props) => {
+  const { initializing, message } = props;
   const [imageLoaded, setImageLoaded] = useState(true);
   return (
     <div className={initializing ? "Loading" : "Loading Loading-fadeout"}>
@@ -20,4 +25,6 @@ export default function Loading({ initializing, message }) {
       <div className="Loading-Message">{message}</div>
     </div>
   );
-}
+};
+
+export default Loading;
