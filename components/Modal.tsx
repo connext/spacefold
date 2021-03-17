@@ -280,6 +280,7 @@ export default function Modal() {
         depositChainProvider={chainProviders[chain!.depositChainId]}
         withdrawChainProvider={chainProviders[chain!.withdrawChainId]}
         injectedProvider={injectedProvider}
+        loginProvider={injectedProvider}
       />
     </>
   );
