@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { ConnextModal } from "@connext/vector-modal";
 import { Grid, Button, TextField, Select, MenuItem } from "@material-ui/core";
-import { utils } from "ethers";
 
 export default function Modal() {
   const [showModal, setShowModal] = useState(false);
@@ -23,23 +22,6 @@ export default function Modal() {
       errors.receiverAddress = "Required";
     }
     return errors;
-  };
-
-  const CHAIN_INFO_URL = "https://chainid.network/chains.json";
-
-  const getNetworkName = async (chainId: any): Promise<string> => {
-    let chainName: string;
-    try {
-      const chainInfo: any[] = await utils.fetchJson(CHAIN_INFO_URL);
-
-      const getChainInfo = chainInfo.find((info) => info.chainId === chainId);
-      if (getChainInfo) {
-        chainName = getChainInfo.name;
-      }
-    } catch (e) {
-      console.warn(`Could not fetch chain info from ${CHAIN_INFO_URL}`);
-    }
-    return chainName;
   };
   interface NETWORK {
     depositChainId: number;
