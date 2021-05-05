@@ -8,7 +8,7 @@
     "start": "next start"
   },
   "dependencies": {
-    "@connext/vector-modal": "1.0.5-beta.0",
+    "@connext/vector-modal": "1.0.5-beta.3",
     "@emotion/react": "^11.1.5",
     "@emotion/styled": "^11.1.5",
     "@material-ui/core": "^5.0.0-alpha.22",
