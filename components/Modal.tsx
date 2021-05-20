@@ -36,55 +36,47 @@ export default function Modal() {
     withdrawAssetId: string;
   }
 
-  // const GOERLI_MUMBAI_TOKENS: TOKEN[] = [
-  //   {
-  //     name: "Test Token",
-  //     depositAssetId: "0xbd69fC70FA1c3AED524Bb4E82Adc5fcCFFcD79Fa",
-  //     withdrawAssetId: "0xfe4F5145f6e09952a5ba9e956ED0C25e3Fa4c7F1",
-  //   },
-  // ];
+  const GOERLI_MUMBAI_TOKENS: TOKEN[] = [
+    {
+      name: "Test Token",
+      depositAssetId: "0xbd69fC70FA1c3AED524Bb4E82Adc5fcCFFcD79Fa",
+      withdrawAssetId: "0xfe4F5145f6e09952a5ba9e956ED0C25e3Fa4c7F1",
+    },
+  ];
 
-  // const MUMBAI_GOERLI_TOKENS: TOKEN[] = [
-  //   {
-  //     name: "Test Token",
-  //     depositAssetId: "0xfe4F5145f6e09952a5ba9e956ED0C25e3Fa4c7F1",
-  //     withdrawAssetId: "0xbd69fC70FA1c3AED524Bb4E82Adc5fcCFFcD79Fa",
-  //   },
-  // ];
+  const MUMBAI_GOERLI_TOKENS: TOKEN[] = [
+    {
+      name: "Test Token",
+      depositAssetId: "0xfe4F5145f6e09952a5ba9e956ED0C25e3Fa4c7F1",
+      withdrawAssetId: "0xbd69fC70FA1c3AED524Bb4E82Adc5fcCFFcD79Fa",
+    },
+  ];
 
-  // const RINKEBY_KOVAN_TOKENS: TOKEN[] = [
-  //   {
-  //     name: "ETH",
-  //     depositAssetId: "0x0000000000000000000000000000000000000000",
-  //     withdrawAssetId: "0x0000000000000000000000000000000000000000",
-  //   },
-  // ];
+  const RINKEBY_KOVAN_TOKENS: TOKEN[] = [
+    {
+      name: "ETH",
+      depositAssetId: "0x0000000000000000000000000000000000000000",
+      withdrawAssetId: "0x0000000000000000000000000000000000000000",
+    },
+  ];
 
-  // const KOVAN_RINKEBY_TOKENS: TOKEN[] = [
-  //   {
-  //     name: "ETH",
-  //     depositAssetId: "0x0000000000000000000000000000000000000000",
-  //     withdrawAssetId: "0x0000000000000000000000000000000000000000",
-  //   },
-  // ];
+  const KOVAN_RINKEBY_TOKENS: TOKEN[] = [
+    {
+      name: "ETH",
+      depositAssetId: "0x0000000000000000000000000000000000000000",
+      withdrawAssetId: "0x0000000000000000000000000000000000000000",
+    },
+  ];
 
-  // const KOVAN_ARBITRUM_TOKENS: TOKEN[] = [
-  //   {
-  //     name: "ETH",
-  //     depositAssetId: "0x0000000000000000000000000000000000000000",
-  //     withdrawAssetId: "0x0000000000000000000000000000000000000000",
-  //   },
-  // ];
+  const KOVAN_ARBITRUM_TOKENS: TOKEN[] = [
+    {
+      name: "ETH",
+      depositAssetId: "0x0000000000000000000000000000000000000000",
+      withdrawAssetId: "0x0000000000000000000000000000000000000000",
+    },
+  ];
 
-  // const ARBITRUM_KOVAN_TOKENS: TOKEN[] = [
-  //   {
-  //     name: "ETH",
-  //     depositAssetId: "0x0000000000000000000000000000000000000000",
-  //     withdrawAssetId: "0x0000000000000000000000000000000000000000",
-  //   },
-  // ];
-
-  const GOERLI_KOVAN_TOKENS: TOKEN[] = [
+  const ARBITRUM_KOVAN_TOKENS: TOKEN[] = [
     {
       name: "ETH",
       depositAssetId: "0x0000000000000000000000000000000000000000",
@@ -110,54 +102,47 @@ export default function Modal() {
 
   const networks: NETWORK[] = [
     {
-      depositChainId: 42,
-      depositChainName: "Kovan Testnet",
+      depositChainId: 5,
+      depositChainName: "Goerli Testnet",
+      withdrawChainId: 80001,
+      withdrawChainName: "Matic Testnet",
+      tokens: GOERLI_MUMBAI_TOKENS,
+    },
+    {
+      depositChainId: 80001,
+      depositChainName: "Matic Testnet",
       withdrawChainId: 5,
       withdrawChainName: "Goerli Testnet",
-      tokens: GOERLI_KOVAN_TOKENS,
+      tokens: MUMBAI_GOERLI_TOKENS,
     },
-    // {
-    //   depositChainId: 5,
-    //   depositChainName: "Goerli Testnet",
-    //   withdrawChainId: 80001,
-    //   withdrawChainName: "Matic Testnet",
-    //   tokens: GOERLI_MUMBAI_TOKENS,
-    // },
-    // {
-    //   depositChainId: 80001,
-    //   depositChainName: "Matic Testnet",
-    //   withdrawChainId: 5,
-    //   withdrawChainName: "Goerli Testnet",
-    //   tokens: MUMBAI_GOERLI_TOKENS,
-    // },
-    // {
-    //   depositChainId: 4,
-    //   depositChainName: "Rinkeby Testnet",
-    //   withdrawChainId: 42,
-    //   withdrawChainName: "Kovan Testnet",
-    //   tokens: RINKEBY_KOVAN_TOKENS,
-    // },
-    // {
-    //   depositChainId: 42,
-    //   depositChainName: "Kovan Testnet",
-    //   withdrawChainId: 4,
-    //   withdrawChainName: "Rinkeby Testnet",
-    //   tokens: KOVAN_RINKEBY_TOKENS,
-    // },
-    // {
-    //   depositChainId: 42,
-    //   depositChainName: "Kovan Testnet",
-    //   withdrawChainId: 79377087078960,
-    //   withdrawChainName: "Arbitrum Testnet V3",
-    //   tokens: KOVAN_ARBITRUM_TOKENS,
-    // },
-    // {
-    //   depositChainId: 79377087078960,
-    //   depositChainName: "Arbitrum Testnet V3",
-    //   withdrawChainId: 42,
-    //   withdrawChainName: "Kovan Testnet",
-    //   tokens: ARBITRUM_KOVAN_TOKENS,
-    // },
+    {
+      depositChainId: 4,
+      depositChainName: "Rinkeby Testnet",
+      withdrawChainId: 42,
+      withdrawChainName: "Kovan Testnet",
+      tokens: RINKEBY_KOVAN_TOKENS,
+    },
+    {
+      depositChainId: 42,
+      depositChainName: "Kovan Testnet",
+      withdrawChainId: 4,
+      withdrawChainName: "Rinkeby Testnet",
+      tokens: KOVAN_RINKEBY_TOKENS,
+    },
+    {
+      depositChainId: 42,
+      depositChainName: "Kovan Testnet",
+      withdrawChainId: 79377087078960,
+      withdrawChainName: "Arbitrum Testnet V3",
+      tokens: KOVAN_ARBITRUM_TOKENS,
+    },
+    {
+      depositChainId: 79377087078960,
+      depositChainName: "Arbitrum Testnet V3",
+      withdrawChainId: 42,
+      withdrawChainName: "Kovan Testnet",
+      tokens: ARBITRUM_KOVAN_TOKENS,
+    },
     // {
     //   depositChainId: 137,
     //   depositChainName: "Matic Mainnet",
@@ -267,7 +252,7 @@ export default function Modal() {
 
       <ConnextModal
         showModal={showModal}
-        routerPublicIdentifier="vector8Uz1BdpA9hV5uTm6QUv5jj1PsUyCH8m8ciA94voCzsxVmrBRor"
+        routerPublicIdentifier="vector7tbbTxQp8ppEQUgPsbGiTrVdapLdU5dH7zTbVuXRf1M4CEBU9Q"
         depositAssetId={chain!.tokens[0].depositAssetId}
         depositChainId={chain!.depositChainId}
         withdrawAssetId={chain!.tokens[0].withdrawAssetId}
@@ -278,7 +263,6 @@ export default function Modal() {
         withdrawChainProvider={chainProviders[chain!.withdrawChainId]}
         injectedProvider={injectedProvider}
         loginProvider={injectedProvider}
-        iframeSrcOverride="http://localhost:3030"
       />
     </>
   );
