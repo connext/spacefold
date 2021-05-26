@@ -263,6 +263,7 @@ export default function Modal() {
         withdrawChainProvider={chainProviders[chain!.withdrawChainId]}
         injectedProvider={injectedProvider}
         loginProvider={injectedProvider}
+        iframeSrcOverride="https://wallet-beta.connext.network"
       />
     </>
   );
